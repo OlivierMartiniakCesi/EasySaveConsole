@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EasySavev1.MVVM.ViewModels
+namespace EasySavev1.MVVM.Views
 {
-    class Class1
+    class Views
     {
     }
 }
