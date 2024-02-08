@@ -6,28 +6,23 @@ using System.Threading.Tasks;
 
 namespace EasySavev1.MVVM.Models
 {
-    public enum BackupType
-    {
-        Complet,
-        Differentiel
-    }
     class Backup
     {
         private string Name { get; set; }
         private string SourceDirectory { get; set; }
         private string TargetDirectory { get; set; }
-        public BackupType Type { get; set; }
+        public string Type { get; set; }
         
         //Constructor
         public Backup() { }
 
         //Constructor with parameter
-        public Backup(string Name, string PathSource, string PathTarget, int type) 
+        public Backup(string Name, string PathSource, string PathTarget, string type) 
         {
             this.Name = Name;
             this.SourceDirectory = PathSource;
             this.TargetDirectory = PathTarget;
-            this.Type = (BackupType)type;
+            this.Type = type;
         }
 
         ~Backup() 
@@ -50,7 +45,7 @@ namespace EasySavev1.MVVM.Models
             return TargetDirectory;
         }
 
-        public new BackupType GetType()
+        public string getType()
         {
             return Type;
         }
@@ -61,7 +56,7 @@ namespace EasySavev1.MVVM.Models
             return Information;
         }
 
-        public Backup CreateBackup(string Name, string PathSource, string PathTarget, int type)
+        public Backup CreateBackup(string Name, string PathSource, string PathTarget, string type)
         {
             return new Backup(Name, PathSource, PathTarget, type);
         }
