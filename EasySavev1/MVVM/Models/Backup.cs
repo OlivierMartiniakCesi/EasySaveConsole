@@ -61,6 +61,9 @@ namespace EasySavev1.MVVM.Models
             return Information;
         }
 
-
+        public Backup CreateBackup(string Name, string PathSource, string PathTarget, int type)
+        {
+            return new Backup(Name, PathSource, PathTarget, type);
+        }
     }
 }
