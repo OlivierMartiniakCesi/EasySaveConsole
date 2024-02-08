@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,8 +6,27 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="MVVM\ViewModels\" />
-    <Folder Include="MVVM\Views\" />
+    <Compile Update="Resources\EnglishText.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EnglishText.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\FrenchText.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FrenchText.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\EnglishText.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EnglishText.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\FrenchText.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FrenchText.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
