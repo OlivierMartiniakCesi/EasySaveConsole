@@ -59,5 +59,14 @@ namespace EasySavev1.Resources {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application Initializing....
+        /// </summary>
+        internal static string appInitialization {
+            get {
+                return ResourceManager.GetString("appInitialization", resourceCulture);
+            }
+        }
     }
 }
