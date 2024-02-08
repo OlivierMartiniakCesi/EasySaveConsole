@@ -1,19 +1,13 @@
 ﻿using System;
+using EasySavev1.MVVM.ViewModels;
 
 namespace EasySavev1
 {
     class Program
     {
-        // ### ###    ##      ## ##   ##  ##    ## ##     ##     ### ###  ### ###
-        //  ##  ##     ##    ##   ##  ##  ##   ##   ##     ##     ##  ##   ##  ##
-        //  ##       ## ##   ####     ##  ##   ####      ## ##    ##  ##   ##
-        //  ## ##    ##  ##   #####    ## ##    #####    ##  ##   ##  ##   ## ##
-        //  ##       ## ###      ###    ##         ###   ## ###   ### ##   ##
-        //  ##  ##   ##  ##  ##   ##    ##     ##   ##   ##  ##    ###     ##  ##
-        // ### ###  ###  ##   ## ##     ##      ## ##   ###  ##     ##    ### ###
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            return ViewModels.mainInterface();
         }
     }
 }
