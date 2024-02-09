@@ -14,12 +14,14 @@ using System.Reflection;
 using System.Globalization;
 
 
-namespace EasySavevConsole.MVVM.Views
+namespace EasySaveConsole.MVVM.Views
 {
-    class Views
+    class Vue
     {
         //Gestionnaire de ressources qui facilite l'accès aux ressources
         private static ResourceManager rm = new ResourceManager("EasySave.Resources.Text", Assembly.GetExecutingAssembly());
+
+        public Vue() { }
 
         private void Menu(List<string> menu)
         {
