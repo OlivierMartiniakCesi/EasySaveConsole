@@ -14,13 +14,18 @@ namespace EasySavev1.MVVM.ViewModels
     class ViewModels
     {
         private static Backup _backup = new Backup();
+        private static daylylogs logs = new daylylogs();
         private static List<Backup> BackupListInfo = new List<Backup>();
         private static string Choice{get; set;}
 
         public static int mainInterface()
         {
             bool exit = false;
+            logs.Logsjson();
             int IChoice;
+
+            Log.Information("Application started successfully");
+            
             Console.WriteLine(" ### ###    ##      ## ##   ##  ##    ## ##     ##     ### ###  ### ###");
             Console.WriteLine("  ##  ##     ##    ##   ##  ##  ##   ##   ##     ##     ##  ##   ##  ##");
             Console.WriteLine("  ##       ## ##   ####     ##  ##   ####      ## ##    ##  ##   ##    ");
@@ -60,6 +65,8 @@ namespace EasySavev1.MVVM.ViewModels
                         break;
                     case 5:
                         exit = true;
+                        Log.Information("Application closed successfully");
+                        Log.CloseAndFlush();
                         Environment.Exit(0);
                         break;
 
