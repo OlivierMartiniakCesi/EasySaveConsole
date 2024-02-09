@@ -3,61 +3,203 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EasySavev1.MVVM.Models;
-using EasySavev1.MVVM.Views;
+using EasySaveConsole.MVVM.Models;
+//using EasySaveConsole.MVVM.;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serilog;
 
-namespace EasySavev1.MVVM.ViewModels
+namespace EasySaveConsole.MVVM.ViewModels
 {
     class ViewModels
     {
         private static Backup _backup = new Backup();
         private static daylylogs logs = new daylylogs();
+        static string directoryPath = @"C:\JSON";
+        static string filePath = Path.Combine(directoryPath, "confbackup.json");
         private static List<Backup> BackupListInfo = new List<Backup>();
         private static List<StateLog> stateLogList = new List<StateLog>();
+        private static int totalFilesDone = 0;
         private static string Choice{get; set;}
 
-        public static void GetSaveBackup()
+        static List<Backup> LoadBackupSettings()
         {
-            string fileName = @"C:\backup\backuplist.json";
-            var fileString = File.ReadAllText(fileName);
-            var array = JArray.Parse(fileString);
-
-            if (array.Count() > 0)
+            if (File.Exists(filePath))
             {
-                foreach (var item in array)
+                string json = File.ReadAllText(filePath);
+                return JsonConvert.DeserializeObject<List<Backup>>(json);
+            }
+            else
+            {
+                return new List<Backup>(); // Retourne une nouvelle liste vide si le fichier n'existe pas
+            }
+        }
+
+        static void SaveBackupSettings(List<Backup> backupSettings)
+        {
+            if (backupSettings != null)
+            {
+                string json = JsonConvert.SerializeObject(backupSettings, Formatting.Indented);
+                File.WriteAllText(filePath, json);
+                Console.WriteLine("Les sauvegardes ont été enregistrées avec succès dans le fichier JSON.");
+            }
+            else
+            {
+                Console.WriteLine("Aucune sauvegarde à enregistrer.");
+            }
+        }
+        static void DisplayBackupSettings(List<Backup> backupSettings)
+        {
+            if (backupSettings.Count == 0)
+            {
+                Console.WriteLine("Aucune sauvegarde n'est actuellement configurée.");
+            }
+            else
+            {
+                foreach (var setting in backupSettings)
                 {
-                    Backup backup = new Backup(
-                        item["name"].ToString(),
-                        item["PathSource"].ToString(),
-                        item["PathTarget"].ToString(),
-                        item["type"].ToString()
-                    );
-                    try
-                    {
-                        BackupListInfo.Add(backup);   // CorrectElements
-                    }
-                    catch
-                    {
-                        Console.WriteLine($"error in data");
-                    }
+                    Console.WriteLine($"Nom: {setting.getName()}, Source: {setting.getSourceDirectory()}, Destination: {setting.getTargetDirectory()}, Type: {setting.GetType()}");
                 }
             }
+        }
+        static void AddNewBackupSetting(List<Backup> backupSettings)
+        {
+            Console.WriteLine("Entrez le nom de la nouvelle sauvegarde :");
+            string name = Console.ReadLine();
 
+            Console.WriteLine("Entrez le chemin source :");
+            string sourcePath = Console.ReadLine();
+
+            Console.WriteLine("Entrez le chemin de destination :");
+            string destinationPath = Console.ReadLine();
+
+            Console.WriteLine("Entrez le type de sauvegarde (Full ou Differential) :");
+            string type = Console.ReadLine();
+            if (type == "Full")
+            {
+                if (backupSettings == null)
+                {
+                    backupSettings = new List<Backup>();
+                }
+                backupSettings.Add(new Backup { Name = name, SourceDirectory = sourcePath, TargetDirectory = destinationPath, Type = type });
+            }
+            else
+            {
+                Console.WriteLine("Type de sauvegarde invalide.");
+            }
+        }
+
+        static void ModifyBackupSetting(List<Backup> backupSettings)
+        {
+            Console.WriteLine("Entrez le nom de la sauvegarde à modifier :");
+            string nameToModify = Console.ReadLine();
+
+            var settingToModify = backupSettings.Find(s => s.Name == nameToModify);
+
+            if (settingToModify != null)
+            {
+                Console.WriteLine($"Sauvegarde trouvée : Nom: {settingToModify.Name}, Source: {settingToModify.SourceDirectory}, Destination: {settingToModify.TargetDirectory}, Type: {settingToModify.Type}");
+
+                Console.WriteLine("Entrez le nouveau nom (ou appuyez sur Entrée pour garder le même) :");
+                string newName = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newName))
+                    settingToModify.Name = newName;
+
+                Console.WriteLine("Entrez le nouveau chemin source (ou appuyez sur Entrée pour garder le même) :");
+                string newSourcePath = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newSourcePath))
+                    settingToModify.SourceDirectory = newSourcePath;
+
+                Console.WriteLine("Entrez le nouveau chemin de destination (ou appuyez sur Entrée pour garder le même) :");
+                string newDestinationPath = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newDestinationPath))
+                    settingToModify.TargetDirectory = newDestinationPath;
+
+                Console.WriteLine("Entrez le nouveau type de sauvegarde (Full ou Differential) (ou appuyez sur Entrée pour garder le même) :");
+                string typeInput = Console.ReadLine();
+                if (!string.IsNullOrEmpty(typeInput))
+                {
+                    string newType = Console.ReadLine();
+                    if (newType == "Full")
+                    {
+                        settingToModify.Type = newType;
+                    }
+                }
+
+                Console.WriteLine("Sauvegarde modifiée avec succès.");
+            }
+            else
+            {
+                Console.WriteLine("Aucune sauvegarde trouvée avec ce nom.");
+            }
+        }
+        static void DeleteBackupSetting(List<Backup> backupSettings)
+        {
+            Console.WriteLine("Entrez le nom de la sauvegarde à supprimer :");
+            string nameToDelete = Console.ReadLine();
+
+            var settingToDelete = backupSettings.Find(s => s.Name == nameToDelete);
+
+            if (settingToDelete != null)
+            {
+                backupSettings.Remove(settingToDelete);
+                Console.WriteLine("Sauvegarde supprimée avec succès.");
+            }
+            else
+            {
+                Console.WriteLine("Aucune sauvegarde trouvée avec ce nom.");
+            }
+        }
+        
+        public static void GetStateBackup()
+        {
             string json = File.ReadAllText(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + @"\Logs\stateLog.json");    // Read StateLog file
             stateLogList = JsonConvert.DeserializeObject<List<StateLog>>(json == "" ? "[]" : json);
         }
 
-        public static void StateLogs(string name, string fileSource, string fileTarget, long fileSize, int totalFiles, int totalFilesDone)
+        public static void StateLogs(string name, string fileSource, string fileTarget, long fileSize, string state, int totalFiles, int nbFilesToGet)
         {
-            StateLog stateLoglist = new StateLog(name, fileSource, fileTarget, fileSize, totalFiles, totalFilesDone);
+            StateLog stateLog = new StateLog(name, fileSource, fileTarget, fileSize, state, totalFiles, nbFilesToGet);
+
             string stateLogListPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + @"\Logs\stateLog.json";
-            string json = JsonConvert.SerializeObject(stateLogList, Formatting.Indented);
-            File.WriteAllText(stateLogListPath, json);
+
+            List<KeyValuePair<string, StateLog>> stateLogList;
+
+            // Check if the file exists and has content
+            if (File.Exists(stateLogListPath))
+            {
+                string json = File.ReadAllText(stateLogListPath);
+
+                stateLogList = JsonConvert.DeserializeObject<List<KeyValuePair<string, StateLog>>>(json);
+
+                if (stateLogList == null)
+                {
+                    stateLogList = new List<KeyValuePair<string, StateLog>>();
+                }
+            }
+            else
+            {
+                stateLogList = new List<KeyValuePair<string, StateLog>>();
+            }
+
+            // Replace or add the entry for the given name
+            var existingEntry = stateLogList.FirstOrDefault(entry => entry.Key == name);
+
+            if (existingEntry.Equals(default(KeyValuePair<string, StateLog>)))
+            {
+                stateLogList.Add(new KeyValuePair<string, StateLog>(name, stateLog));
+            }
+            else
+            {
+                stateLogList[stateLogList.IndexOf(existingEntry)] = new KeyValuePair<string, StateLog>(name, stateLog);
+            }
+
+            // Write the entire dictionary to the file
+            string jsonToWrite = JsonConvert.SerializeObject(stateLogList, Formatting.Indented);
+            File.WriteAllText(stateLogListPath, jsonToWrite);
         }
+
 
         public static void SetSaveStateBackup(string backupName, string src, string dest)
         {
@@ -66,16 +208,16 @@ namespace EasySavev1.MVVM.ViewModels
 
             Directory.CreateDirectory(dest);
 
+            int totalFilesDone = 0;  // Initialize totalFilesDone here
+
             foreach (FileInfo file in dir.GetFiles())
             {
-             
-                    totalFilesDone++;
-                    file.CopyTo(Path.Combine(dest, file.Name), true);   // Copy the file into the destination directory
-                    string fileSrc = Path.Combine(file.DirectoryName, file.Name);
-                    string fileDest = Path.Combine(dest, file.Name);
-                    int totalFiles = Directory.GetFiles(src, "*", SearchOption.AllDirectories).Length;
-                    StateLogs(backupName, fileSrc, fileDest, file.Length, totalFiles, totalFilesDone);
-             
+                totalFilesDone++;
+                file.CopyTo(Path.Combine(dest, file.Name), true);   // Copy the file into the destination directory
+                string fileSrc = Path.Combine(file.DirectoryName, file.Name);
+                string fileDest = Path.Combine(dest, file.Name);
+                int totalFiles = Directory.GetFiles(src, "*", SearchOption.AllDirectories).Length;
+                StateLogs(backupName, fileSrc, fileDest, file.Length, "On", totalFiles, totalFilesDone);
             }
         }
         
@@ -110,7 +252,7 @@ namespace EasySavev1.MVVM.ViewModels
 
             while (exit == false)
             {
-                GetSaveBackup();
+                GetStateBackup();
                 if (backupSettings != null)
                 {
                     foreach (var backupSetting in backupSettings)
@@ -124,7 +266,7 @@ namespace EasySavev1.MVVM.ViewModels
                         CreateSlotBackup();
                         break;
                     case 2:
-                        LaunchSlotBackup(BackupListInfo[]);
+                        //LaunchSlotBackup(BackupListInfo[]);
                         break;
                     case 3:
                         // dcez
@@ -178,39 +320,9 @@ namespace EasySavev1.MVVM.ViewModels
                 }
                 else
                 {
-                    TypeDifferential(backup1.getSourceDirectory(), backup1.getTargetDirectory())
+                    TypeDifferential(backup1.getSourceDirectory(), backup1.getTargetDirectory());
                 }
             }
-        }
-        public static void GetSaveBackup()
-        {
-            string fileName = @"C:\backup\backuplist.json";
-            var fileString = File.ReadAllText(fileName);
-            var array = JArray.Parse(fileString);
-
-            if (array.Count() > 0)
-            {
-                foreach (var item in array)
-                {
-                    Backup backup = new Backup(
-                        item["name"].ToString(),
-                        item["PathSource"].ToString(),
-                        item["PathTarget"].ToString(),
-                        item["type"].ToString()
-                    );
-                    try
-                    {
-                        BackupListInfo.Add(backup);   // CorrectElements
-                    }
-                    catch
-                    {
-                        Console.WriteLine($"error in data");
-                    }
-                }
-            }
-
-            string json = File.ReadAllText(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + @"\Logs\statelog.json");    // Read StateLog file
-            //stateLogList = JsonConvert.DeserializeObject<List<StateLog>>(json == "" ? "[]" : json);
         }
         public static void TypeComplet(string PathSource, string PathTarget)
         {
@@ -259,7 +371,7 @@ namespace EasySavev1.MVVM.ViewModels
                 }
             }
         }
-        public static void TypeDifferential(string PathSource, string PathTarget) 
+        public static void TypeDifferential(string PathSource, string PathTarget)
         {
             // Obtenir la liste des fichiers dans le premier dossier
             string[] files = Directory.GetFiles(PathSource);
@@ -304,6 +416,23 @@ namespace EasySavev1.MVVM.ViewModels
                     CopyFileWithProgress(filePath1, filePath2);
                     Console.WriteLine($"Le fichier '{fileName}' a été copié de {PathSource} vers {PathTarget} car il n'existait pas dans {PathTarget}.");
                 }
+            }
+        }
+        private static void StartMethod(string ChoiceMethod)
+        {
+            int index = 0;
+            List<string> slotNameList = BackupListInfo.Select(_backup => _backup.getName()).ToList();
+            Console.WriteLine("Sélectionner la sauvegarde");
+
+            switch (ChoiceMethod)
+            {
+                case "Launch":
+                    //LaunchSlotBackup(BackupListInfo);
+                    break;
+                case "Edit":
+                    // Add your code for the "Edit" case here
+                    break;
+                    // Add more cases if needed
             }
         }
     }
