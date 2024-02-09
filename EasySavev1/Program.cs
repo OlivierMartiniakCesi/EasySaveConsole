@@ -1,5 +1,5 @@
 ﻿using System;
-using EasySavev1.MVVM.ViewModels;
+using EasySaveConsole.MVVM.ViewModels;
 
 namespace EasySavev1
 {

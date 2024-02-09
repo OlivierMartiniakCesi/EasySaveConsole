@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EasySavev1.MVVM.Models;
-using EasySavev1.MVVM.Views;
+using EasySaveConsole.MVVM.Models;
+//using EasySaveConsole.MVVM.;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -16,8 +16,11 @@ namespace EasySaveConsole.MVVM.ViewModels
     {
         private static Backup _backup = new Backup();
         private static daylylogs logs = new daylylogs();
+        static string directoryPath = @"C:\JSON";
+        static string filePath = Path.Combine(directoryPath, "confbackup.json");
         private static List<Backup> BackupListInfo = new List<Backup>();
         private static List<StateLog> stateLogList = new List<StateLog>();
+        private static int totalFilesDone = 0;
         private static string Choice{get; set;}
 
         static List<Backup> LoadBackupSettings()
@@ -151,7 +154,7 @@ namespace EasySaveConsole.MVVM.ViewModels
         
         public static void GetSaveBackup()
         {
-            string fileName = @"C:\backup\backuplist.json";
+            /*string fileName = @"C:\backup\backuplist.json";
             var fileString = File.ReadAllText(fileName);
             var array = JArray.Parse(fileString);
 
@@ -174,7 +177,7 @@ namespace EasySaveConsole.MVVM.ViewModels
                         Console.WriteLine($"error in data");
                     }
                 }
-            }
+            }*/
 
             string json = File.ReadAllText(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + @"\Logs\stateLog.json");    // Read StateLog file
             stateLogList = JsonConvert.DeserializeObject<List<StateLog>>(json == "" ? "[]" : json);
@@ -253,7 +256,7 @@ namespace EasySaveConsole.MVVM.ViewModels
                         CreateSlotBackup();
                         break;
                     case 2:
-                        LaunchSlotBackup(BackupListInfo[]);
+                        //LaunchSlotBackup(BackupListInfo[]);
                         break;
                     case 3:
                         // dcez
@@ -310,36 +313,6 @@ namespace EasySaveConsole.MVVM.ViewModels
                     TypeDifferential(backup1.getSourceDirectory(), backup1.getTargetDirectory());
                 }
             }
-        }
-        public static void GetSaveBackup()
-        {
-            string fileName = @"C:\backup\backuplist.json";
-            var fileString = File.ReadAllText(fileName);
-            var array = JArray.Parse(fileString);
-
-            if (array.Count() > 0)
-            {
-                foreach (var item in array)
-                {
-                    Backup backup = new Backup(
-                        item["name"].ToString(),
-                        item["PathSource"].ToString(),
-                        item["PathTarget"].ToString(),
-                        item["type"].ToString()
-                    );
-                    try
-                    {
-                        BackupListInfo.Add(backup);   // CorrectElements
-                    }
-                    catch
-                    {
-                        Console.WriteLine($"error in data");
-                    }
-                }
-            }
-
-            string json = File.ReadAllText(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + @"\Logs\statelog.json");    // Read StateLog file
-            //stateLogList = JsonConvert.DeserializeObject<List<StateLog>>(json == "" ? "[]" : json);
         }
         public static void TypeComplet(string PathSource, string PathTarget)
         {
@@ -444,7 +417,7 @@ namespace EasySaveConsole.MVVM.ViewModels
             switch (ChoiceMethod)
             {
                 case "Launch":
-                    LaunchSlotBackup(BackupListInfo);
+                    //LaunchSlotBackup(BackupListInfo);
                     break;
                 case "Edit":
                     // Add your code for the "Edit" case here
