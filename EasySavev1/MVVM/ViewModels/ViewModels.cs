@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using EasySavev1.MVVM.Models;
 using EasySavev1.MVVM.Views;
 using System.IO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace EasySavev1.MVVM.ViewModels
 {
@@ -41,6 +43,7 @@ namespace EasySavev1.MVVM.ViewModels
 
             while (exit == false)
             {
+                GetSaveBackup();
                 switch (IChoice)
                 {
                     case 1:
@@ -103,7 +106,36 @@ namespace EasySavev1.MVVM.ViewModels
                 }
             }
         }
+        public static void GetSaveBackup()
+        {
+            string fileName = @"C:\backup\backuplist.json";
+            var fileString = File.ReadAllText(fileName);
+            var array = JArray.Parse(fileString);
 
+            if (array.Count() > 0)
+            {
+                foreach (var item in array)
+                {
+                    Backup backup = new Backup(
+                        item["name"].ToString(),
+                        item["PathSource"].ToString(),
+                        item["PathTarget"].ToString(),
+                        item["type"].ToString()
+                    );
+                    try
+                    {
+                        BackupListInfo.Add(backup);   // CorrectElements
+                    }
+                    catch
+                    {
+                        Console.WriteLine($"error in data");
+                    }
+                }
+            }
+
+            string json = File.ReadAllText(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + @"\Logs\statelog.json");    // Read StateLog file
+            //stateLogList = JsonConvert.DeserializeObject<List<StateLog>>(json == "" ? "[]" : json);
+        }
         public static void TypeComplet(string PathSource, string PathTarget)
         {
             //Create All Repertories
