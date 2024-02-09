@@ -38,7 +38,7 @@ namespace EasySavev1.MVVM.ViewModels
                     );
                     try
                     {
-                        backupList.Add(backup);   // CorrectElements
+                        BackupListInfo.Add(backup);   // CorrectElements
                     }
                     catch
                     {
