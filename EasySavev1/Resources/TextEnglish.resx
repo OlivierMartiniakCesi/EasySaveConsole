@@ -166,6 +166,6 @@
     <value>Select backup :</value>
   </data>
   <data name="TypeBackup" xml:space="preserve">
-    <value>Enter backup type (Full or Diff) :</value>
+    <value>Enter backup type (Complet or Diff) :</value>
   </data>
 </root>

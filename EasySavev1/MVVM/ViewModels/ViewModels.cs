@@ -59,14 +59,14 @@ namespace EasySaveConsole.MVVM.ViewModels
             }
             else
             {
-                Console.WriteLine("No Backup to save.");
+                Console.WriteLine(getTraductor("NoSave"));
             }
         }
         static void DisplayBackupSettings(List<Backup> backupSettings)
         {
             if (backupSettings.Count == 0)
             {
-                Console.WriteLine("No backup is configured.");
+                Console.WriteLine(getTraductor("ConfBackup"));
             }
             else
             {
@@ -79,7 +79,7 @@ namespace EasySaveConsole.MVVM.ViewModels
 
         static void ModifyBackupSetting(List<Backup> backupSettings)
         {
-            Console.WriteLine("Enter the name of backup to modify :");
+            Console.WriteLine(getTraductor("EnterNameBackup"));
             string nameToModify = Console.ReadLine();
 
             var settingToModify = backupSettings.Find(s => s.getName() == nameToModify);
@@ -181,8 +181,6 @@ namespace EasySaveConsole.MVVM.ViewModels
         public static int mainInterface()
         {
             logs.Logsjson();
-            int IChoice;
-
             Log.Information("Application started successfully");
             if (!Directory.Exists(directoryPath))
             {
@@ -219,7 +217,7 @@ namespace EasySaveConsole.MVVM.ViewModels
                         }
                         else
                         {
-                            Console.WriteLine("Number max of backup has been reached.");
+                            Console.WriteLine(getTraductor("MaxBackup"));
                         }
                         break;
                     case 2:
@@ -238,10 +236,10 @@ namespace EasySaveConsole.MVVM.ViewModels
                         break;
                     case 5:
                         SaveBackupSettings(backupSettings);
-                        Console.WriteLine("App closing.");
+                        Console.WriteLine(getTraductor("AppClose"));
                         break;
                     default:
-                        Console.WriteLine("No valid choice.");
+                        Console.WriteLine(getTraductor("NoValid"));
                         break;
                 }
             }
@@ -249,23 +247,23 @@ namespace EasySaveConsole.MVVM.ViewModels
 
         static void CreateSlotBackup(List<Backup> backupSettings)
         {
-            Console.WriteLine("Enter the new backup's name :");
+            Console.WriteLine(getTraductor("EnterNewName"));
             string name = Console.ReadLine();
 
-            Console.WriteLine("Enter source path :");
+            Console.WriteLine(getTraductor("PathSrc"));
             string sourcePath = Console.ReadLine();
 
-            Console.WriteLine("Enter destination path :");
+            Console.WriteLine(getTraductor("PathDst"));
             string destinationPath = Console.ReadLine();
 
-            Console.WriteLine("Enter backup's type (Complet or Diff) :");
+            Console.WriteLine(getTraductor("TypeBackup"));
             string type = Console.ReadLine();
             type = type.ToLower();
 
             // Utilisation de l'opérateur && pour vérifier que le type n'est ni "Complet" ni "Differentielle"
             if (type != "complet" && type != "diff")
             {
-                Console.WriteLine("Enter backup's type (Complet or Diff) :");
+                Console.WriteLine(getTraductor("TypeBackup"));
                 type = Console.ReadLine();
                 type = type.ToLower();
             }
@@ -398,7 +396,7 @@ namespace EasySaveConsole.MVVM.ViewModels
         {
             int index = 0;
             List<string> slotNameList = BackupListInfo.Select(_backup => _backup.getName()).ToList();
-            Console.WriteLine("Select your backup");
+            Console.WriteLine(getTraductor("SelectBackup"));
 
             switch (ChoiceMethod)
             {
@@ -414,7 +412,7 @@ namespace EasySaveConsole.MVVM.ViewModels
 
         public static void Lang()
         {
-            Console.WriteLine("please enter your language (French / English)");
+            Console.WriteLine(getTraductor("enterLanguage"));
             string language = Console.ReadLine();
             language = language.ToLower();
             if (language == "french")

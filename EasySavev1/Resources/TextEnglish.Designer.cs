@@ -205,7 +205,7 @@ namespace EasySaveConsole.Resources {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Enter backup type (Full or Diff) :.
+        ///   Recherche une chaîne localisée semblable à Enter backup type (Complet or Diff) :.
         /// </summary>
         internal static string TypeBackup {
             get {
