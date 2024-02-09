@@ -11,7 +11,7 @@ namespace EasySavev1.MVVM.Models
         private string Name { get; set; }
         private string SourceDirectory { get; set; }
         private string TargetDirectory { get; set; }
-        public string Type { get; set; }
+        private string Type { get; set; }
         
         //Constructor
         public Backup() { }

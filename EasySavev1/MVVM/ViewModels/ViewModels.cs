@@ -47,7 +47,7 @@ namespace EasySavev1.MVVM.ViewModels
                         CreateSlotBackup();
                         break;
                     case 2:
-                        // dzad
+                        LaunchSlotBackup(BackupListInfo[]);
                         break;
                     case 3:
                         // dcez
