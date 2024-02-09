@@ -168,65 +168,73 @@ namespace EasySaveConsole.MVVM.ViewModels
         
         public static int mainInterface()
         {
-            bool exit = false;
             logs.Logsjson();
             int IChoice;
-            List<Backup> backupSettings = LoadBackupSettings();
 
             Log.Information("Application started successfully");
-            
-            Console.WriteLine(" ### ###    ##      ## ##   ##  ##    ## ##     ##     ### ###  ### ###");
-            Console.WriteLine("  ##  ##     ##    ##   ##  ##  ##   ##   ##     ##     ##  ##   ##  ##");
-            Console.WriteLine("  ##       ## ##   ####     ##  ##   ####      ## ##    ##  ##   ##    ");
-            Console.WriteLine("  ## ##    ##  ##   #####    ## ##    #####    ##  ##   ##  ##   ## ## ");
-            Console.WriteLine("  ##       ## ###      ###    ##         ###   ## ###   ### ##   ##    ");
-            Console.WriteLine("  ##  ##   ##  ##  ##   ##    ##     ##   ##   ##  ##    ###     ##  ##");
-            Console.WriteLine(" ### ###  ###  ##   ## ##     ##      ## ##   ###  ##     ##    ### ###");
-
-            Console.WriteLine("\n\n");
-
-            Console.WriteLine("\n1- Create");
-            Console.WriteLine("\n2- Launch");
-            Console.WriteLine("\n3- Edit");
-            Console.WriteLine("\n4- Language");
-            Console.WriteLine("\n5- Exit");
-
-            Choice = Console.ReadLine();
-
-            while (exit == false)
+            if (!Directory.Exists(directoryPath))
             {
-                GetStateBackup();
-                if (backupSettings != null)
-                {
-                    foreach (var backupSetting in backupSettings)
-                    {
-                        SetSaveStateBackup(backupSetting.getName(), backupSetting.getSourceDirectory(), backupSetting.getTargetDirectory());
-                    }
-                }
-                switch (_vue.SelectMenu(menuInterface))
+                Directory.CreateDirectory(directoryPath);
+            }
+
+            List<Backup> backupSettings = LoadBackupSettings();
+
+            while (true)
+            {
+                Console.WriteLine(" ### ###    ##      ## ##   ##  ##    ## ##     ##     ### ###  ### ###");
+                Console.WriteLine("  ##  ##     ##    ##   ##  ##  ##   ##   ##     ##     ##  ##   ##  ##");
+                Console.WriteLine("  ##       ## ##   ####     ##  ##   ####      ## ##    ##  ##   ##    ");
+                Console.WriteLine("  ## ##    ##  ##   #####    ## ##    #####    ##  ##   ##  ##   ## ## ");
+                Console.WriteLine("  ##       ## ###      ###    ##         ###   ## ###   ### ##   ##    ");
+                Console.WriteLine("  ##  ##   ##  ##  ##   ##    ##     ##   ##   ##  ##    ###     ##  ##");
+                Console.WriteLine(" ### ###  ###  ##   ## ##     ##      ## ##   ###  ##     ##    ### ###");
+
+                Console.WriteLine("\n\n");
+
+                Console.WriteLine("\n1- Create");
+                Console.WriteLine("\n2- Launch");
+                Console.WriteLine("\n3- Edit");
+                Console.WriteLine("\n4- Language");
+                Console.WriteLine("\n5- Exit");
+
+                IChoice = Convert.ToInt32(Console.ReadLine());
+
+                switch (IChoice)
                 {
                     case 1:
-                        CreateSlotBackup();
+                        if (backupSettings.Count < MaxBackupSettings)
+                        {
+                            CreateSlotBackup(backupSettings);
+                            Console.Clear();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Le nombre maximal de sauvegardes a déjà été atteint.");
+                        }
                         break;
                     case 2:
-                        //LaunchSlotBackup(BackupListInfo[]);
+                        foreach (var backupSetting in backupSettings)
+                        {
+                            SetSaveStateBackup(backupSetting.Name, backupSetting.SourceDirectory, backupSetting.TargetDirectory);
+                        }
                         break;
                     case 3:
-                        // dcez
+                        ModifyBackupSetting(backupSettings);
+                        Console.Clear();
                         break;
                     case 4:
-                        Lang();
+                        //DeleteBackupSetting(backupSettings);
+                        Console.Clear();
                         break;
                     case 5:
-                        exit = true;
-                        Log.Information("Application closed successfully");
-                        Log.CloseAndFlush();
-                        Environment.Exit(0);
+                        SaveBackupSettings(backupSettings);
+                        Console.WriteLine("Fermeture de l'application.");
+                        return;
+                    default:
+                        Console.WriteLine("Choix non valide.");
                         break;
-
                 }
             }
-            return 0;
         }
 
         public static void CreateSlotBackup()
