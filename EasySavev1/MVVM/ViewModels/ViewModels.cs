@@ -4,16 +4,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EasySaveConsole.MVVM.Models;
+using EasySaveConsole.MVVM.Views;
 //using EasySaveConsole.MVVM.;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serilog;
+using System.Resources;
+using System.Reflection;
+using System.Globalization;
+
+
 
 namespace EasySaveConsole.MVVM.ViewModels
 {
     class ViewModels
     {
+
+        //Gestionnaire de ressources qui facilite l'accès aux ressources
+        private static ResourceManager rm = new ResourceManager("EasySave.Resources.Text", Assembly.GetExecutingAssembly());
+
         private static Backup _backup = new Backup();
         private static daylylogs logs = new daylylogs();
         static string directoryPath = @"C:\JSON";
@@ -21,6 +31,7 @@ namespace EasySaveConsole.MVVM.ViewModels
         private static List<Backup> BackupListInfo = new List<Backup>();
         private static List<StateLog> stateLogList = new List<StateLog>();
         private static int totalFilesDone = 0;
+        private static List<string> menuInterface = new List<string>() { getTraductor("Create"), getTraductor("Launch"), getTraductor("Edit"), getTraductor("Language"), getTraductor("Exit") };
         private static string Choice{get; set;}
 
         static List<Backup> LoadBackupSettings()
@@ -247,7 +258,7 @@ namespace EasySaveConsole.MVVM.ViewModels
             Console.WriteLine("\n5- Exit");
 
             Choice = Console.ReadLine();
-            IChoice = int.Parse(Choice);
+            IChoice = int.Parse(Select(menuInterface));
 
 
             while (exit == false)
@@ -272,7 +283,7 @@ namespace EasySaveConsole.MVVM.ViewModels
                         // dcez
                         break;
                     case 4:
-                        // dzead
+                        Lang();
                         break;
                     case 5:
                         exit = true;
@@ -371,6 +382,18 @@ namespace EasySaveConsole.MVVM.ViewModels
                 }
             }
         }
+
+        public static string getTraductor(string word)
+        {
+            return rm.GetString(word);
+        }
+
+        public static void Change(string language)
+        {
+            CultureInfo culture = CultureInfo.GetCultureInfo(language);
+            CultureInfo.DefaultThreadCurrentUICulture = culture;
+        }
+
         public static void TypeDifferential(string PathSource, string PathTarget)
         {
             // Obtenir la liste des fichiers dans le premier dossier
@@ -434,6 +457,21 @@ namespace EasySaveConsole.MVVM.ViewModels
                     break;
                     // Add more cases if needed
             }
+        }
+
+        public static void Lang()
+        {
+            Console.WriteLine("please enter your language (French / English)");
+            string language = Console.ReadLine();
+            if (language == "French")
+                Change("French");
+            else if (language == "English")
+                Change("English");
+            else
+                Console.WriteLine("Error");
+
+            menuInterface = new List<string>() { getTraductor("Create"), getTraductor("Launch"), getTraductor("Edit"), getTraductor("Language"), getTraductor("Exit") };
+            
         }
     }
 }
