@@ -74,32 +74,6 @@ namespace EasySaveConsole.MVVM.ViewModels
                 }
             }
         }
-        static void AddNewBackupSetting(List<Backup> backupSettings)
-        {
-            Console.WriteLine("Entrez le nom de la nouvelle sauvegarde :");
-            string name = Console.ReadLine();
-
-            Console.WriteLine("Entrez le chemin source :");
-            string sourcePath = Console.ReadLine();
-
-            Console.WriteLine("Entrez le chemin de destination :");
-            string destinationPath = Console.ReadLine();
-
-            Console.WriteLine("Entrez le type de sauvegarde (Full ou Differential) :");
-            string type = Console.ReadLine();
-            if (type == "Full")
-            {
-                if (backupSettings == null)
-                {
-                    backupSettings = new List<Backup>();
-                }
-                backupSettings.Add(new Backup { Name = name, SourceDirectory = sourcePath, TargetDirectory = destinationPath, Type = type });
-            }
-            else
-            {
-                Console.WriteLine("Type de sauvegarde invalide.");
-            }
-        }
 
         static void ModifyBackupSetting(List<Backup> backupSettings)
         {
@@ -234,90 +208,97 @@ namespace EasySaveConsole.MVVM.ViewModels
         
         public static int mainInterface()
         {
-            bool exit = false;
             logs.Logsjson();
             int IChoice;
-            List<Backup> backupSettings = LoadBackupSettings();
 
             Log.Information("Application started successfully");
-            
-            Console.WriteLine(" ### ###    ##      ## ##   ##  ##    ## ##     ##     ### ###  ### ###");
-            Console.WriteLine("  ##  ##     ##    ##   ##  ##  ##   ##   ##     ##     ##  ##   ##  ##");
-            Console.WriteLine("  ##       ## ##   ####     ##  ##   ####      ## ##    ##  ##   ##    ");
-            Console.WriteLine("  ## ##    ##  ##   #####    ## ##    #####    ##  ##   ##  ##   ## ## ");
-            Console.WriteLine("  ##       ## ###      ###    ##         ###   ## ###   ### ##   ##    ");
-            Console.WriteLine("  ##  ##   ##  ##  ##   ##    ##     ##   ##   ##  ##    ###     ##  ##");
-            Console.WriteLine(" ### ###  ###  ##   ## ##     ##      ## ##   ###  ##     ##    ### ###");
-
-            Console.WriteLine("\n\n");
-
-            Console.WriteLine("\n1- Create");
-            Console.WriteLine("\n2- Launch");
-            Console.WriteLine("\n3- Edit");
-            Console.WriteLine("\n4- Language");
-            Console.WriteLine("\n5- Exit");
-
-            Choice = Console.ReadLine();
-            IChoice = int.Parse(Select(menuInterface));
-
-
-            while (exit == false)
+            if (!Directory.Exists(directoryPath))
             {
-                GetStateBackup();
-                if (backupSettings != null)
-                {
-                    foreach (var backupSetting in backupSettings)
-                    {
-                        SetSaveStateBackup(backupSetting.Name, backupSetting.SourceDirectory, backupSetting.TargetDirectory);
-                    }
-                }
+                Directory.CreateDirectory(directoryPath);
+            }
+
+            List<Backup> backupSettings = LoadBackupSettings();
+
+            while (true)
+            {
+                Console.WriteLine(" ### ###    ##      ## ##   ##  ##    ## ##     ##     ### ###  ### ###");
+                Console.WriteLine("  ##  ##     ##    ##   ##  ##  ##   ##   ##     ##     ##  ##   ##  ##");
+                Console.WriteLine("  ##       ## ##   ####     ##  ##   ####      ## ##    ##  ##   ##    ");
+                Console.WriteLine("  ## ##    ##  ##   #####    ## ##    #####    ##  ##   ##  ##   ## ## ");
+                Console.WriteLine("  ##       ## ###      ###    ##         ###   ## ###   ### ##   ##    ");
+                Console.WriteLine("  ##  ##   ##  ##  ##   ##    ##     ##   ##   ##  ##    ###     ##  ##");
+                Console.WriteLine(" ### ###  ###  ##   ## ##     ##      ## ##   ###  ##     ##    ### ###");
+
+                Console.WriteLine("\n\n");
+
+                Console.WriteLine("\n1- Create");
+                Console.WriteLine("\n2- Launch");
+                Console.WriteLine("\n3- Edit");
+                Console.WriteLine("\n4- Language");
+                Console.WriteLine("\n5- Exit");
+
+                IChoice = Convert.ToInt32(Console.ReadLine());
+
                 switch (IChoice)
                 {
                     case 1:
-                        CreateSlotBackup();
+                        if (backupSettings.Count < MaxBackupSettings)
+                        {
+                            CreateSlotBackup(backupSettings);
+                            Console.Clear();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Le nombre maximal de sauvegardes a déjà été atteint.");
+                        }
                         break;
                     case 2:
-                        //LaunchSlotBackup(BackupListInfo[]);
+                        foreach (var backupSetting in backupSettings)
+                        {
+                            SetSaveStateBackup(backupSetting.Name, backupSetting.SourceDirectory, backupSetting.TargetDirectory);
+                        }
                         break;
                     case 3:
-                        // dcez
+                        ModifyBackupSetting(backupSettings);
+                        Console.Clear();
                         break;
                     case 4:
-                        Lang();
+                        //DeleteBackupSetting(backupSettings);
+                        Console.Clear();
                         break;
                     case 5:
-                        exit = true;
-                        Log.Information("Application closed successfully");
-                        Log.CloseAndFlush();
-                        Environment.Exit(0);
+                        SaveBackupSettings(backupSettings);
+                        Console.WriteLine("Fermeture de l'application.");
+                        return;
+                    default:
+                        Console.WriteLine("Choix non valide.");
                         break;
-
                 }
             }
-            return 0;
         }
 
-        public static void CreateSlotBackup()
+        static void CreateSlotBackup(List<Backup> backupSettings)
         {
-            Console.WriteLine("Veuillez saisir le nom de la sauvegarde.");
-            string Name = Console.ReadLine();
+            Console.WriteLine("Entrez le nom de la nouvelle sauvegarde :");
+            string name = Console.ReadLine();
 
-            Console.WriteLine("Veuillez saisir le chemin source de la sauvegarde.");
-            string pathSource = Console.ReadLine();
+            Console.WriteLine("Entrez le chemin source :");
+            string sourcePath = Console.ReadLine();
 
-            Console.WriteLine("Veuillez saisir le chemin cible de la sauvegarde.");
-            string pathTarget = Console.ReadLine();
+            Console.WriteLine("Entrez le chemin de destination :");
+            string destinationPath = Console.ReadLine();
 
-            Console.WriteLine("Veuillez saisir le type de sauvegarde (Complet / Differential).");
-            string types = Console.ReadLine();
+            Console.WriteLine("Entrez le type de sauvegarde (Complet ou Differentielle) :");
+            string type = Console.ReadLine();
 
-            if (types != "Complet" || types != "Differential")
+            // Utilisation de l'opérateur && pour vérifier que le type n'est ni "Complet" ni "Differentielle"
+            if (type != "Complet" && type != "Differentielle")
             {
-                Console.WriteLine("Veuillez saisir le bon type de sauvegarde -> (Complete / Differenciel).");
-                types = Console.ReadLine();
+                Console.WriteLine("Veuillez saisir le bon type de sauvegarde -> (Complet / Differentielle).");
+                type = Console.ReadLine();
             }
 
-            BackupListInfo.Add(_backup.CreateBackup(Name, pathSource, pathTarget, types));
+            backupSettings.Add(new Backup { Name = name, SourceDirectory = sourcePath, TargetDirectory = destinationPath, Type = type });
         }
 
         public static void LaunchSlotBackup(Backup backup)
