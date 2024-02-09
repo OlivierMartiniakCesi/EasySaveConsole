@@ -59,5 +59,158 @@ namespace EasySaveConsole.Resources {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Close application..
+        /// </summary>
+        internal static string AppClose {
+            get {
+                return ResourceManager.GetString("AppClose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à No backup configured.
+        /// </summary>
+        internal static string ConfBackup {
+            get {
+                return ResourceManager.GetString("ConfBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Create.
+        /// </summary>
+        internal static string create {
+            get {
+                return ResourceManager.GetString("create", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Modify.
+        /// </summary>
+        internal static string edit {
+            get {
+                return ResourceManager.GetString("edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Please enter the language (French/English) :.
+        /// </summary>
+        internal static string enterLanguage {
+            get {
+                return ResourceManager.GetString("enterLanguage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Enter the name of the backup to be modified :.
+        /// </summary>
+        internal static string EnterNameBackup {
+            get {
+                return ResourceManager.GetString("EnterNameBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Enter the name of the new backup :.
+        /// </summary>
+        internal static string EnterNewName {
+            get {
+                return ResourceManager.GetString("EnterNewName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Language.
+        /// </summary>
+        internal static string language {
+            get {
+                return ResourceManager.GetString("language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Launch.
+        /// </summary>
+        internal static string launch {
+            get {
+                return ResourceManager.GetString("launch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Maximum number of backups has been reached.
+        /// </summary>
+        internal static string MaxBackup {
+            get {
+                return ResourceManager.GetString("MaxBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à No backup to save.
+        /// </summary>
+        internal static string NoSave {
+            get {
+                return ResourceManager.GetString("NoSave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à No valid choice.
+        /// </summary>
+        internal static string NoValid {
+            get {
+                return ResourceManager.GetString("NoValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Enter destination path :.
+        /// </summary>
+        internal static string PathDst {
+            get {
+                return ResourceManager.GetString("PathDst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Enter source path :.
+        /// </summary>
+        internal static string PathSrc {
+            get {
+                return ResourceManager.GetString("PathSrc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Copy progress :.
+        /// </summary>
+        internal static string Progress {
+            get {
+                return ResourceManager.GetString("Progress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Select backup :.
+        /// </summary>
+        internal static string SelectBackup {
+            get {
+                return ResourceManager.GetString("SelectBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Enter backup type (Full or Diff) :.
+        /// </summary>
+        internal static string TypeBackup {
+            get {
+                return ResourceManager.GetString("TypeBackup", resourceCulture);
+            }
+        }
     }
 }
