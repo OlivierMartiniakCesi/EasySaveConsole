@@ -25,7 +25,7 @@ namespace EasySaveConsole.MVVM.ViewModels
         private static ResourceManager rm = new ResourceManager("EasySave.Resources.Text", Assembly.GetExecutingAssembly());
 
         private static Backup _backup = new Backup();
-        private static daylylogs logs = new daylylogs();
+        private static dailylogs logs = new dailylogs();
         static string directoryPath = @"C:\JSON";
         static string filePath = Path.Combine(directoryPath, "confbackup.json");
         private static List<Backup> BackupListInfo = new List<Backup>();
@@ -33,6 +33,8 @@ namespace EasySaveConsole.MVVM.ViewModels
         private static int totalFilesDone = 0;
         private static List<string> menuInterface = new List<string>() { getTraductor("Create"), getTraductor("Launch"), getTraductor("Edit"), getTraductor("Language"), getTraductor("Exit") };
         private static string Choice{get; set;}
+
+        private static Vue _vue = new Vue();
 
         static List<Backup> LoadBackupSettings()
         {
@@ -74,83 +76,15 @@ namespace EasySaveConsole.MVVM.ViewModels
                 }
             }
         }
-        static void AddNewBackupSetting(List<Backup> backupSettings)
-        {
-            Console.WriteLine("Entrez le nom de la nouvelle sauvegarde :");
-            string name = Console.ReadLine();
 
-            Console.WriteLine("Entrez le chemin source :");
-            string sourcePath = Console.ReadLine();
+        
 
-            Console.WriteLine("Entrez le chemin de destination :");
-            string destinationPath = Console.ReadLine();
-
-            Console.WriteLine("Entrez le type de sauvegarde (Full ou Differential) :");
-            string type = Console.ReadLine();
-            if (type == "Full")
-            {
-                if (backupSettings == null)
-                {
-                    backupSettings = new List<Backup>();
-                }
-                backupSettings.Add(new Backup { Name = name, SourceDirectory = sourcePath, TargetDirectory = destinationPath, Type = type });
-            }
-            else
-            {
-                Console.WriteLine("Type de sauvegarde invalide.");
-            }
-        }
-
-        static void ModifyBackupSetting(List<Backup> backupSettings)
-        {
-            Console.WriteLine("Entrez le nom de la sauvegarde à modifier :");
-            string nameToModify = Console.ReadLine();
-
-            var settingToModify = backupSettings.Find(s => s.Name == nameToModify);
-
-            if (settingToModify != null)
-            {
-                Console.WriteLine($"Sauvegarde trouvée : Nom: {settingToModify.Name}, Source: {settingToModify.SourceDirectory}, Destination: {settingToModify.TargetDirectory}, Type: {settingToModify.Type}");
-
-                Console.WriteLine("Entrez le nouveau nom (ou appuyez sur Entrée pour garder le même) :");
-                string newName = Console.ReadLine();
-                if (!string.IsNullOrEmpty(newName))
-                    settingToModify.Name = newName;
-
-                Console.WriteLine("Entrez le nouveau chemin source (ou appuyez sur Entrée pour garder le même) :");
-                string newSourcePath = Console.ReadLine();
-                if (!string.IsNullOrEmpty(newSourcePath))
-                    settingToModify.SourceDirectory = newSourcePath;
-
-                Console.WriteLine("Entrez le nouveau chemin de destination (ou appuyez sur Entrée pour garder le même) :");
-                string newDestinationPath = Console.ReadLine();
-                if (!string.IsNullOrEmpty(newDestinationPath))
-                    settingToModify.TargetDirectory = newDestinationPath;
-
-                Console.WriteLine("Entrez le nouveau type de sauvegarde (Full ou Differential) (ou appuyez sur Entrée pour garder le même) :");
-                string typeInput = Console.ReadLine();
-                if (!string.IsNullOrEmpty(typeInput))
-                {
-                    string newType = Console.ReadLine();
-                    if (newType == "Full")
-                    {
-                        settingToModify.Type = newType;
-                    }
-                }
-
-                Console.WriteLine("Sauvegarde modifiée avec succès.");
-            }
-            else
-            {
-                Console.WriteLine("Aucune sauvegarde trouvée avec ce nom.");
-            }
-        }
         static void DeleteBackupSetting(List<Backup> backupSettings)
         {
             Console.WriteLine("Entrez le nom de la sauvegarde à supprimer :");
             string nameToDelete = Console.ReadLine();
 
-            var settingToDelete = backupSettings.Find(s => s.Name == nameToDelete);
+            var settingToDelete = backupSettings.Find(s => s.getName() == nameToDelete);
 
             if (settingToDelete != null)
             {
@@ -258,8 +192,6 @@ namespace EasySaveConsole.MVVM.ViewModels
             Console.WriteLine("\n5- Exit");
 
             Choice = Console.ReadLine();
-            IChoice = int.Parse(Select(menuInterface));
-
 
             while (exit == false)
             {
@@ -268,10 +200,10 @@ namespace EasySaveConsole.MVVM.ViewModels
                 {
                     foreach (var backupSetting in backupSettings)
                     {
-                        SetSaveStateBackup(backupSetting.Name, backupSetting.SourceDirectory, backupSetting.TargetDirectory);
+                        SetSaveStateBackup(backupSetting.getName(), backupSetting.getSourceDirectory(), backupSetting.getTargetDirectory());
                     }
                 }
-                switch (IChoice)
+                switch (_vue.SelectMenu(menuInterface))
                 {
                     case 1:
                         CreateSlotBackup();
