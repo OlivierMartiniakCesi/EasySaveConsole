@@ -6,19 +6,88 @@ using System.Threading.Tasks;
 using EasySavev1.MVVM.Models;
 using EasySavev1.MVVM.Views;
 using System.IO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Serilog;
 
 namespace EasySavev1.MVVM.ViewModels
 {
     class ViewModels
     {
         private static Backup _backup = new Backup();
+        private static daylylogs logs = new daylylogs();
         private static List<Backup> BackupListInfo = new List<Backup>();
+        private static List<StateLog> stateLogList = new List<StateLog>();
         private static string Choice{get; set;}
 
+        public static void GetSaveBackup()
+        {
+            string fileName = @"C:\backup\backuplist.json";
+            var fileString = File.ReadAllText(fileName);
+            var array = JArray.Parse(fileString);
+
+            if (array.Count() > 0)
+            {
+                foreach (var item in array)
+                {
+                    Backup backup = new Backup(
+                        item["name"].ToString(),
+                        item["PathSource"].ToString(),
+                        item["PathTarget"].ToString(),
+                        item["type"].ToString()
+                    );
+                    try
+                    {
+                        backupList.Add(backup);   // CorrectElements
+                    }
+                    catch
+                    {
+                        Console.WriteLine($"error in data");
+                    }
+                }
+            }
+
+            string json = File.ReadAllText(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + @"\Logs\stateLog.json");    // Read StateLog file
+            stateLogList = JsonConvert.DeserializeObject<List<StateLog>>(json == "" ? "[]" : json);
+        }
+
+        public static void StateLogs(string name, string fileSource, string fileTarget, long fileSize, int totalFiles, int totalFilesDone)
+        {
+            StateLog stateLoglist = new StateLog(name, fileSource, fileTarget, fileSize, totalFiles, totalFilesDone);
+            string stateLogListPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + @"\Logs\stateLog.json";
+            string json = JsonConvert.SerializeObject(stateLogList, Formatting.Indented);
+            File.WriteAllText(stateLogListPath, json);
+        }
+
+        public static void SetSaveStateBackup(string backupName, string src, string dest)
+        {
+            var dir = new DirectoryInfo(src);
+            DirectoryInfo[] dirs = dir.GetDirectories();  // Cache directories before we start copying
+
+            Directory.CreateDirectory(dest);
+
+            foreach (FileInfo file in dir.GetFiles())
+            {
+             
+                    totalFilesDone++;
+                    file.CopyTo(Path.Combine(dest, file.Name), true);   // Copy the file into the destination directory
+                    string fileSrc = Path.Combine(file.DirectoryName, file.Name);
+                    string fileDest = Path.Combine(dest, file.Name);
+                    int totalFiles = Directory.GetFiles(src, "*", SearchOption.AllDirectories).Length;
+                    StateLogs(backupName, fileSrc, fileDest, file.Length, totalFiles, totalFilesDone);
+             
+            }
+        }
+        
         public static int mainInterface()
         {
             bool exit = false;
+            logs.Logsjson();
             int IChoice;
+            List<Backup> backupSettings = LoadBackupSettings();
+
+            Log.Information("Application started successfully");
+            
             Console.WriteLine(" ### ###    ##      ## ##   ##  ##    ## ##     ##     ### ###  ### ###");
             Console.WriteLine("  ##  ##     ##    ##   ##  ##  ##   ##   ##     ##     ##  ##   ##  ##");
             Console.WriteLine("  ##       ## ##   ####     ##  ##   ####      ## ##    ##  ##   ##    ");
@@ -41,6 +110,14 @@ namespace EasySavev1.MVVM.ViewModels
 
             while (exit == false)
             {
+                GetSaveBackup();
+                if (backupSettings != null)
+                {
+                    foreach (var backupSetting in backupSettings)
+                    {
+                        SetSaveStateBackup(backupSetting.Name, backupSetting.SourceDirectory, backupSetting.TargetDirectory);
+                    }
+                }
                 switch (IChoice)
                 {
                     case 1:
@@ -57,6 +134,8 @@ namespace EasySavev1.MVVM.ViewModels
                         break;
                     case 5:
                         exit = true;
+                        Log.Information("Application closed successfully");
+                        Log.CloseAndFlush();
                         Environment.Exit(0);
                         break;
 
@@ -103,7 +182,36 @@ namespace EasySavev1.MVVM.ViewModels
                 }
             }
         }
+        public static void GetSaveBackup()
+        {
+            string fileName = @"C:\backup\backuplist.json";
+            var fileString = File.ReadAllText(fileName);
+            var array = JArray.Parse(fileString);
 
+            if (array.Count() > 0)
+            {
+                foreach (var item in array)
+                {
+                    Backup backup = new Backup(
+                        item["name"].ToString(),
+                        item["PathSource"].ToString(),
+                        item["PathTarget"].ToString(),
+                        item["type"].ToString()
+                    );
+                    try
+                    {
+                        BackupListInfo.Add(backup);   // CorrectElements
+                    }
+                    catch
+                    {
+                        Console.WriteLine($"error in data");
+                    }
+                }
+            }
+
+            string json = File.ReadAllText(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + @"\Logs\statelog.json");    // Read StateLog file
+            //stateLogList = JsonConvert.DeserializeObject<List<StateLog>>(json == "" ? "[]" : json);
+        }
         public static void TypeComplet(string PathSource, string PathTarget)
         {
             //Create All Repertories
