@@ -99,7 +99,7 @@ namespace EasySavev1.MVVM.ViewModels
                 }
                 else
                 {
-                    TypeDifferential(backup1.getSourceDirectory(), backup1.getTargetDirectory())
+                    TypeDifferential(backup1.getSourceDirectory(), backup1.getTargetDirectory());
                 }
             }
         }
@@ -151,7 +151,7 @@ namespace EasySavev1.MVVM.ViewModels
                 }
             }
         }
-        public static void TypeDifferential(string PathSource, string PathTarget) 
+        public static void TypeDifferential(string PathSource, string PathTarget)
         {
             // Obtenir la liste des fichiers dans le premier dossier
             string[] files = Directory.GetFiles(PathSource);
@@ -196,6 +196,23 @@ namespace EasySavev1.MVVM.ViewModels
                     CopyFileWithProgress(filePath1, filePath2);
                     Console.WriteLine($"Le fichier '{fileName}' a été copié de {PathSource} vers {PathTarget} car il n'existait pas dans {PathTarget}.");
                 }
+            }
+        }
+        private static void StartMethod(string ChoiceMethod)
+        {
+            int index = 0;
+            List<string> slotNameList = BackupListInfo.Select(_backup => _backup.getName()).ToList();
+            Console.WriteLine("Sélectionner la sauvegarde");
+
+            switch (ChoiceMethod)
+            {
+                case "Launch":
+                    LaunchSlotBackup(BackupListInfo);
+                    break;
+                case "Edit":
+                    // Add your code for the "Edit" case here
+                    break;
+                    // Add more cases if needed
             }
         }
     }
