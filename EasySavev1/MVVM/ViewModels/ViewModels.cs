@@ -74,32 +74,6 @@ namespace EasySaveConsole.MVVM.ViewModels
                 }
             }
         }
-        static void AddNewBackupSetting(List<Backup> backupSettings)
-        {
-            Console.WriteLine("Entrez le nom de la nouvelle sauvegarde :");
-            string name = Console.ReadLine();
-
-            Console.WriteLine("Entrez le chemin source :");
-            string sourcePath = Console.ReadLine();
-
-            Console.WriteLine("Entrez le chemin de destination :");
-            string destinationPath = Console.ReadLine();
-
-            Console.WriteLine("Entrez le type de sauvegarde (Full ou Differential) :");
-            string type = Console.ReadLine();
-            if (type == "Full")
-            {
-                if (backupSettings == null)
-                {
-                    backupSettings = new List<Backup>();
-                }
-                backupSettings.Add(new Backup { Name = name, SourceDirectory = sourcePath, TargetDirectory = destinationPath, Type = type });
-            }
-            else
-            {
-                Console.WriteLine("Type de sauvegarde invalide.");
-            }
-        }
 
         static void ModifyBackupSetting(List<Backup> backupSettings)
         {
@@ -303,27 +277,28 @@ namespace EasySaveConsole.MVVM.ViewModels
             }
         }
 
-        public static void CreateSlotBackup()
+        static void CreateSlotBackup(List<Backup> backupSettings)
         {
-            Console.WriteLine("Veuillez saisir le nom de la sauvegarde.");
-            string Name = Console.ReadLine();
+            Console.WriteLine("Entrez le nom de la nouvelle sauvegarde :");
+            string name = Console.ReadLine();
 
-            Console.WriteLine("Veuillez saisir le chemin source de la sauvegarde.");
-            string pathSource = Console.ReadLine();
+            Console.WriteLine("Entrez le chemin source :");
+            string sourcePath = Console.ReadLine();
 
-            Console.WriteLine("Veuillez saisir le chemin cible de la sauvegarde.");
-            string pathTarget = Console.ReadLine();
+            Console.WriteLine("Entrez le chemin de destination :");
+            string destinationPath = Console.ReadLine();
 
-            Console.WriteLine("Veuillez saisir le type de sauvegarde (Complet / Differential).");
-            string types = Console.ReadLine();
+            Console.WriteLine("Entrez le type de sauvegarde (Complet ou Differentielle) :");
+            string type = Console.ReadLine();
 
-            if (types != "Complet" || types != "Differential")
+            // Utilisation de l'opérateur && pour vérifier que le type n'est ni "Complet" ni "Differentielle"
+            if (type != "Complet" && type != "Differentielle")
             {
-                Console.WriteLine("Veuillez saisir le bon type de sauvegarde -> (Complete / Differenciel).");
-                types = Console.ReadLine();
+                Console.WriteLine("Veuillez saisir le bon type de sauvegarde -> (Complet / Differentielle).");
+                type = Console.ReadLine();
             }
 
-            BackupListInfo.Add(_backup.CreateBackup(Name, pathSource, pathTarget, types));
+            backupSettings.Add(new Backup { Name = name, SourceDirectory = sourcePath, TargetDirectory = destinationPath, Type = type });
         }
 
         public static void LaunchSlotBackup(Backup backup)
