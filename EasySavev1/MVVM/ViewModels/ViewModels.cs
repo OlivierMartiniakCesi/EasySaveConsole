@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serilog;
 
-namespace EasySavev1.MVVM.ViewModels
+namespace EasySaveConsole.MVVM.ViewModels
 {
     class ViewModels
     {
@@ -20,6 +20,135 @@ namespace EasySavev1.MVVM.ViewModels
         private static List<StateLog> stateLogList = new List<StateLog>();
         private static string Choice{get; set;}
 
+        static List<Backup> LoadBackupSettings()
+        {
+            if (File.Exists(filePath))
+            {
+                string json = File.ReadAllText(filePath);
+                return JsonConvert.DeserializeObject<List<Backup>>(json);
+            }
+            else
+            {
+                return new List<Backup>(); // Retourne une nouvelle liste vide si le fichier n'existe pas
+            }
+        }
+
+        static void SaveBackupSettings(List<Backup> backupSettings)
+        {
+            if (backupSettings != null)
+            {
+                string json = JsonConvert.SerializeObject(backupSettings, Formatting.Indented);
+                File.WriteAllText(filePath, json);
+                Console.WriteLine("Les sauvegardes ont été enregistrées avec succès dans le fichier JSON.");
+            }
+            else
+            {
+                Console.WriteLine("Aucune sauvegarde à enregistrer.");
+            }
+        }
+        static void DisplayBackupSettings(List<Backup> backupSettings)
+        {
+            if (backupSettings.Count == 0)
+            {
+                Console.WriteLine("Aucune sauvegarde n'est actuellement configurée.");
+            }
+            else
+            {
+                foreach (var setting in backupSettings)
+                {
+                    Console.WriteLine($"Nom: {setting.getName()}, Source: {setting.getSourceDirectory()}, Destination: {setting.getTargetDirectory()}, Type: {setting.GetType()}");
+                }
+            }
+        }
+        static void AddNewBackupSetting(List<Backup> backupSettings)
+        {
+            Console.WriteLine("Entrez le nom de la nouvelle sauvegarde :");
+            string name = Console.ReadLine();
+
+            Console.WriteLine("Entrez le chemin source :");
+            string sourcePath = Console.ReadLine();
+
+            Console.WriteLine("Entrez le chemin de destination :");
+            string destinationPath = Console.ReadLine();
+
+            Console.WriteLine("Entrez le type de sauvegarde (Full ou Differential) :");
+            string type = Console.ReadLine();
+            if (type == "Full")
+            {
+                if (backupSettings == null)
+                {
+                    backupSettings = new List<Backup>();
+                }
+                backupSettings.Add(new Backup { Name = name, SourceDirectory = sourcePath, TargetDirectory = destinationPath, Type = type });
+            }
+            else
+            {
+                Console.WriteLine("Type de sauvegarde invalide.");
+            }
+        }
+
+        static void ModifyBackupSetting(List<Backup> backupSettings)
+        {
+            Console.WriteLine("Entrez le nom de la sauvegarde à modifier :");
+            string nameToModify = Console.ReadLine();
+
+            var settingToModify = backupSettings.Find(s => s.Name == nameToModify);
+
+            if (settingToModify != null)
+            {
+                Console.WriteLine($"Sauvegarde trouvée : Nom: {settingToModify.Name}, Source: {settingToModify.SourceDirectory}, Destination: {settingToModify.TargetDirectory}, Type: {settingToModify.Type}");
+
+                Console.WriteLine("Entrez le nouveau nom (ou appuyez sur Entrée pour garder le même) :");
+                string newName = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newName))
+                    settingToModify.Name = newName;
+
+                Console.WriteLine("Entrez le nouveau chemin source (ou appuyez sur Entrée pour garder le même) :");
+                string newSourcePath = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newSourcePath))
+                    settingToModify.SourceDirectory = newSourcePath;
+
+                Console.WriteLine("Entrez le nouveau chemin de destination (ou appuyez sur Entrée pour garder le même) :");
+                string newDestinationPath = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newDestinationPath))
+                    settingToModify.TargetDirectory = newDestinationPath;
+
+                Console.WriteLine("Entrez le nouveau type de sauvegarde (Full ou Differential) (ou appuyez sur Entrée pour garder le même) :");
+                string typeInput = Console.ReadLine();
+                if (!string.IsNullOrEmpty(typeInput))
+                {
+                    string newType = Console.ReadLine();
+                    if (newType == "Full")
+                    {
+                        settingToModify.Type = newType;
+                    }
+                }
+
+                Console.WriteLine("Sauvegarde modifiée avec succès.");
+            }
+            else
+            {
+                Console.WriteLine("Aucune sauvegarde trouvée avec ce nom.");
+            }
+        }
+        static void DeleteBackupSetting(List<Backup> backupSettings)
+        {
+            Console.WriteLine("Entrez le nom de la sauvegarde à supprimer :");
+            string nameToDelete = Console.ReadLine();
+
+            var settingToDelete = backupSettings.Find(s => s.Name == nameToDelete);
+
+            if (settingToDelete != null)
+            {
+                backupSettings.Remove(settingToDelete);
+                Console.WriteLine("Sauvegarde supprimée avec succès.");
+            }
+            else
+            {
+                Console.WriteLine("Aucune sauvegarde trouvée avec ce nom.");
+            }
+        }
+        
         public static void GetSaveBackup()
         {
             string fileName = @"C:\backup\backuplist.json";
