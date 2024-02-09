@@ -27,13 +27,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Resources\TextFrench.resx">
+      <LastGenOutput>TextFrench.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\TextEnglish.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>TextEnglish.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\TextFrench.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>TextFrench.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 
