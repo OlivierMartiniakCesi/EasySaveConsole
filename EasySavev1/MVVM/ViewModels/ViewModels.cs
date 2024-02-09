@@ -152,44 +152,54 @@ namespace EasySaveConsole.MVVM.ViewModels
             }
         }
         
-        public static void GetSaveBackup()
+        public static void GetStateBackup()
         {
-            /*string fileName = @"C:\backup\backuplist.json";
-            var fileString = File.ReadAllText(fileName);
-            var array = JArray.Parse(fileString);
-
-            if (array.Count() > 0)
-            {
-                foreach (var item in array)
-                {
-                    Backup backup = new Backup(
-                        item["name"].ToString(),
-                        item["PathSource"].ToString(),
-                        item["PathTarget"].ToString(),
-                        item["type"].ToString()
-                    );
-                    try
-                    {
-                        backupList.Add(backup);   // CorrectElements
-                    }
-                    catch
-                    {
-                        Console.WriteLine($"error in data");
-                    }
-                }
-            }*/
-
             string json = File.ReadAllText(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + @"\Logs\stateLog.json");    // Read StateLog file
             stateLogList = JsonConvert.DeserializeObject<List<StateLog>>(json == "" ? "[]" : json);
         }
 
-        public static void StateLogs(string name, string fileSource, string fileTarget, long fileSize, int totalFiles, int totalFilesDone)
+        public static void StateLogs(string name, string fileSource, string fileTarget, long fileSize, string state, int totalFiles, int nbFilesToGet)
         {
-            StateLog stateLoglist = new StateLog(name, fileSource, fileTarget, fileSize, totalFiles, totalFilesDone);
+            StateLog stateLog = new StateLog(name, fileSource, fileTarget, fileSize, state, totalFiles, nbFilesToGet);
+
             string stateLogListPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + @"\Logs\stateLog.json";
-            string json = JsonConvert.SerializeObject(stateLogList, Formatting.Indented);
-            File.WriteAllText(stateLogListPath, json);
+
+            List<KeyValuePair<string, StateLog>> stateLogList;
+
+            // Check if the file exists and has content
+            if (File.Exists(stateLogListPath))
+            {
+                string json = File.ReadAllText(stateLogListPath);
+
+                stateLogList = JsonConvert.DeserializeObject<List<KeyValuePair<string, StateLog>>>(json);
+
+                if (stateLogList == null)
+                {
+                    stateLogList = new List<KeyValuePair<string, StateLog>>();
+                }
+            }
+            else
+            {
+                stateLogList = new List<KeyValuePair<string, StateLog>>();
+            }
+
+            // Replace or add the entry for the given name
+            var existingEntry = stateLogList.FirstOrDefault(entry => entry.Key == name);
+
+            if (existingEntry.Equals(default(KeyValuePair<string, StateLog>)))
+            {
+                stateLogList.Add(new KeyValuePair<string, StateLog>(name, stateLog));
+            }
+            else
+            {
+                stateLogList[stateLogList.IndexOf(existingEntry)] = new KeyValuePair<string, StateLog>(name, stateLog);
+            }
+
+            // Write the entire dictionary to the file
+            string jsonToWrite = JsonConvert.SerializeObject(stateLogList, Formatting.Indented);
+            File.WriteAllText(stateLogListPath, jsonToWrite);
         }
+
 
         public static void SetSaveStateBackup(string backupName, string src, string dest)
         {
@@ -198,16 +208,16 @@ namespace EasySaveConsole.MVVM.ViewModels
 
             Directory.CreateDirectory(dest);
 
+            int totalFilesDone = 0;  // Initialize totalFilesDone here
+
             foreach (FileInfo file in dir.GetFiles())
             {
-             
-                    totalFilesDone++;
-                    file.CopyTo(Path.Combine(dest, file.Name), true);   // Copy the file into the destination directory
-                    string fileSrc = Path.Combine(file.DirectoryName, file.Name);
-                    string fileDest = Path.Combine(dest, file.Name);
-                    int totalFiles = Directory.GetFiles(src, "*", SearchOption.AllDirectories).Length;
-                    StateLogs(backupName, fileSrc, fileDest, file.Length, totalFiles, totalFilesDone);
-             
+                totalFilesDone++;
+                file.CopyTo(Path.Combine(dest, file.Name), true);   // Copy the file into the destination directory
+                string fileSrc = Path.Combine(file.DirectoryName, file.Name);
+                string fileDest = Path.Combine(dest, file.Name);
+                int totalFiles = Directory.GetFiles(src, "*", SearchOption.AllDirectories).Length;
+                StateLogs(backupName, fileSrc, fileDest, file.Length, "On", totalFiles, totalFilesDone);
             }
         }
         
@@ -242,7 +252,7 @@ namespace EasySaveConsole.MVVM.ViewModels
 
             while (exit == false)
             {
-                GetSaveBackup();
+                GetStateBackup();
                 if (backupSettings != null)
                 {
                     foreach (var backupSetting in backupSettings)
