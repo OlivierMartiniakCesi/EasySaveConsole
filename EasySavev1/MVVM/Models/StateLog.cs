@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EasySaveConsole.Models
+namespace EasySaveConsole.MVVM.Models
 {
     class StateLog
     {

@@ -8,9 +8,9 @@ namespace EasySaveConsole.MVVM.Models
 {
     class Backup
     {
-        public string Name { get; set; }
-        public string SourceDirectory { get; set; }
-        public string TargetDirectory { get; set; }
+        private string Name { get; set; }
+        private string SourceDirectory { get; set; }
+        private string TargetDirectory { get; set; }
         public string Type { get; set; }
         
         //Constructor
