@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EasySaveConsole.MVVM.Models
+namespace EasySaveConsole.Models
 {
     class StateLog
     {
@@ -18,7 +18,7 @@ namespace EasySaveConsole.MVVM.Models
         public int progression;
         public string Time;
 
-        public StateLog(string name, string fileSource, string fileTarget, long totalFiles, int fileSize, long totalFilesDone)
+        public StateLog(string name, string fileSource, string fileTarget, long fileSize, string state, long totalFiles, long totalFilesDone)
         {
             this.name = name;
             this.fileSource = fileSource;
