@@ -123,10 +123,10 @@
   <data name="ConfBackup" xml:space="preserve">
     <value>Aucune sauvegarde n'est configurée</value>
   </data>
-  <data name="create" xml:space="preserve">
+  <data name="Create" xml:space="preserve">
     <value>Créer</value>
   </data>
-  <data name="edit" xml:space="preserve">
+  <data name="Edit" xml:space="preserve">
     <value>Modifier</value>
   </data>
   <data name="enterLanguage" xml:space="preserve">
@@ -138,10 +138,13 @@
   <data name="EnterNewName" xml:space="preserve">
     <value>Saisissez le nom de la nouvelle sauvegarde :</value>
   </data>
-  <data name="language" xml:space="preserve">
+  <data name="Exit" xml:space="preserve">
+    <value>Quitter</value>
+  </data>
+  <data name="Language" xml:space="preserve">
     <value>Langue</value>
   </data>
-  <data name="launch" xml:space="preserve">
+  <data name="Launch" xml:space="preserve">
     <value>Lancer</value>
   </data>
   <data name="MaxBackup" xml:space="preserve">

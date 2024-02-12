@@ -13,6 +13,7 @@ using Serilog;
 using System.Resources;
 using System.Reflection;
 using System.Globalization;
+using EasySaveConsole.Resources;
 
 
 
@@ -22,7 +23,7 @@ namespace EasySaveConsole.MVVM.ViewModels
     {
 
         //Gestionnaire de ressources qui facilite l'accès aux ressources
-        private static ResourceManager rm = new ResourceManager("EasySave.Resources.Text", Assembly.GetExecutingAssembly());
+        private static ResourceManager rm = new ResourceManager("EasySaveConsole.Resources.TextEnglish", Assembly.GetExecutingAssembly());
 
         private static Backup _backup = new Backup();
         private static dailylogs logs = new dailylogs();
@@ -30,9 +31,9 @@ namespace EasySaveConsole.MVVM.ViewModels
         static string filePath = Path.Combine(directoryPath, "confbackup.json");
         private static List<Backup> BackupListInfo = new List<Backup>();
         private static List<StateLog> stateLogList = new List<StateLog>();
-        private static int totalFilesDone = 0;
+        //private static int totalFilesDone = 0;
         const int MaxBackupSettings = 5;
-        private static List<string> menuInterface = new List<string>() { getTraductor("Create"), getTraductor("Launch"), getTraductor("Edit"), getTraductor("Language"), getTraductor("Exit") };
+        private static List<string> menuInterface = new List<string>() { GetTraductor("Create"), GetTraductor("Launch"), GetTraductor("Edit"), GetTraductor("Language"), GetTraductor("Exit") };
         private static string Choice{get; set;}
 
         private static Vue _vue = new Vue();
@@ -59,14 +60,14 @@ namespace EasySaveConsole.MVVM.ViewModels
             }
             else
             {
-                Console.WriteLine(getTraductor("NoSave"));
+                Console.WriteLine(GetTraductor("NoSave"));
             }
         }
         static void DisplayBackupSettings(List<Backup> backupSettings)
         {
             if (backupSettings.Count == 0)
             {
-                Console.WriteLine(getTraductor("ConfBackup"));
+                Console.WriteLine(GetTraductor("ConfBackup"));
             }
             else
             {
@@ -79,7 +80,7 @@ namespace EasySaveConsole.MVVM.ViewModels
 
         static void ModifyBackupSetting(List<Backup> backupSettings)
         {
-            Console.WriteLine(getTraductor("EnterNameBackup"));
+            Console.WriteLine(GetTraductor("EnterNameBackup"));
             string nameToModify = Console.ReadLine();
 
             var settingToModify = backupSettings.Find(s => s.getName() == nameToModify);
@@ -191,22 +192,6 @@ namespace EasySaveConsole.MVVM.ViewModels
 
             while (true)
             {
-                Console.WriteLine(" ### ###    ##      ## ##   ##  ##    ## ##     ##     ### ###  ### ###");
-                Console.WriteLine("  ##  ##     ##    ##   ##  ##  ##   ##   ##     ##     ##  ##   ##  ##");
-                Console.WriteLine("  ##       ## ##   ####     ##  ##   ####      ## ##    ##  ##   ##    ");
-                Console.WriteLine("  ## ##    ##  ##   #####    ## ##    #####    ##  ##   ##  ##   ## ## ");
-                Console.WriteLine("  ##       ## ###      ###    ##         ###   ## ###   ### ##   ##    ");
-                Console.WriteLine("  ##  ##   ##  ##  ##   ##    ##     ##   ##   ##  ##    ###     ##  ##");
-                Console.WriteLine(" ### ###  ###  ##   ## ##     ##      ## ##   ###  ##     ##    ### ###");
-
-                Console.WriteLine("\n\n");
-
-                Console.WriteLine("\n1- Create");
-                Console.WriteLine("\n2- Launch");
-                Console.WriteLine("\n3- Edit");
-                Console.WriteLine("\n4- Language");
-                Console.WriteLine("\n5- Exit");
-
                 switch (_vue.SelectMenu(menuInterface))
                 {
                     case 1:
@@ -217,7 +202,7 @@ namespace EasySaveConsole.MVVM.ViewModels
                         }
                         else
                         {
-                            Console.WriteLine(getTraductor("MaxBackup"));
+                            Console.WriteLine(GetTraductor("MaxBackup"));
                         }
                         break;
                     case 2:
@@ -236,10 +221,11 @@ namespace EasySaveConsole.MVVM.ViewModels
                         break;
                     case 5:
                         SaveBackupSettings(backupSettings);
-                        Console.WriteLine(getTraductor("AppClose"));
+                        Console.WriteLine(GetTraductor("AppClose"));
+                        Environment.Exit(1);
                         break;
                     default:
-                        Console.WriteLine(getTraductor("NoValid"));
+                        Console.WriteLine(GetTraductor("NoValid"));
                         break;
                 }
             }
@@ -247,23 +233,23 @@ namespace EasySaveConsole.MVVM.ViewModels
 
         static void CreateSlotBackup(List<Backup> backupSettings)
         {
-            Console.WriteLine(getTraductor("EnterNewName"));
+            Console.WriteLine(GetTraductor("EnterNewName"));
             string name = Console.ReadLine();
 
-            Console.WriteLine(getTraductor("PathSrc"));
+            Console.WriteLine(GetTraductor("PathSrc"));
             string sourcePath = Console.ReadLine();
 
-            Console.WriteLine(getTraductor("PathDst"));
+            Console.WriteLine(GetTraductor("PathDst"));
             string destinationPath = Console.ReadLine();
 
-            Console.WriteLine(getTraductor("TypeBackup"));
+            Console.WriteLine(GetTraductor("TypeBackup"));
             string type = Console.ReadLine();
             type = type.ToLower();
 
             // Utilisation de l'opérateur && pour vérifier que le type n'est ni "Complet" ni "Differentielle"
             if (type != "complet" && type != "diff")
             {
-                Console.WriteLine(getTraductor("TypeBackup"));
+                Console.WriteLine(GetTraductor("TypeBackup"));
                 type = Console.ReadLine();
                 type = type.ToLower();
             }
@@ -334,15 +320,11 @@ namespace EasySaveConsole.MVVM.ViewModels
             }
         }
 
-        public static string getTraductor(string word)
-        {
-            return rm.GetString(word);
-        }
+        public static string GetTraductor(string word) => rm.GetString(word);
 
         public static void Change(string language)
         {
-            CultureInfo culture = CultureInfo.GetCultureInfo(language);
-            CultureInfo.DefaultThreadCurrentUICulture = culture;
+            rm = new ResourceManager("EasySaveConsole.Resources.Text" + language, Assembly.GetExecutingAssembly());
         }
 
         public static void TypeDifferential(string PathSource, string PathTarget)
@@ -392,27 +374,10 @@ namespace EasySaveConsole.MVVM.ViewModels
                 }
             }
         }
-        private static void StartMethod(string ChoiceMethod)
-        {
-            int index = 0;
-            List<string> slotNameList = BackupListInfo.Select(_backup => _backup.getName()).ToList();
-            Console.WriteLine(getTraductor("SelectBackup"));
-
-            switch (ChoiceMethod)
-            {
-                case "Launch":
-                    //LaunchSlotBackup(BackupListInfo);
-                    break;
-                case "Edit":
-                    // Add your code for the "Edit" case here
-                    break;
-                    // Add more cases if needed
-            }
-        }
 
         public static void Lang()
         {
-            Console.WriteLine(getTraductor("enterLanguage"));
+            Console.WriteLine(GetTraductor("enterLanguage"));
             string language = Console.ReadLine();
             language = language.ToLower();
             if (language == "french")
@@ -422,7 +387,7 @@ namespace EasySaveConsole.MVVM.ViewModels
             else
                 Console.WriteLine("Error");
 
-            menuInterface = new List<string>() { getTraductor("Create"), getTraductor("Launch"), getTraductor("Edit"), getTraductor("Language"), getTraductor("Exit") };
+            menuInterface = new List<string>() { GetTraductor("Create"), GetTraductor("Launch"), GetTraductor("Edit"), GetTraductor("Language"), GetTraductor("Exit") };
             
         }
     }

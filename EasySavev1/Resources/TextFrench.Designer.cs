@@ -81,18 +81,18 @@ namespace EasySaveConsole.Resources {
         /// <summary>
         ///   Recherche une chaîne localisée semblable à Créer.
         /// </summary>
-        internal static string create {
+        internal static string Create {
             get {
-                return ResourceManager.GetString("create", resourceCulture);
+                return ResourceManager.GetString("Create", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Recherche une chaîne localisée semblable à Modifier.
         /// </summary>
-        internal static string edit {
+        internal static string Edit {
             get {
-                return ResourceManager.GetString("edit", resourceCulture);
+                return ResourceManager.GetString("Edit", resourceCulture);
             }
         }
         
@@ -124,20 +124,29 @@ namespace EasySaveConsole.Resources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Quitter.
+        /// </summary>
+        internal static string Exit {
+            get {
+                return ResourceManager.GetString("Exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Langue.
         /// </summary>
-        internal static string language {
+        internal static string Language {
             get {
-                return ResourceManager.GetString("language", resourceCulture);
+                return ResourceManager.GetString("Language", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Recherche une chaîne localisée semblable à Lancer.
         /// </summary>
-        internal static string launch {
+        internal static string Launch {
             get {
-                return ResourceManager.GetString("launch", resourceCulture);
+                return ResourceManager.GetString("Launch", resourceCulture);
             }
         }
         

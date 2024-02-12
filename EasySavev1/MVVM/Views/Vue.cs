@@ -19,24 +19,34 @@ namespace EasySaveConsole.MVVM.Views
     class Vue
     {
         //Gestionnaire de ressources qui facilite l'accès aux ressources
-        private static ResourceManager rm = new ResourceManager("EasySave.Resources.Text", Assembly.GetExecutingAssembly());
+        private static ResourceManager rm = new ResourceManager("EasySaveConsole.Resources.TextEnglish", Assembly.GetExecutingAssembly());
 
         public Vue() { }
 
         private void Menu(List<string> menu)
         {
-            foreach (string menu1 in menu)   // Show options
+            foreach (string menuItem in menu)   // Afficher les options
             {
-                Console.WriteLine((menu.IndexOf(menu1) + 1) + " - " + menu1);
+                Console.WriteLine((menu.IndexOf(menuItem) + 1) + " - " + menuItem);
             }
         }
 
-        internal int SelectMenu(List<string> menu)  // Show different options available and make them selectable
+        internal int SelectMenu(List<string> menu)
         {
             Console.Clear();
-    
-            Menu(menu);
 
+            Console.WriteLine(" ### ###    ##      ## ##   ##  ##    ## ##     ##     ### ###  ### ###");
+            Console.WriteLine("  ##  ##     ##    ##   ##  ##  ##   ##   ##     ##     ##  ##   ##  ##");
+            Console.WriteLine("  ##       ## ##   ####     ##  ##   ####      ## ##    ##  ##   ##    ");
+            Console.WriteLine("  ## ##    ##  ##   #####    ## ##    #####    ##  ##   ##  ##   ## ## ");
+            Console.WriteLine("  ##       ## ###      ###    ##         ###   ## ###   ### ##   ##    ");
+            Console.WriteLine("  ##  ##   ##  ##  ##   ##    ##     ##   ##   ##  ##    ###     ##  ##");
+            Console.WriteLine(" ### ###  ###  ##   ## ##     ##      ## ##   ###  ##     ##    ### ###");
+
+            Console.WriteLine("\n\n");
+
+            // Afficher le menu en utilisant la méthode Menu fournie
+            Menu(menu);
 
             bool validated = false;
             int res = 0;
@@ -50,6 +60,7 @@ namespace EasySaveConsole.MVVM.Views
                 catch
                 {
                     Console.Clear();
+                    // Réafficher le menu en cas d'erreur de saisie
                     Menu(menu);
                 }
             }
