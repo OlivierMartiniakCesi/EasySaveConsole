@@ -11,13 +11,13 @@ namespace EasySaveConsole.MVVM.Models
         private string Name { get; set; }
         private string SourceDirectory { get; set; }
         private string TargetDirectory { get; set; }
-        public string Type { get; set; }
+        private string Type { get; set; }
         
         //Constructor
         public Backup() { }
 
         //Constructor with parameter
-        public Backup(string Name, string PathSource, string PathTarget, string type) 
+        public Backup(string Name, string PathSource, string PathTarget, string type)
         {
             this.Name = Name;
             this.SourceDirectory = PathSource;
@@ -35,9 +35,18 @@ namespace EasySaveConsole.MVVM.Models
             return Name;
         }
 
+        public void setName(string Name)
+        {
+            this.Name = Name;
+        }
+
         public string getSourceDirectory()
         {
             return SourceDirectory;
+        }
+        public void setSourceDirectory(string SourceDirectory)
+        {
+            this.SourceDirectory = SourceDirectory;
         }
 
         public string getTargetDirectory()
@@ -45,9 +54,19 @@ namespace EasySaveConsole.MVVM.Models
             return TargetDirectory;
         }
 
+        public void setTargetDirectory(string TargetDirectory)
+        {
+            this.TargetDirectory = TargetDirectory;
+        }
+
         public string getType()
         {
             return Type;
+        }
+
+        public void setType(string Type)
+        {
+            this.Type = Type;
         }
 
         public string getAllInfo()
@@ -60,5 +79,18 @@ namespace EasySaveConsole.MVVM.Models
         {
             return new Backup(Name, PathSource, PathTarget, type);
         }
+
+        public string SaveJson()
+        {
+            string FileStock = "{" +
+             Environment.NewLine + "\t\"Name\":\"" + Name + "\"," +
+             Environment.NewLine + "\t\"Source\":\"" + SourceDirectory + "\"," +
+             Environment.NewLine + "\t\"Target\":\"" + TargetDirectory + "\"," +
+             Environment.NewLine + "\t\"Type\":\"" + Type + "\"" +
+             Environment.NewLine + "}";
+
+            return FileStock.Replace("\\", "\\\\");
+        }
+
     }
 }

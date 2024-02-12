@@ -141,6 +141,9 @@
   <data name="Exit" xml:space="preserve">
     <value>Quitter</value>
   </data>
+  <data name="InvalidTypeBackup" xml:space="preserve">
+    <value>Type erreur</value>
+  </data>
   <data name="Language" xml:space="preserve">
     <value>Langue</value>
   </data>

@@ -133,6 +133,15 @@ namespace EasySaveConsole.Resources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Error type.
+        /// </summary>
+        internal static string InvalidTypeBackup {
+            get {
+                return ResourceManager.GetString("InvalidTypeBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Language.
         /// </summary>
         internal static string Language {
