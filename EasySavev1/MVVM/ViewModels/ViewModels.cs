@@ -288,7 +288,7 @@ namespace EasySaveConsole.MVVM.ViewModels
                         }
                         break;
                     case 2:
-                        LaunchSlotBackup(_backup);
+                        LaunchSlotBackup(BackupListInfo);
                         foreach (var backupSetting in BackupListInfo)
                         {
                             SetSaveStateBackup(backupSetting.getName(), backupSetting.getSourceDirectory(), backupSetting.getTargetDirectory());
@@ -305,7 +305,7 @@ namespace EasySaveConsole.MVVM.ViewModels
                         break;
                     case 5:
                         Console.WriteLine(GetTraductor("AppClose"));
-                        Environment.Exit(1);
+                        Environment.Exit(0);
                         break;
                     default:
                         Console.WriteLine(GetTraductor("NoValid"));
@@ -325,6 +325,7 @@ namespace EasySaveConsole.MVVM.ViewModels
 
             Console.WriteLine(GetTraductor("PathDst"));
             string destinationPath = Console.ReadLine();
+            destinationPath = destinationPath + @"\" + name;
 
             string type; // Variable pour stocker le type
 
@@ -343,19 +344,43 @@ namespace EasySaveConsole.MVVM.ViewModels
             BackupListInfo.Add(_backup.CreateBackup(name, sourcePath,destinationPath,type));
         }
 
-        public static void LaunchSlotBackup(Backup backup)
+        public static void LaunchSlotBackup(List<Backup> backupList)
         {
-            foreach (Backup backup1 in BackupListInfo)
+            Console.WriteLine("Liste des sauvegardes disponibles :");
+            foreach (Backup backup in backupList)
             {
+                Console.WriteLine(backup.getName());
+            }
 
-                if (backup.getType() == "Complet")
+            Console.Write("Entrez le nom de la sauvegarde à lancer : ");
+            string Name = Console.ReadLine();
+
+            Backup selectedBackup = backupList.FirstOrDefault(backup => backup.getName() == Name);
+
+            //Create directory if it doesn't already exist
+            if (!Directory.Exists(selectedBackup.getTargetDirectory()))
+            {
+                foreach (string AllDirectory in Directory.GetDirectories(selectedBackup.getSourceDirectory(), "*", SearchOption.AllDirectories))
                 {
-                    TypeComplet(backup.getSourceDirectory(), backup.getTargetDirectory());
+                    Directory.CreateDirectory(AllDirectory.Replace(selectedBackup.getSourceDirectory(), selectedBackup.getTargetDirectory()));
+                }
+                Log.Information("Creation of directory ", selectedBackup.getTargetDirectory());
+            }
+
+            if (selectedBackup != null)
+            {
+                if (selectedBackup.getType() == "complet" || selectedBackup.getType() == "Complet")
+                {
+                    TypeComplet(selectedBackup.getSourceDirectory(), selectedBackup.getTargetDirectory());
                 }
                 else
                 {
-                    TypeDifferential(backup1.getSourceDirectory(), backup1.getTargetDirectory());
+                    TypeDifferential(selectedBackup.getSourceDirectory(), selectedBackup.getTargetDirectory());
                 }
+            }
+            else
+            {
+                Console.WriteLine("Sauvegarde non trouvée.");
             }
         }
         public static void TypeComplet(string PathSource, string PathTarget)
