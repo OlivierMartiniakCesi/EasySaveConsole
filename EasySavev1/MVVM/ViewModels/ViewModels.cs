@@ -32,7 +32,6 @@ namespace EasySaveConsole.MVVM.ViewModels
         private static List<Backup> BackupListInfo = new List<Backup>();
         private static List<StateLog> stateLogList = new List<StateLog>();
         //private static int totalFilesDone = 0;
-        const int MaxBackupSettings = 5;
         private static List<string> menuInterface = new List<string>() { GetTraductor("Create"), GetTraductor("Launch"), GetTraductor("Edit"), GetTraductor("Language"), GetTraductor("Exit") };
         private static string Choice{get; set;}
 
@@ -280,14 +279,9 @@ namespace EasySaveConsole.MVVM.ViewModels
                 switch (_vue.SelectMenu(menuInterface))
                 {
                     case 1:
-                        if (BackupListInfo.Count < MaxBackupSettings)
                         {
                             CreateSlotBackup();
                             Console.Clear();
-                        }
-                        else
-                        {
-                            Console.WriteLine(GetTraductor("MaxBackup"));
                         }
                         break;
                     case 2:
