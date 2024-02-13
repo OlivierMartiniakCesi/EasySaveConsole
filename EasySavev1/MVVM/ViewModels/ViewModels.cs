@@ -267,7 +267,13 @@ namespace EasySaveConsole.MVVM.ViewModels
         
         public static int mainInterface()
         {
-            logs.Logsjson();
+            string format_logs;
+            do
+            {
+                Console.WriteLine("Before lauch the application, in which format would you have your logs ? (json / xml)");
+                format_logs = Console.ReadLine();
+            } while (format_logs != "json" && format_logs != "xml");
+            logs.Logsjson(format_logs);
             Log.Information("Application started successfully");
             if (!Directory.Exists(directoryPath))
             {
