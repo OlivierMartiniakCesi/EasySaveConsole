@@ -28,7 +28,7 @@ namespace EasySaveConsole.MVVM.ViewModels
         private static Backup _backup = new Backup();
         private static dailylogs logs = new dailylogs();
         static string directoryPath = @"C:\JSON";
-        static string filePath = Path.Combine(directoryPath, "confbackup.json");
+        static string filePath = @"C:\JSON\confbackup.json";
         private static List<Backup> BackupListInfo = new List<Backup>();
         private static List<StateLog> stateLogList = new List<StateLog>();
         //private static int totalFilesDone = 0;
@@ -53,38 +53,41 @@ namespace EasySaveConsole.MVVM.ViewModels
 
         public static void GetJSON()
         {
-            string fileName = filePath;
-            var fileString = File.ReadAllText(fileName);
-            var array = JArray.Parse(fileString);
-
-            if (array.Count() > 0)
+            if (File.Exists(filePath))
             {
-                foreach (var item in array)
+                string fileName = filePath;
+                var fileString = File.ReadAllText(fileName);
+                var array = JArray.Parse(fileString);
+
+                if (array.Count() > 0)
                 {
-                    // Vérifier si toutes les clés nécessaires existent et ne sont pas vides
-                    if (item["Name"] != null && !string.IsNullOrEmpty(item["Name"].ToString()) &&
-                        item["Source"] != null && !string.IsNullOrEmpty(item["Source"].ToString()) &&
-                        item["Target"] != null && !string.IsNullOrEmpty(item["Target"].ToString()) &&
-                        item["Type"] != null && !string.IsNullOrEmpty(item["Type"].ToString()))
+                    foreach (var item in array)
                     {
-                        Backup backup = new Backup(
-                            item["Name"].ToString(),
-                            item["Source"].ToString(),
-                            item["Target"].ToString(),
-                            item["Type"].ToString()
-                        );
-                        try
+                        // Vérifier si toutes les clés nécessaires existent et ne sont pas vides
+                        if (item["Name"] != null && !string.IsNullOrEmpty(item["Name"].ToString()) &&
+                            item["Source"] != null && !string.IsNullOrEmpty(item["Source"].ToString()) &&
+                            item["Target"] != null && !string.IsNullOrEmpty(item["Target"].ToString()) &&
+                            item["Type"] != null && !string.IsNullOrEmpty(item["Type"].ToString()))
                         {
-                            BackupListInfo.Add(backup);   // CorrectElements
+                            Backup backup = new Backup(
+                                item["Name"].ToString(),
+                                item["Source"].ToString(),
+                                item["Target"].ToString(),
+                                item["Type"].ToString()
+                            );
+                            try
+                            {
+                                BackupListInfo.Add(backup);   // CorrectElements
+                            }
+                            catch
+                            {
+                                Log.Information($"Erreur lors de l'ajout de données.");
+                            }
                         }
-                        catch
+                        else
                         {
-                            Console.WriteLine($"Erreur lors de l'ajout de données.");
+                            Log.Information($"Élément de données invalide trouvé.");
                         }
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Élément de données invalide trouvé.");
                     }
                 }
             }
@@ -108,7 +111,7 @@ namespace EasySaveConsole.MVVM.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Une erreur est survenue lors de l'enregistrement des paramètres de sauvegarde : " + ex.Message);
+                    Log.Information("Une erreur est survenue lors de l'enregistrement des paramètres de sauvegarde : " + ex.Message);
                 }
             }
             else
@@ -162,11 +165,11 @@ namespace EasySaveConsole.MVVM.ViewModels
                 if (!string.IsNullOrEmpty(typeInput))
                     settingToModify.setType(typeInput);
 
-                Console.WriteLine("Sauvegarde modifiée avec succès.");
+                Log.Information("Sauvegarde modifiée avec succès.");
             }
             else
             {
-                Console.WriteLine("Aucune sauvegarde trouvée avec ce nom.");
+                Log.Information("Aucune sauvegarde trouvée avec ce nom.");
             }
         }
 
@@ -180,17 +183,17 @@ namespace EasySaveConsole.MVVM.ViewModels
             if (settingToDelete != null)
             {
                 backupSettings.Remove(settingToDelete);
-                Console.WriteLine("Backup deleted with success.");
+                Log.Information("Backup deleted with success.");
             }
             else
             {
-                Console.WriteLine("None backup with this name.");
+                Log.Information("None backup with this name.");
             }
         }   
 
         public static void GetStateBackup()
         {
-                string json = File.ReadAllText(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + @"\Logs\stateLog.json");    // Read StateLog file
+                string json = File.ReadAllText(@"C:\Temp\stateLog.json");    // Read StateLog file
                 stateLogList = JsonConvert.DeserializeObject<List<StateLog>>(json == "" ? "[]" : json);
         }
 
@@ -198,12 +201,12 @@ namespace EasySaveConsole.MVVM.ViewModels
         {
             StateLog stateLog = new StateLog(name, fileSource, fileTarget, fileSize, state, totalFiles, nbFilesToGet);
 
-            if (!Directory.Exists(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + @"\Logs\stateLog.json"))
+            if (!Directory.Exists(@"C:\Temp"))
             {
-                Directory.CreateDirectory(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + @"\Logs\stateLog.json");
+                Directory.CreateDirectory(@"C:\Temp");
             }
 
-        string stateLogListPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + @"\Logs\stateLog.json";
+        string stateLogListPath = @"C:\Temp\stateLog.json";
 
             List<KeyValuePair<string, StateLog>> stateLogList;
 
@@ -238,7 +241,7 @@ namespace EasySaveConsole.MVVM.ViewModels
 
             // Write the entire dictionary to the file
             string jsonToWrite = JsonConvert.SerializeObject(stateLogList, Formatting.Indented);
-            //File.WriteAllText(stateLogListPath, jsonToWrite);
+            File.WriteAllText(stateLogListPath, jsonToWrite);
         }
     
 
@@ -380,7 +383,7 @@ namespace EasySaveConsole.MVVM.ViewModels
             }
             else
             {
-                Console.WriteLine("Sauvegarde non trouvée.");
+                Log.Information("Sauvegarde non trouvée.");
             }
         }
         public static void TypeComplet(string PathSource, string PathTarget)
@@ -394,6 +397,7 @@ namespace EasySaveConsole.MVVM.ViewModels
             //Copy Files
             foreach (string AllFiles in Directory.GetFiles(PathSource, "*.*", SearchOption.AllDirectories))
             {
+                string targetFilePath = Path.Combine(PathTarget, AllFiles.Substring(PathSource.Length + 1));
                 File.Copy(AllFiles, AllFiles.Replace(PathSource, PathTarget), true);
             }
         }
@@ -466,22 +470,22 @@ namespace EasySaveConsole.MVVM.ViewModels
                     {
                         // Copier le fichier du premier emplacement vers le deuxième emplacement avec la progression
                         CopyFileWithProgress(filePath1, filePath2);
-                        Console.WriteLine($"Le fichier '{fileName}' dans {PathSource} a été copié vers {PathTarget} car il a été modifié plus récemment.");
+                        Log.Information($"Le fichier '{fileName}' dans {PathSource} a été copié vers {PathTarget} car il a été modifié plus récemment.");
                     }
                     else if (lastModified1 < lastModified2)
                     {
-                        Console.WriteLine($"Le fichier '{fileName}' dans {PathTarget} a été modifié après le fichier dans {PathSource}.");
+                        Log.Information($"Le fichier '{fileName}' dans {PathTarget} a été modifié après le fichier dans {PathSource}.");
                     }
                     else
                     {
-                        Console.WriteLine($"Les fichiers '{fileName}' ont été modifiés à la même date.");
+                        Log.Information($"Les fichiers '{fileName}' ont été modifiés à la même date.");
                     }
                 }
                 else
                 {
                     // Copier le fichier du premier emplacement vers le deuxième emplacement avec la progression
                     CopyFileWithProgress(filePath1, filePath2);
-                    Console.WriteLine($"Le fichier '{fileName}' a été copié de {PathSource} vers {PathTarget} car il n'existait pas dans {PathTarget}.");
+                    Log.Information($"Le fichier '{fileName}' a été copié de {PathSource} vers {PathTarget} car il n'existait pas dans {PathTarget}.");
                 }
             }
         }
