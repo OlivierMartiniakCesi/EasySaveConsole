@@ -1,12 +1,13 @@
 ﻿using System;
+using EasySaveConsole.MVVM.ViewModels;
 
 namespace EasySavev1
 {
     class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
-            Console.WriteLine("")
+            return ViewModels.mainInterface();
         }
     }
 }
