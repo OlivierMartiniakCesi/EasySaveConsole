@@ -386,15 +386,8 @@ namespace EasySaveConsole.MVVM.ViewModels
                 switch (_vue.SelectMenu(menuInterface))
                 {
                     case 1:
-                        if (BackupListInfo.Count < MaxBackupSettings)
-                        {
                             CreateSlotBackup();
                             Console.Clear();
-                        }
-                        else
-                        {
-                            Console.WriteLine(GetTraductor("MaxBackup"));
-                        }
                         break;
                     case 2:
                         LaunchSlotBackup(BackupListInfo);
