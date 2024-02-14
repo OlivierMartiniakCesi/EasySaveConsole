@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EasySaveConsole.MVVM.Models
 {
-    class StateLog
+    public class StateLog
     {
         public string name;
         public string fileSource;
@@ -15,17 +15,18 @@ namespace EasySaveConsole.MVVM.Models
         public string state;
         public long totalFiles;
         public long nbFilestoGet;
+        public int crypting;
         public int progression;
         public string Time;
 
-        public StateLog(string name, string fileSource, string fileTarget, long fileSize, string state, long totalFiles, long totalFilesDone)
+        public StateLog(string name, string fileSource, string fileTarget, long fileSize, string state, long totalFiles, long totalFilesDone, int crypting)
         {
             this.name = name;
             this.fileSource = fileSource;
             this.fileTarget = fileTarget;
             this.totalFiles = totalFiles;
             this.nbFilestoGet = totalFiles - totalFilesDone;
-            if (this.nbFilestoGet == 0) 
+            if (this.nbFilestoGet == 0)
             {
                 this.state = "Off";
             }
@@ -42,6 +43,7 @@ namespace EasySaveConsole.MVVM.Models
             {
                 this.progression = Convert.ToInt32(totalFilesDone / totalFiles) * 100;
             }
+            this.crypting = crypting;
             this.Time = DateTime.Now.ToString();
         }
     }

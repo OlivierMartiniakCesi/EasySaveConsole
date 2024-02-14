@@ -12,7 +12,7 @@ namespace EasySaveConsole.MVVM.Models
         private string SourceDirectory { get; set; }
         private string TargetDirectory { get; set; }
         private string Type { get; set; }
-        
+
         //Constructor
         public Backup() { }
 
@@ -25,7 +25,7 @@ namespace EasySaveConsole.MVVM.Models
             this.Type = type;
         }
 
-        ~Backup() 
+        ~Backup()
         {
             System.Diagnostics.Trace.WriteLine("finalizer is called.");
         }

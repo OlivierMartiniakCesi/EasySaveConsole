@@ -14,8 +14,8 @@ using System.Resources;
 using System.Reflection;
 using System.Globalization;
 using EasySaveConsole.Resources;
-
-
+using System.Xml.Serialization;
+using System.Xml;
 
 namespace EasySaveConsole.MVVM.ViewModels
 {
@@ -24,16 +24,18 @@ namespace EasySaveConsole.MVVM.ViewModels
 
         //Gestionnaire de ressources qui facilite l'accès aux ressources
         private static ResourceManager rm = new ResourceManager("EasySaveConsole.Resources.TextEnglish", Assembly.GetExecutingAssembly());
-
+        private static XmlDocument doc;
         private static Backup _backup = new Backup();
         private static dailylogs logs = new dailylogs();
+        static string format_logs;
         static string directoryPath = @"C:\JSON";
         static string filePath = @"C:\JSON\confbackup.json";
         private static List<Backup> BackupListInfo = new List<Backup>();
         private static List<StateLog> stateLogList = new List<StateLog>();
         //private static int totalFilesDone = 0;
+        const int MaxBackupSettings = 5;
         private static List<string> menuInterface = new List<string>() { GetTraductor("Create"), GetTraductor("Launch"), GetTraductor("Edit"), GetTraductor("Language"), GetTraductor("Exit") };
-        private static string Choice{get; set;}
+        private static string Choice { get; set; }
 
         private static Vue _vue = new Vue();
 
@@ -148,21 +150,26 @@ namespace EasySaveConsole.MVVM.ViewModels
                 string newName = Console.ReadLine();
                 if (!string.IsNullOrEmpty(newName))
                     settingToModify.setName(newName);
+                Log.Information("modification du nom " + nameToModify + " pour " + newName);
+
 
                 Console.WriteLine("Entrez le nouveau chemin source (ou appuyez sur Entrée pour garder le même) :");
                 string newSourcePath = Console.ReadLine();
                 if (!string.IsNullOrEmpty(newSourcePath))
                     settingToModify.setSourceDirectory(newSourcePath);
+                Log.Information("modification du chemin source " + settingToModify.getSourceDirectory() + " pour " + newSourcePath);
 
                 Console.WriteLine("Entrez le nouveau chemin de destination (ou appuyez sur Entrée pour garder le même) :");
                 string newDestinationPath = Console.ReadLine();
                 if (!string.IsNullOrEmpty(newDestinationPath))
                     settingToModify.setTargetDirectory(newDestinationPath);
+                Log.Information("modification du chemin destination " + settingToModify.getTargetDirectory() + " pour " + newDestinationPath);
 
                 Console.WriteLine("Entrez le nouveau type de sauvegarde (Complet ou Diff) (ou appuyez sur Entrée pour garder le même) :");
                 string typeInput = Console.ReadLine();
                 if (!string.IsNullOrEmpty(typeInput))
                     settingToModify.setType(typeInput);
+                Log.Information("modification du Type de Backup " + settingToModify.getType() + " pour " + typeInput);
 
                 Log.Information("Sauvegarde modifiée avec succès.");
             }
@@ -188,34 +195,52 @@ namespace EasySaveConsole.MVVM.ViewModels
             {
                 Log.Information("None backup with this name.");
             }
-        }   
+        }
 
         public static void GetStateBackup()
         {
-                string json = File.ReadAllText(@"C:\Temp\stateLog.json");    // Read StateLog file
-                stateLogList = JsonConvert.DeserializeObject<List<StateLog>>(json == "" ? "[]" : json);
+            string json = File.ReadAllText(@"C:\Temp\stateLog.json");    // Read StateLog file
+            stateLogList = JsonConvert.DeserializeObject<List<StateLog>>(json == "" ? "[]" : json);
         }
 
-        public static void StateLogs(string name, string fileSource, string fileTarget, long fileSize, string state, int totalFiles, int nbFilesToGet)
+        public static void StateLogs(string name, string fileSource, string fileTarget, long fileSize, string state, int totalFiles, int nbFilesToGet, int crypting, string format_logs)
         {
-            StateLog stateLog = new StateLog(name, fileSource, fileTarget, fileSize, state, totalFiles, nbFilesToGet);
+            StateLog stateLog = new StateLog(name, fileSource, fileTarget, fileSize, state, totalFiles, nbFilesToGet, crypting);
+            string stateLogListPath;
 
             if (!Directory.Exists(@"C:\Temp"))
             {
                 Directory.CreateDirectory(@"C:\Temp");
             }
 
-        string stateLogListPath = @"C:\Temp\stateLog.json";
+            if (format_logs.ToLower() == "json")
+            {
+                stateLogListPath = @"C:\Temp\stateLog.json";
+            }
+            else
+            {
+                stateLogListPath = @"C:\Temp\stateLog.xml";
+            }
 
-            List<KeyValuePair<string, StateLog>> stateLogList;
+            List<KeyValuePair<string, StateLog>> stateLogList = new List<KeyValuePair<string, StateLog>>();
 
             // Check if the file exists and has content
             if (File.Exists(stateLogListPath))
             {
-                string json = File.ReadAllText(stateLogListPath);
+                if (format_logs.ToLower() == "json")
+                {
+                    string json = File.ReadAllText(stateLogListPath);
+                    stateLogList = JsonConvert.DeserializeObject<List<KeyValuePair<string, StateLog>>>(json) ?? new List<KeyValuePair<string, StateLog>>();
+                }
+                else
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(List<KeyValuePair<string, StateLog>>));
 
-                stateLogList = JsonConvert.DeserializeObject<List<KeyValuePair<string, StateLog>>>(json);
-
+                    using (FileStream fs = new FileStream(stateLogListPath, FileMode.Open))
+                    {
+                        stateLogList = (List<KeyValuePair<string, StateLog>>)serializer.Deserialize(fs) ?? new List<KeyValuePair<string, StateLog>>();
+                    }
+                }
                 if (stateLogList == null)
                 {
                     stateLogList = new List<KeyValuePair<string, StateLog>>();
@@ -226,7 +251,7 @@ namespace EasySaveConsole.MVVM.ViewModels
                 stateLogList = new List<KeyValuePair<string, StateLog>>();
             }
 
-            // Replace or add the entry for the given name
+            // Add or update the entry in the stateLogList
             var existingEntry = stateLogList.FirstOrDefault(entry => entry.Key == name);
 
             if (existingEntry.Equals(default(KeyValuePair<string, StateLog>)))
@@ -239,10 +264,87 @@ namespace EasySaveConsole.MVVM.ViewModels
             }
 
             // Write the entire dictionary to the file
-            string jsonToWrite = JsonConvert.SerializeObject(stateLogList, Formatting.Indented);
-            File.WriteAllText(stateLogListPath, jsonToWrite);
+            if (format_logs.ToLower() == "json")
+            {
+                string jsonToWrite = JsonConvert.SerializeObject(stateLogList, Newtonsoft.Json.Formatting.Indented);
+                File.WriteAllText(stateLogListPath, jsonToWrite);
+            }
+            else
+            {
+                stateLogListPath = @"C:\Temp\stateLog.xml";
+
+                XmlDocument doc = new XmlDocument();
+
+                // Check if the file exists and has content
+                if (File.Exists(stateLogListPath))
+                {
+                    doc.Load(stateLogListPath);
+
+                    // Find existing entry
+                    XmlElement node = (XmlElement)doc.SelectSingleNode($"/ArrayOfKeyValuePairOfStringStateLog/KeyValuePairOfStringStateLog[Name='{name}']");
+
+                    if (node != null)
+                    {
+                        // Update existing node
+                        node.SelectSingleNode("Name").InnerText = name;
+                        node.SelectSingleNode("FileSource").InnerText = fileSource;
+                        node.SelectSingleNode("FileTarget").InnerText = fileTarget;
+                        node.SelectSingleNode("FileSize").InnerText = fileSize.ToString();
+                        node.SelectSingleNode("TotalFiles").InnerText = totalFiles.ToString();
+                        node.SelectSingleNode("NbFilesToGet").InnerText = nbFilesToGet.ToString();
+                        node.SelectSingleNode("State").InnerText = state;
+                        node.SelectSingleNode("Crypting").InnerText = crypting.ToString();
+                    }
+                    else
+                    {
+                        // Create new entry
+                        XmlElement log = doc.CreateElement("KeyValuePairOfStringStateLog");
+
+                        XmlElement nameXML = doc.CreateElement("Name");
+                        XmlElement fileSourceXML = doc.CreateElement("FileSource");
+                        XmlElement fileTargetXML = doc.CreateElement("FileTarget");
+                        XmlElement fileSizeXML = doc.CreateElement("FileSize");
+                        XmlElement totalFilesXML = doc.CreateElement("TotalFiles");
+                        XmlElement nbFilesToGetXML = doc.CreateElement("NbFilesToGet");
+                        XmlElement stateXML = doc.CreateElement("State");
+                        XmlElement cryptingXML = doc.CreateElement("Crypting");
+
+                        nameXML.InnerText = name;
+                        fileSourceXML.InnerText = fileSource;
+                        fileTargetXML.InnerText = fileTarget;
+                        fileSizeXML.InnerText = fileSize.ToString();
+                        totalFilesXML.InnerText = totalFiles.ToString();
+                        nbFilesToGetXML.InnerText = nbFilesToGet.ToString();
+                        stateXML.InnerText = state;
+                        cryptingXML.InnerText = crypting.ToString();
+
+                        log.AppendChild(nameXML);
+                        log.AppendChild(fileSourceXML);
+                        log.AppendChild(fileTargetXML);
+                        log.AppendChild(fileSizeXML);
+                        log.AppendChild(totalFilesXML);
+                        log.AppendChild(nbFilesToGetXML);
+                        log.AppendChild(stateXML);
+                        log.AppendChild(cryptingXML);
+
+                        doc.DocumentElement?.AppendChild(log);
+                    }
+
+                    doc.Save(stateLogListPath);
+                }
+                else
+                {
+                    // File doesn't exist, create new XML file
+                    XmlSerializer serializer = new XmlSerializer(typeof(List<KeyValuePair<string, StateLog>>));
+                    using (FileStream fs = new FileStream(stateLogListPath, FileMode.Create))
+                    {
+                        serializer.Serialize(fs, new List<KeyValuePair<string, StateLog>>());
+                    }
+                }
+            }
         }
-    
+
+
 
         public static void SetSaveStateBackup(string backupName, string src, string dest)
         {
@@ -260,13 +362,18 @@ namespace EasySaveConsole.MVVM.ViewModels
                 string fileSrc = Path.Combine(file.DirectoryName, file.Name);
                 string fileDest = Path.Combine(dest, file.Name);
                 int totalFiles = Directory.GetFiles(src, "*", SearchOption.AllDirectories).Length;
-                StateLogs(backupName, fileSrc, fileDest, file.Length, "On", totalFiles, totalFilesDone);
+                StateLogs(backupName, fileSrc, fileDest, file.Length, "On", totalFiles, totalFilesDone, 0, format_logs);
             }
         }
-        
+
         public static int mainInterface()
         {
-            logs.Logsjson();
+            do
+            {
+                Console.WriteLine("Before lauch the application, in which format would you have your logs ? (json / xml)");
+                format_logs = Console.ReadLine();
+            } while (format_logs.ToLower() != "json" && format_logs.ToLower() != "xml");
+            logs.Logsjson(format_logs);
             Log.Information("Application started successfully");
             if (!Directory.Exists(directoryPath))
             {
@@ -279,9 +386,14 @@ namespace EasySaveConsole.MVVM.ViewModels
                 switch (_vue.SelectMenu(menuInterface))
                 {
                     case 1:
+                        if (BackupListInfo.Count < MaxBackupSettings)
                         {
                             CreateSlotBackup();
                             Console.Clear();
+                        }
+                        else
+                        {
+                            Console.WriteLine(GetTraductor("MaxBackup"));
                         }
                         break;
                     case 2:
@@ -338,7 +450,7 @@ namespace EasySaveConsole.MVVM.ViewModels
             } while (type != "complet" && type != "diff");
 
 
-            BackupListInfo.Add(_backup.CreateBackup(name, sourcePath,destinationPath,type));
+            BackupListInfo.Add(_backup.CreateBackup(name, sourcePath, destinationPath, type));
         }
 
         public static void LaunchSlotBackup(List<Backup> backupList)
@@ -497,9 +609,7 @@ namespace EasySaveConsole.MVVM.ViewModels
                 Console.WriteLine("Error");
 
             menuInterface = new List<string>() { GetTraductor("Create"), GetTraductor("Launch"), GetTraductor("Edit"), GetTraductor("Language"), GetTraductor("Exit") };
-            
+
         }
     }
 }
-
-
