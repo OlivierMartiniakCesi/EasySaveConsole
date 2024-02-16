@@ -16,6 +16,7 @@ using System.Globalization;
 using EasySaveConsole.Resources;
 using System.Xml.Serialization;
 using System.Xml;
+using System.Threading;
 
 namespace EasySaveConsole.MVVM.ViewModels
 {
@@ -450,57 +451,112 @@ namespace EasySaveConsole.MVVM.ViewModels
 
         public static void LaunchSlotBackup(List<Backup> backupList)
         {
-            Console.WriteLine("Liste des sauvegardes disponibles :");
+            Console.WriteLine("List of available backups:");
             foreach (Backup backup in backupList)
             {
                 Console.WriteLine(backup.getName());
             }
 
-            Console.Write("Entrez le nom de la sauvegarde à lancer : ");
-            string Name = Console.ReadLine();
+            Console.Write("Enter the names of the backups to launch (separated by commas): ");
+            string inputNames = Console.ReadLine();
 
-            Backup selectedBackup = backupList.FirstOrDefault(backup => backup.getName() == Name);
+            // Split the user-entered names
+            string[] selectedNames = inputNames.Split(',');
 
-            //Create directory if it doesn't already exist
-            if (!Directory.Exists(selectedBackup.getTargetDirectory()))
+            // Use Parallel.ForEach to process each backup in a separate thread
+            Parallel.ForEach(backupList, backup =>
             {
-                foreach (string AllDirectory in Directory.GetDirectories(selectedBackup.getSourceDirectory(), "*", SearchOption.AllDirectories))
+                if (selectedNames.Contains(backup.getName()))
                 {
-                    Directory.CreateDirectory(AllDirectory.Replace(selectedBackup.getSourceDirectory(), selectedBackup.getTargetDirectory()));
-                }
-                Log.Information("Creation of directory ", selectedBackup.getTargetDirectory());
-            }
+                    Console.WriteLine($"Launching backup: {backup.getName()}");
 
-            if (selectedBackup != null)
-            {
-                if (selectedBackup.getType() == "complet" || selectedBackup.getType() == "Complet")
-                {
-                    TypeComplet(selectedBackup.getSourceDirectory(), selectedBackup.getTargetDirectory());
+                    // Use a separate thread for each backup
+                    Thread backupThread = new Thread(() =>
+                    {
+                        // Create directory if it doesn't already exist
+                        if (!Directory.Exists(backup.getTargetDirectory()))
+                        {
+                            // Use Semaphore to control access to the shared resource
+                            SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+
+                            Parallel.ForEach(Directory.GetDirectories(backup.getSourceDirectory(), "*", SearchOption.AllDirectories),
+                                new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
+                                (AllDirectory) =>
+                                {
+                                    semaphore.Wait();
+                                    try
+                                    {
+                                        Directory.CreateDirectory(AllDirectory.Replace(backup.getSourceDirectory(), backup.getTargetDirectory()));
+                                        Log.Information("Created directory ", AllDirectory.Replace(backup.getSourceDirectory(), backup.getTargetDirectory()));
+                                    }
+                                    finally
+                                    {
+                                        semaphore.Release();
+                                    }
+                                });
+
+                            semaphore.Dispose();
+                        }
+
+                        if (backup.getType().Equals("complet", StringComparison.OrdinalIgnoreCase))
+                        {
+                            TypeComplet(backup.getSourceDirectory(), backup.getTargetDirectory());
+                        }
+                        else
+                        {
+                            TypeDifferential(backup.getSourceDirectory(), backup.getTargetDirectory());
+                        }
+                    });
+
+                    backupThread.Start();
+                    backupThread.Join(); // Wait for the thread to complete before moving to the next backup
                 }
-                else
-                {
-                    TypeDifferential(selectedBackup.getSourceDirectory(), selectedBackup.getTargetDirectory());
-                }
-            }
-            else
-            {
-                Log.Information("Sauvegarde non trouvée.");
-            }
+            });
+
+            Console.WriteLine("All selected backups have been launched.");
         }
+
         public static void TypeComplet(string PathSource, string PathTarget)
         {
-            //Create All Repertories
-            foreach (string AllDirectory in Directory.GetDirectories(PathSource, "*", SearchOption.AllDirectories))
-            {
-                Directory.CreateDirectory(AllDirectory.Replace(PathSource, PathTarget));
-            }
+            // Use Semaphore to control access to the shared resource
+            SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
-            //Copy Files
-            foreach (string AllFiles in Directory.GetFiles(PathSource, "*.*", SearchOption.AllDirectories))
-            {
-                string targetFilePath = Path.Combine(PathTarget, AllFiles.Substring(PathSource.Length + 1));
-                File.Copy(AllFiles, AllFiles.Replace(PathSource, PathTarget), true);
-            }
+            // Create all directories concurrently
+            Parallel.ForEach(Directory.GetDirectories(PathSource, "*", SearchOption.AllDirectories),
+                new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
+                (directory) =>
+                {
+                    semaphore.Wait();
+                    try
+                    {
+                        Directory.CreateDirectory(directory.Replace(PathSource, PathTarget));
+                        Log.Information("Created directory "+ directory.Replace(PathSource, PathTarget));
+                    }
+                    finally
+                    {
+                        semaphore.Release();
+                    }
+                });
+
+            // Copy files concurrently
+            Parallel.ForEach(Directory.GetFiles(PathSource, "*.*", SearchOption.AllDirectories),
+                new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
+                (filePath) =>
+                {
+                    semaphore.Wait();
+                    try
+                    {
+                        string targetFilePath = Path.Combine(PathTarget, filePath.Substring(PathSource.Length + 1));
+                        File.Copy(filePath, filePath.Replace(PathSource, PathTarget), true);
+                        Log.Information("Copied file "+ filePath.Replace(PathSource, PathTarget));
+                    }
+                    finally
+                    {
+                        semaphore.Release();
+                    }
+                });
+
+            semaphore.Dispose();
         }
 
         private static void CopyFileWithProgress(string sourceFilePath, string destinationFilePath)
@@ -545,50 +601,63 @@ namespace EasySaveConsole.MVVM.ViewModels
 
         public static void TypeDifferential(string PathSource, string PathTarget)
         {
-            // Obtenir la liste des fichiers dans le premier dossier
+            // Get the list of files in the source folder
             string[] files = Directory.GetFiles(PathSource);
 
             Console.WriteLine("Copy progress: ");
 
-            // Parcourir chaque fichier dans le dossier 1
-            foreach (string filePath1 in files)
+            // Use Semaphore to control access to the shared resource
+            SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+
+            // Parallelize the loop for concurrent file operations
+            Parallel.ForEach(files, file =>
             {
-                // Obtenir le nom du fichier
-                string fileName = Path.GetFileName(filePath1);
-
-                // Chemin vers le fichier dans le dossier destination
-                string filePath2 = Path.Combine(PathTarget, fileName);
-
-                // Vérifie si le fichier existe dans le dossier 2
-                if (File.Exists(filePath2))
+                semaphore.Wait();
+                try
                 {
-                    // Obtenir la date de dernière modification des deux fichiers
-                    DateTime lastModified1 = File.GetLastWriteTime(filePath1);
-                    DateTime lastModified2 = File.GetLastWriteTime(filePath2);
+                    // Get the file name
+                    string fileName = Path.GetFileName(file);
 
-                    // Comparer les dates
-                    if (lastModified1 > lastModified2)
+                    // Path to the file in the destination folder
+                    string destinationFilePath = Path.Combine(PathTarget, fileName);
+
+                    // Check if the file exists in the target folder
+                    if (File.Exists(destinationFilePath))
                     {
-                        // Copier le fichier du premier emplacement vers le deuxième emplacement avec la progression
-                        CopyFileWithProgress(filePath1, filePath2);
-                        Log.Information($"Le fichier '{fileName}' dans {PathSource} a été copié vers {PathTarget} car il a été modifié plus récemment.");
-                    }
-                    else if (lastModified1 < lastModified2)
-                    {
-                        Log.Information($"Le fichier '{fileName}' dans {PathTarget} a été modifié après le fichier dans {PathSource}.");
+                        // Get the last modification date of both files
+                        DateTime lastModifiedSource = File.GetLastWriteTime(file);
+                        DateTime lastModifiedTarget = File.GetLastWriteTime(destinationFilePath);
+
+                        // Compare the dates
+                        if (lastModifiedSource > lastModifiedTarget)
+                        {
+                            // Copy the file from the source location to the target location with progress
+                            CopyFileWithProgress(file, destinationFilePath);
+                            Log.Information($"File '{fileName}' in {PathSource} has been copied to {PathTarget} as it was modified more recently.");
+                        }
+                        else if (lastModifiedSource < lastModifiedTarget)
+                        {
+                            Log.Information($"File '{fileName}' in {PathTarget} was modified after the file in {PathSource}.");
+                        }
+                        else
+                        {
+                            Log.Information($"Files '{fileName}' were modified on the same date.");
+                        }
                     }
                     else
                     {
-                        Log.Information($"Les fichiers '{fileName}' ont été modifiés à la même date.");
+                        // Copy the file from the source location to the target location with progress
+                        CopyFileWithProgress(file, destinationFilePath);
+                        Log.Information($"File '{fileName}' has been copied from {PathSource} to {PathTarget} as it didn't exist in {PathTarget}.");
                     }
                 }
-                else
+                finally
                 {
-                    // Copier le fichier du premier emplacement vers le deuxième emplacement avec la progression
-                    CopyFileWithProgress(filePath1, filePath2);
-                    Log.Information($"Le fichier '{fileName}' a été copié de {PathSource} vers {PathTarget} car il n'existait pas dans {PathTarget}.");
+                    semaphore.Release();
                 }
-            }
+            });
+
+            semaphore.Dispose();
         }
 
         public static void Lang()
