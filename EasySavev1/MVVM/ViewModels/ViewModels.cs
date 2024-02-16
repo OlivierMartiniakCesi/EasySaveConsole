@@ -17,6 +17,7 @@ using EasySaveConsole.Resources;
 using System.Xml.Serialization;
 using System.Xml;
 using System.Threading;
+using System.Diagnostics;
 
 namespace EasySaveConsole.MVVM.ViewModels
 {
@@ -35,6 +36,7 @@ namespace EasySaveConsole.MVVM.ViewModels
         private static List<StateLog> stateLogList = new List<StateLog>();
         //private static int totalFilesDone = 0;
         const int MaxBackupSettings = 5;
+        private static bool isBackupPaused = false;
         private static List<string> menuInterface = new List<string>() { GetTraductor("Create"), GetTraductor("Launch"), GetTraductor("Edit"), GetTraductor("Language"), GetTraductor("Exit") };
         private static string Choice{get; set;}
 
@@ -451,32 +453,38 @@ namespace EasySaveConsole.MVVM.ViewModels
 
         public static void LaunchSlotBackup(List<Backup> backupList)
         {
-            Console.WriteLine("List of available backups:");
+            Console.WriteLine("Liste des sauvegardes disponibles :");
             foreach (Backup backup in backupList)
             {
                 Console.WriteLine(backup.getName());
             }
 
-            Console.Write("Enter the names of the backups to launch (separated by commas): ");
+            Console.Write("Entrez les noms des sauvegardes à lancer (séparés par des virgules) : ");
             string inputNames = Console.ReadLine();
 
-            // Split the user-entered names
+            // Séparer les noms entrés par l'utilisateur
             string[] selectedNames = inputNames.Split(',');
 
-            // Use Parallel.ForEach to process each backup in a separate thread
+            // Utiliser Parallel.ForEach pour traiter chaque sauvegarde dans un thread séparé
             Parallel.ForEach(backupList, backup =>
             {
                 if (selectedNames.Contains(backup.getName()))
                 {
-                    Console.WriteLine($"Launching backup: {backup.getName()}");
+                    Console.WriteLine($"Lancement de la sauvegarde : {backup.getName()}");
 
-                    // Use a separate thread for each backup
+                    // Utiliser un thread séparé pour chaque sauvegarde
                     Thread backupThread = new Thread(() =>
                     {
-                        // Create directory if it doesn't already exist
+                        // Vérifier si la sauvegarde est en pause
+                        while (IsBackupPaused())
+                        {
+                            Thread.Sleep(1000); // Attendre 1 seconde avant de vérifier à nouveau
+                        }
+
+                        // Créer le répertoire s'il n'existe pas déjà
                         if (!Directory.Exists(backup.getTargetDirectory()))
                         {
-                            // Use Semaphore to control access to the shared resource
+                            // Utiliser Semaphore pour contrôler l'accès à la ressource partagée
                             SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
                             Parallel.ForEach(Directory.GetDirectories(backup.getSourceDirectory(), "*", SearchOption.AllDirectories),
@@ -487,7 +495,7 @@ namespace EasySaveConsole.MVVM.ViewModels
                                     try
                                     {
                                         Directory.CreateDirectory(AllDirectory.Replace(backup.getSourceDirectory(), backup.getTargetDirectory()));
-                                        Log.Information("Created directory ", AllDirectory.Replace(backup.getSourceDirectory(), backup.getTargetDirectory()));
+                                        Log.Information("Création du répertoire ", AllDirectory.Replace(backup.getSourceDirectory(), backup.getTargetDirectory()));
                                     }
                                     finally
                                     {
@@ -509,11 +517,83 @@ namespace EasySaveConsole.MVVM.ViewModels
                     });
 
                     backupThread.Start();
-                    backupThread.Join(); // Wait for the thread to complete before moving to the next backup
+                    backupThread.Join(); // Attendre que le thread se termine avant de passer à la sauvegarde suivante
                 }
             });
 
-            Console.WriteLine("All selected backups have been launched.");
+            Console.WriteLine("Toutes les sauvegardes sélectionnées ont été lancées.");
+        }
+
+
+        public static void MonitorProcessesAndLaunchBackup(List<Backup> backupList)
+        {
+            // Start the process monitoring thread
+            Thread monitorThread = new Thread(() =>
+            {
+                while (true)
+                {
+                    // Check if backup execution is paused
+                    if (!isBackupPaused)
+                    {
+                        // Check for running processes
+                        Process[] processes = Process.GetProcesses();
+                        foreach (Process process in processes)
+                        {
+                            try
+                            {
+                                // Check if the process is a business software (.exe)
+                                if (process.MainModule.ModuleName.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    // Pause backup execution
+                                    PauseBackup();
+                                    Log.Information($"Backup execution paused due to the launch of {process.MainModule.ModuleName}.");
+                                    break;
+                                }
+                                else
+                                {
+                                    if (!isBackupPaused)
+                                    {
+                                        ResumeBackup();
+                                    }
+                                }
+
+                            }
+                            catch (Exception)
+                            {
+                                // Handle exceptions when accessing process information
+                            }
+                        }
+                    }
+
+                    // Sleep for a short duration before checking again
+                    Thread.Sleep(5000); // Adjust the sleep duration as needed
+                }
+            });
+
+            // Start the monitoring thread
+            monitorThread.Start();
+
+            // Continue with the regular backup launch
+            LaunchSlotBackup(backupList);
+
+            // Join the monitoring thread to ensure it finishes before the application exits
+            monitorThread.Join();
+        }
+
+        private static void PauseBackup()
+        {
+            isBackupPaused = true;
+        }
+
+        private static void ResumeBackup()
+        {
+            isBackupPaused = false;
+        }
+
+        // Méthode pour vérifier si la sauvegarde est en pause
+        private static bool IsBackupPaused()
+        {
+            return isBackupPaused;
         }
 
         public static void TypeComplet(string PathSource, string PathTarget)
