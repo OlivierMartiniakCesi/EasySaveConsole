@@ -34,7 +34,7 @@ namespace EasySaveConsole.MVVM.ViewModels
         private static List<StateLog> stateLogList = new List<StateLog>();
         //private static int totalFilesDone = 0;
         const int MaxBackupSettings = 5;
-        private static List<string> menuInterface = new List<string>() { GetTraductor("Create"), GetTraductor("Launch"), GetTraductor("Edit"), GetTraductor("Language"), GetTraductor("Exit") };
+        private static List<string> menuInterface = new List<string>() { GetTraductor("Create"), GetTraductor("Launch"), GetTraductor("Edit"), GetTraductor("Delete"), GetTraductor("Language"), GetTraductor("Exit") };
         private static string Choice{get; set;}
 
         private static Vue _vue = new Vue();
@@ -93,6 +93,10 @@ namespace EasySaveConsole.MVVM.ViewModels
                         }
                     }
                 }
+            }
+            else
+            {
+                Log.Information($"Élément de données invalide trouvé.");
             }
         }
 
@@ -408,10 +412,14 @@ namespace EasySaveConsole.MVVM.ViewModels
                         Console.Clear();
                         break;
                     case 4:
+                        DisplayBackupSettings(BackupListInfo);
+                        DeleteBackupSetting(BackupListInfo);
+                        break;
+                    case 5:
                         Lang();
                         Console.Clear();
                         break;
-                    case 5:
+                    case 6:
                         Console.WriteLine(GetTraductor("AppClose"));
                         Environment.Exit(0);
                         break;
@@ -653,7 +661,7 @@ namespace EasySaveConsole.MVVM.ViewModels
             else
                 Console.WriteLine("Error");
 
-            menuInterface = new List<string>() { GetTraductor("Create"), GetTraductor("Launch"), GetTraductor("Edit"), GetTraductor("Language"), GetTraductor("Exit") };
+            menuInterface = new List<string>() { GetTraductor("Create"), GetTraductor("Launch"), GetTraductor("Edit"),GetTraductor("Delete"), GetTraductor("Language"), GetTraductor("Exit") };
             
         }
     }
