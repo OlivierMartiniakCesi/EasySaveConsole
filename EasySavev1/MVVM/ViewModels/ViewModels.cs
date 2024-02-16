@@ -601,6 +601,7 @@ namespace EasySaveConsole.MVVM.ViewModels
             {
                 string targetFilePath = Path.Combine(PathTarget, AllFiles.Substring(PathSource.Length + 1));
                 File.Copy(AllFiles, AllFiles.Replace(PathSource, PathTarget), true);
+                CopyFileWithProgress(PathSource, PathTarget);
             }
         }
 
@@ -646,19 +647,17 @@ namespace EasySaveConsole.MVVM.ViewModels
 
         public static void TypeDifferential(string PathSource, string PathTarget)
         {
-            // Obtenir la liste des fichiers dans le premier dossier
-            string[] files = Directory.GetFiles(PathSource);
-
-            Console.WriteLine("Copy progress: ");
+            // Obtenir la liste des fichiers dans le premier dossier et des sous-dossiers récursivement
+            string[] files = Directory.GetFiles(PathSource, "*.*", SearchOption.AllDirectories);
 
             // Parcourir chaque fichier dans le dossier 1
             foreach (string filePath1 in files)
             {
-                // Obtenir le nom du fichier
-                string fileName = Path.GetFileName(filePath1);
+                // Obtenir le chemin relatif du fichier par rapport au dossier source
+                string relativePath = filePath1.Substring(PathSource.Length + 1);
 
                 // Chemin vers le fichier dans le dossier destination
-                string filePath2 = Path.Combine(PathTarget, fileName);
+                string filePath2 = Path.Combine(PathTarget, relativePath);
 
                 // Vérifie si le fichier existe dans le dossier 2
                 if (File.Exists(filePath2))
@@ -670,24 +669,34 @@ namespace EasySaveConsole.MVVM.ViewModels
                     // Comparer les dates
                     if (lastModified1 > lastModified2)
                     {
-                        // Copier le fichier du premier emplacement vers le deuxième emplacement avec la progression
+                        // Copier le fichier du premier emplacement vers le deuxième emplacement
+                        File.Copy(filePath1, filePath2, true);
                         CopyFileWithProgress(filePath1, filePath2);
-                        Log.Information($"Le fichier '{fileName}' dans {PathSource} a été copié vers {PathTarget} car il a été modifié plus récemment.");
+                        Log.Information($"Le fichier '{relativePath}' dans {PathSource} a été copié vers {PathTarget} car il a été modifié plus récemment.");
                     }
                     else if (lastModified1 < lastModified2)
                     {
-                        Log.Information($"Le fichier '{fileName}' dans {PathTarget} a été modifié après le fichier dans {PathSource}.");
+                        Log.Information($"Le fichier '{relativePath}' dans {PathTarget} a été modifié après le fichier dans {PathSource}.");
                     }
                     else
                     {
-                        Log.Information($"Les fichiers '{fileName}' ont été modifiés à la même date.");
+                        CopyFileWithProgress(filePath1, filePath2);
+                        Log.Information($"Les fichiers '{relativePath}' ont été modifiés à la même date.");
                     }
                 }
                 else
                 {
-                    // Copier le fichier du premier emplacement vers le deuxième emplacement avec la progression
+                    // Créer le répertoire s'il n'existe pas déjà dans le dossier cible
+                    string directoryPath = Path.GetDirectoryName(filePath2);
+                    if (!Directory.Exists(directoryPath))
+                    {
+                        Directory.CreateDirectory(directoryPath);
+                    }
+
+                    // Copier le fichier du premier emplacement vers le deuxième emplacement
+                    File.Copy(filePath1, filePath2);
                     CopyFileWithProgress(filePath1, filePath2);
-                    Log.Information($"Le fichier '{fileName}' a été copié de {PathSource} vers {PathTarget} car il n'existait pas dans {PathTarget}.");
+                    Log.Information($"Le fichier '{relativePath}' a été copié de {PathSource} vers {PathTarget} car il n'existait pas dans {PathTarget}.");
                 }
             }
         }
