@@ -16,6 +16,7 @@ using System.Globalization;
 using EasySaveConsole.Resources;
 using System.Xml.Serialization;
 using System.Xml;
+using System.Threading;
 
 namespace EasySaveConsole.MVVM.ViewModels
 {
@@ -587,8 +588,23 @@ namespace EasySaveConsole.MVVM.ViewModels
                 }
             }
         }
-
         public static void TypeComplet(string PathSource, string PathTarget)
+        {
+            // Create All Directories
+            foreach (string AllDirectory in Directory.GetDirectories(PathSource, "*", SearchOption.AllDirectories))
+            {
+                Directory.CreateDirectory(AllDirectory.Replace(PathSource, PathTarget));
+            }
+
+            // Copy Files
+            foreach (string AllFiles in Directory.GetFiles(PathSource, "*.*", SearchOption.AllDirectories))
+            {
+                string targetFilePath = Path.Combine(PathTarget, AllFiles.Substring(PathSource.Length + 1));
+                CopyFileWithProgress(AllFiles, targetFilePath);
+                Log.Information($"Le fichier '{AllFiles}' a été copié vers {PathTarget}");
+            }
+        }
+        /*public static void TypeComplet(string PathSource, string PathTarget)
         {
             //Create All Repertories
             foreach (string AllDirectory in Directory.GetDirectories(PathSource, "*", SearchOption.AllDirectories))
@@ -602,7 +618,8 @@ namespace EasySaveConsole.MVVM.ViewModels
                 string targetFilePath = Path.Combine(PathTarget, AllFiles.Substring(PathSource.Length + 1));
                 File.Copy(AllFiles, AllFiles.Replace(PathSource, PathTarget), true);
             }
-        }
+
+        }*/
 
         private static void CopyFileWithProgress(string sourceFilePath, string destinationFilePath)
         {
@@ -628,7 +645,7 @@ namespace EasySaveConsole.MVVM.ViewModels
                         {
                             // Afficher la progression uniquement si elle a changé
                             Console.SetCursorPosition(0, Console.CursorTop);
-                            Console.Write($"Copy progress: {progressPercentage}%");
+                            Console.Write($"Copy progress: {progressPercentage}% pour " +sourceFilePath);
                             lastProgressPercentage = progressPercentage;
                         }
                     }
@@ -696,6 +713,18 @@ namespace EasySaveConsole.MVVM.ViewModels
                     File.Copy(filePath1, filePath2);
                     CopyFileWithProgress(filePath1, filePath2);
                     Log.Information($"Le fichier '{relativePath}' a été copié de {PathSource} vers {PathTarget} car il n'existait pas dans {PathTarget}.");
+                }
+            }
+            // Supprimer les fichiers dans le dossier cible qui n'existent plus dans le dossier source
+            string[] targetFiles = Directory.GetFiles(PathTarget, "*.*", SearchOption.AllDirectories);
+            foreach (string targetFilePath in targetFiles)
+            {
+                string relativePath = targetFilePath.Substring(PathTarget.Length + 1);
+                string sourceFilePath = Path.Combine(PathSource, relativePath);
+                if (!File.Exists(sourceFilePath))
+                {
+                    File.Delete(targetFilePath);
+                    Log.Information($"Le fichier '{relativePath}' a été supprimé de {PathTarget} car il n'existe plus dans {PathSource}.");
                 }
             }
         }
