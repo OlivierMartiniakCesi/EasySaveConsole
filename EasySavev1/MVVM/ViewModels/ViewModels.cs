@@ -349,14 +349,14 @@ namespace EasySaveConsole.MVVM.ViewModels
             var dir = new DirectoryInfo(src);
             DirectoryInfo[] dirs = dir.GetDirectories();  // Cache directories before we start copying
 
-            Directory.CreateDirectory(dest);
+           // Directory.CreateDirectory(dest);
 
             int totalFilesDone = 0;  // Initialize totalFilesDone here
 
             foreach (FileInfo file in dir.GetFiles())
             {
                 totalFilesDone++;
-                file.CopyTo(Path.Combine(dest, file.Name), true);   // Copy the file into the destination directory
+               // file.CopyTo(Path.Combine(dest, file.Name), true);   // Copy the file into the destination directory
                 string fileSrc = Path.Combine(file.DirectoryName, file.Name);
                 string fileDest = Path.Combine(dest, file.Name);
                 int totalFiles = Directory.GetFiles(src, "*", SearchOption.AllDirectories).Length;
@@ -480,7 +480,7 @@ namespace EasySaveConsole.MVVM.ViewModels
             string ChoiceBackup = Console.ReadLine();
 
 
-            string[] parts = ChoiceBackup.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = ChoiceBackup.Split(new char[] { ';' , ' '}, StringSplitOptions.RemoveEmptyEntries);
 
 
 
@@ -497,6 +497,48 @@ namespace EasySaveConsole.MVVM.ViewModels
                         for (int i = start; i <= end; i++)
                         {
                             if (i.ToString() == backupInfo.getID())
+                            {
+                                //Create directory if it doesn't already exist
+                                if (Directory.Exists(backupInfo.getTargetDirectory()))
+                                {
+                                    foreach (string AllDirectory in Directory.GetDirectories(backupInfo.getSourceDirectory(), "*", SearchOption.AllDirectories))
+                                    {
+                                        Directory.CreateDirectory(AllDirectory.Replace(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory()));
+                                    }
+                                }
+                                else
+                                {
+                                    Directory.CreateDirectory(backupInfo.getTargetDirectory());
+                                    foreach (string AllDirectory in Directory.GetDirectories(backupInfo.getSourceDirectory(), "*", SearchOption.AllDirectories))
+                                    {
+                                        Directory.CreateDirectory(AllDirectory.Replace(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory()));
+                                    }
+                                }
+
+                                if (backupInfo != null)
+                                {
+                                    if (backupInfo.getType() == "complet" || backupInfo.getType() == "Complet")
+                                    {
+                                        TypeComplet(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory());
+                                    }
+                                    else
+                                    {
+                                        TypeDifferential(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory());
+                                    }
+                                }
+                                else
+                                {
+                                    Log.Information("Sauvegarde non trouvée.");
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        int number;
+                        if (int.TryParse(part, out number))
+                        {
+                            if (number.ToString() == backupInfo.getID())
                             {
                                 //Create directory if it doesn't already exist
                                 if (Directory.Exists(backupInfo.getTargetDirectory()))
