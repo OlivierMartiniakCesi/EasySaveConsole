@@ -6,4 +6,22 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Font\Helvetica.otf" />
+    <None Remove="Pictures\Backup.png" />
+    <None Remove="Pictures\close.png" />
+    <None Remove="Pictures\DashBoard.png" />
+    <None Remove="Pictures\Logo.png" />
+    <None Remove="Pictures\Settings.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Font\Helvetica.otf" />
+    <Resource Include="Pictures\Backup.png" />
+    <Resource Include="Pictures\close.png" />
+    <Resource Include="Pictures\DashBoard.png" />
+    <Resource Include="Pictures\Logo.png" />
+    <Resource Include="Pictures\Settings.png" />
+  </ItemGroup>
+
 </Project>

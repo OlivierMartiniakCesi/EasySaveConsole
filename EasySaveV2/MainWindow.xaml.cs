@@ -24,5 +24,15 @@ namespace EasySaveV2
         {
             InitializeComponent();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void CloseApplication(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
     }
 }

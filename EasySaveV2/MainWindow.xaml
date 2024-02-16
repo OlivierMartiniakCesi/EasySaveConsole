@@ -9,7 +9,9 @@
         WindowStyle="None"
         ResizeMode="NoResize"
         Background="Transparent"
-        AllowsTransparency="True">
+        AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen"
+        >
 
 
     <Window.Resources>
@@ -20,19 +22,63 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Border Style="{DynamicResource  BordureMenu}">
+    <Border Style="{DynamicResource BordureMenu}">
 
         <Grid>
-            <Grid Margin="0,0,681,0">
+            <Grid Margin="0,0,650,0">
                 <Rectangle Style="{DynamicResource LigneMenu}" HorizontalAlignment="Right" Width="2"/>
                 <StackPanel>
-                    <Image Margin="40,57,40,0" Source="Pictures/DashBoard.png"/>
-                    <Label Content="Dashboard" Style="{DynamicResource Text}" HorizontalAlignment="Center"/>
+                    <Button Style="{DynamicResource ButtonLeft}" Margin="10,40,10,0" Click="Button_Click">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Image Name="DashBoardPage" Source="/Pictures/DashBoard.png" Width="40" Height="40" Grid.Row="0"/>
+                            <Label Content="Dashboard" FontSize ="16" Style="{DynamicResource Text}" HorizontalAlignment="Center" Grid.Row="1"/>
+                        </Grid>
+                    </Button>
                 </StackPanel>
 
+                <StackPanel>
+                    <Button Style="{DynamicResource ButtonLeft}" Margin="10,168,10,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Image Name="BackupPage" Source="/Pictures/Backup.png" Width="40" Height="40" Grid.Row="0"/>
+                            <Label Content="Back-up" FontSize ="16" Style="{DynamicResource Text}" HorizontalAlignment="Center" Grid.Row="1"/>
+                        </Grid>
+                    </Button>
+                </StackPanel>
+
+                <StackPanel>
+                    <Button Style="{DynamicResource ButtonLeft}" Margin="10,296,10,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Image  Name="SettingPage" Source="/Pictures/Settings.png" Width="40" Height="40" Grid.Row="0"/>
+                            <Label Content="Settings" FontSize ="16" Style="{DynamicResource Text}" HorizontalAlignment="Center"  Grid.Row="1"/>
+                        </Grid>
+                    </Button>
+                </StackPanel>
             </Grid>
-            <Grid Margin="119,0,0,393">
+            <Grid Margin="150,0,0,393">
                 <Rectangle Style="{DynamicResource LigneMenu}" VerticalAlignment="Bottom" Height="2"/>
+                <Image Margin="9,10,489,7" Stretch="Fill" Source="/Pictures/Logo.png"/>
+
+                <Button Style="{DynamicResource ButtonTop}" Margin="597,8,13,9" Click="CloseApplication">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Image Stretch="Fill" Source="/Pictures/close.png"/>
+                    </Grid>
+                </Button>
             </Grid>
         </Grid>
     </Border>
