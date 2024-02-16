@@ -37,6 +37,7 @@ namespace EasySaveConsole.MVVM.ViewModels
         //private static int totalFilesDone = 0;
         const int MaxBackupSettings = 5;
         private static bool isBackupPaused = false;
+        private static ManualResetEventSlim backupCompletedEvent = new ManualResetEventSlim(false);
         private static List<string> menuInterface = new List<string>() { GetTraductor("Create"), GetTraductor("Launch"), GetTraductor("Edit"), GetTraductor("Language"), GetTraductor("Exit") };
         private static string Choice{get; set;}
 
@@ -379,6 +380,7 @@ namespace EasySaveConsole.MVVM.ViewModels
             }
 
             GetJSON();
+
             while (true)
             {
                 switch (_vue.SelectMenu(menuInterface))
@@ -395,7 +397,7 @@ namespace EasySaveConsole.MVVM.ViewModels
                         }
                         break;
                     case 2:
-                        LaunchSlotBackup(BackupListInfo);
+                        MonitorProcessesAndLaunchBackup(BackupListInfo); ;
                         foreach (var backupSetting in BackupListInfo)
                         {
                             SetSaveStateBackup(backupSetting.getName(), backupSetting.getSourceDirectory(), backupSetting.getTargetDirectory());
@@ -453,38 +455,38 @@ namespace EasySaveConsole.MVVM.ViewModels
 
         public static void LaunchSlotBackup(List<Backup> backupList)
         {
-            Console.WriteLine("Liste des sauvegardes disponibles :");
+            Console.WriteLine("List of available backups:");
             foreach (Backup backup in backupList)
             {
                 Console.WriteLine(backup.getName());
             }
 
-            Console.Write("Entrez les noms des sauvegardes à lancer (séparés par des virgules) : ");
+            Console.Write("Enter the names of the backups to launch (separated by commas): ");
             string inputNames = Console.ReadLine();
 
-            // Séparer les noms entrés par l'utilisateur
+            // Split the user-entered names
             string[] selectedNames = inputNames.Split(',');
 
-            // Utiliser Parallel.ForEach pour traiter chaque sauvegarde dans un thread séparé
+            // Use Parallel.ForEach to process each backup in a separate thread
             Parallel.ForEach(backupList, backup =>
             {
                 if (selectedNames.Contains(backup.getName()))
                 {
-                    Console.WriteLine($"Lancement de la sauvegarde : {backup.getName()}");
+                    Console.WriteLine($"Launching backup: {backup.getName()}");
 
-                    // Utiliser un thread séparé pour chaque sauvegarde
+                    // Use a separate thread for each backup
                     Thread backupThread = new Thread(() =>
                     {
-                        // Vérifier si la sauvegarde est en pause
+                        // Check if the backup is paused
                         while (IsBackupPaused())
                         {
-                            Thread.Sleep(1000); // Attendre 1 seconde avant de vérifier à nouveau
+                            Thread.Sleep(1000); // Wait for 1 second before checking again
                         }
 
-                        // Créer le répertoire s'il n'existe pas déjà
+                        // Create directory if it doesn't already exist
                         if (!Directory.Exists(backup.getTargetDirectory()))
                         {
-                            // Utiliser Semaphore pour contrôler l'accès à la ressource partagée
+                            // Use Semaphore to control access to the shared resource
                             SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
                             Parallel.ForEach(Directory.GetDirectories(backup.getSourceDirectory(), "*", SearchOption.AllDirectories),
@@ -495,7 +497,7 @@ namespace EasySaveConsole.MVVM.ViewModels
                                     try
                                     {
                                         Directory.CreateDirectory(AllDirectory.Replace(backup.getSourceDirectory(), backup.getTargetDirectory()));
-                                        Log.Information("Création du répertoire ", AllDirectory.Replace(backup.getSourceDirectory(), backup.getTargetDirectory()));
+                                        Log.Information("Created directory ", AllDirectory.Replace(backup.getSourceDirectory(), backup.getTargetDirectory()));
                                     }
                                     finally
                                     {
@@ -517,13 +519,15 @@ namespace EasySaveConsole.MVVM.ViewModels
                     });
 
                     backupThread.Start();
-                    backupThread.Join(); // Attendre que le thread se termine avant de passer à la sauvegarde suivante
+                    backupThread.Join(); // Wait for the thread to complete before moving to the next backup
                 }
             });
 
-            Console.WriteLine("Toutes les sauvegardes sélectionnées ont été lancées.");
-        }
+            Console.WriteLine("All selected backups have been launched.");
 
+            // Signal that the backup has completed
+            backupCompletedEvent.Set();
+        }
 
         public static void MonitorProcessesAndLaunchBackup(List<Backup> backupList)
         {
@@ -536,37 +540,39 @@ namespace EasySaveConsole.MVVM.ViewModels
                     if (!isBackupPaused)
                     {
                         // Check for running processes
-                        Process[] processes = Process.GetProcesses();
-                        foreach (Process process in processes)
+                        Process[] processes = Process.GetProcessesByName("CalculatorApp");
+                        if (processes.Length > 0)
                         {
-                            try
+                            // Pause backup execution
+                            if (!isBackupPaused)
                             {
-                                // Check if the process is a business software (.exe)
-                                if (process.MainModule.ModuleName.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
-                                {
-                                    // Pause backup execution
-                                    PauseBackup();
-                                    Log.Information($"Backup execution paused due to the launch of {process.MainModule.ModuleName}.");
-                                    break;
-                                }
-                                else
-                                {
-                                    if (!isBackupPaused)
-                                    {
-                                        ResumeBackup();
-                                    }
-                                }
-
+                                PauseBackup();
+                                Console.WriteLine("Backup execution paused due to the CalculatorApp process running.");
                             }
-                            catch (Exception)
+                        }
+                        else
+                        {
+                            // Resume backup execution if it was paused
+                            if (isBackupPaused)
                             {
-                                // Handle exceptions when accessing process information
+                                ResumeBackup();
+                                Console.WriteLine("Backup execution resumed.");
                             }
                         }
                     }
+                    else
+                    {
+                        ResumeBackup();
+                    }
+
+                    // Check if the backup has completed to exit the loop
+                    if (backupCompletedEvent.Wait(0))
+                    {
+                        break;
+                    }
 
                     // Sleep for a short duration before checking again
-                    Thread.Sleep(5000); // Adjust the sleep duration as needed
+                    Thread.Sleep(2000); // Adjust the sleep duration as needed
                 }
             });
 
