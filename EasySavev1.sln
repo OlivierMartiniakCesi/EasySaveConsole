@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.34407.143
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasySaveConsole", "EasySavev1\EasySaveConsole.csproj", "{BFE23FBC-E429-43A6-A60C-C1135669C3A7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasySave_UI", "..\EasySave_UI\EasySave_UI\EasySave_UI.csproj", "{87936F62-F914-4EEE-B11C-E556B1D4C369}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasySaveV2", "EasySaveV2\EasySaveV2.csproj", "{26E136E2-F42C-416B-BADD-0D34E6F103F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{BFE23FBC-E429-43A6-A60C-C1135669C3A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFE23FBC-E429-43A6-A60C-C1135669C3A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BFE23FBC-E429-43A6-A60C-C1135669C3A7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{87936F62-F914-4EEE-B11C-E556B1D4C369}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{87936F62-F914-4EEE-B11C-E556B1D4C369}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{87936F62-F914-4EEE-B11C-E556B1D4C369}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{87936F62-F914-4EEE-B11C-E556B1D4C369}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26E136E2-F42C-416B-BADD-0D34E6F103F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26E136E2-F42C-416B-BADD-0D34E6F103F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26E136E2-F42C-416B-BADD-0D34E6F103F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26E136E2-F42C-416B-BADD-0D34E6F103F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
