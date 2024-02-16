@@ -5,8 +5,35 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EasySaveV2"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Height="450" Width="800"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        Background="Transparent"
+        AllowsTransparency="True">
 
-    </Grid>
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Style/MainDictonnary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Border Style="{DynamicResource  BordureMenu}">
+
+        <Grid>
+            <Grid Margin="0,0,681,0">
+                <Rectangle Style="{DynamicResource LigneMenu}" HorizontalAlignment="Right" Width="2"/>
+                <StackPanel>
+                    <Image Margin="40,57,40,0" Source="Pictures/DashBoard.png"/>
+                    <Label Content="Dashboard" Style="{DynamicResource Text}" HorizontalAlignment="Center"/>
+                </StackPanel>
+
+            </Grid>
+            <Grid Margin="119,0,0,393">
+                <Rectangle Style="{DynamicResource LigneMenu}" VerticalAlignment="Bottom" Height="2"/>
+            </Grid>
+        </Grid>
+    </Border>
 </Window>
