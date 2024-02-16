@@ -12,13 +12,15 @@ namespace EasySaveConsole.MVVM.Models
         private string SourceDirectory { get; set; }
         private string TargetDirectory { get; set; }
         private string Type { get; set; }
-        
+        private string Id { get; set; }
+
         //Constructor
         public Backup() { }
 
         //Constructor with parameter
-        public Backup(string Name, string PathSource, string PathTarget, string type)
+        public Backup(string Id, string Name, string PathSource, string PathTarget, string type)
         {
+            this.Id = Id;
             this.Name = Name;
             this.SourceDirectory = PathSource;
             this.TargetDirectory = PathTarget;
@@ -69,20 +71,25 @@ namespace EasySaveConsole.MVVM.Models
             this.Type = Type;
         }
 
+        public string getID()
+        {
+            return Id;
+        }
         public string getAllInfo()
         {
-            string Information = "Name : " + Name + "\tSource directory : " + SourceDirectory + "\tTarget directory : " + TargetDirectory + "\tType : " + Type;
+            string Information = "Id = " + Id + "\tName : " + Name + "\tSource directory : " + SourceDirectory + "\tTarget directory : " + TargetDirectory + "\tType : " + Type;
             return Information;
         }
 
-        public Backup CreateBackup(string Name, string PathSource, string PathTarget, string type)
+        public Backup CreateBackup(string Id, string Name, string PathSource, string PathTarget, string type)
         {
-            return new Backup(Name, PathSource, PathTarget, type);
+            return new Backup(Id, Name, PathSource, PathTarget, type);
         }
 
         public string SaveJson()
         {
             string FileStock = "{" +
+             Environment.NewLine + "\t\"Id\":\"" + Id + "\"," +
              Environment.NewLine + "\t\"Name\":\"" + Name + "\"," +
              Environment.NewLine + "\t\"Source\":\"" + SourceDirectory + "\"," +
              Environment.NewLine + "\t\"Target\":\"" + TargetDirectory + "\"," +

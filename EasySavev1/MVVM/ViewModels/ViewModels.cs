@@ -16,6 +16,7 @@ using System.Globalization;
 using EasySaveConsole.Resources;
 using System.Xml.Serialization;
 using System.Xml;
+using System.Threading;
 
 namespace EasySaveConsole.MVVM.ViewModels
 {
@@ -34,7 +35,7 @@ namespace EasySaveConsole.MVVM.ViewModels
         private static List<StateLog> stateLogList = new List<StateLog>();
         //private static int totalFilesDone = 0;
         const int MaxBackupSettings = 5;
-        private static List<string> menuInterface = new List<string>() { GetTraductor("Create"), GetTraductor("Launch"), GetTraductor("Edit"), GetTraductor("Language"), GetTraductor("Exit") };
+        private static List<string> menuInterface = new List<string>() { GetTraductor("Create"), GetTraductor("Launch"), GetTraductor("Edit"), GetTraductor("Delete"), GetTraductor("Language"), GetTraductor("Exit") };
         private static string Choice{get; set;}
 
         private static Vue _vue = new Vue();
@@ -65,12 +66,14 @@ namespace EasySaveConsole.MVVM.ViewModels
                     foreach (var item in array)
                     {
                         // Vérifier si toutes les clés nécessaires existent et ne sont pas vides
-                        if (item["Name"] != null && !string.IsNullOrEmpty(item["Name"].ToString()) &&
+                        if (item["Id"] != null && !string.IsNullOrEmpty(item["Id"].ToString()) &&
+                            item["Name"] != null && !string.IsNullOrEmpty(item["Name"].ToString()) &&
                             item["Source"] != null && !string.IsNullOrEmpty(item["Source"].ToString()) &&
                             item["Target"] != null && !string.IsNullOrEmpty(item["Target"].ToString()) &&
                             item["Type"] != null && !string.IsNullOrEmpty(item["Type"].ToString()))
                         {
                             Backup backup = new Backup(
+                                item["Id"].ToString(),
                                 item["Name"].ToString(),
                                 item["Source"].ToString(),
                                 item["Target"].ToString(),
@@ -92,7 +95,13 @@ namespace EasySaveConsole.MVVM.ViewModels
                     }
                 }
             }
+            else
+            {
+                Log.Information($"Élément de données invalide trouvé.");
+                File.WriteAllText(filePath, "[]");
+            }
         }
+
         static void SaveBackupSettings()
         {
             if (BackupListInfo != null && BackupListInfo.Count > 0)
@@ -130,7 +139,7 @@ namespace EasySaveConsole.MVVM.ViewModels
             {
                 foreach (var setting in backupSettings)
                 {
-                    Console.WriteLine($"Nom: {setting.getName()}, Source: {setting.getSourceDirectory()}, Destination: {setting.getTargetDirectory()}, Type: {setting.getType()}");
+                    Console.WriteLine($"Id: {setting.getID()}, Nom: {setting.getName()}, Source: {setting.getSourceDirectory()}, Destination: {setting.getTargetDirectory()}, Type: {setting.getType()}");
                 }
             }
         }
@@ -346,14 +355,14 @@ namespace EasySaveConsole.MVVM.ViewModels
             var dir = new DirectoryInfo(src);
             DirectoryInfo[] dirs = dir.GetDirectories();  // Cache directories before we start copying
 
-            Directory.CreateDirectory(dest);
+           // Directory.CreateDirectory(dest);
 
             int totalFilesDone = 0;  // Initialize totalFilesDone here
 
             foreach (FileInfo file in dir.GetFiles())
             {
                 totalFilesDone++;
-                file.CopyTo(Path.Combine(dest, file.Name), true);   // Copy the file into the destination directory
+               // file.CopyTo(Path.Combine(dest, file.Name), true);   // Copy the file into the destination directory
                 string fileSrc = Path.Combine(file.DirectoryName, file.Name);
                 string fileDest = Path.Combine(dest, file.Name);
                 int totalFiles = Directory.GetFiles(src, "*", SearchOption.AllDirectories).Length;
@@ -392,6 +401,7 @@ namespace EasySaveConsole.MVVM.ViewModels
                         }
                         break;
                     case 2:
+                        DisplayBackupSettings(BackupListInfo);
                         LaunchSlotBackup(BackupListInfo);
                         foreach (var backupSetting in BackupListInfo)
                         {
@@ -404,10 +414,14 @@ namespace EasySaveConsole.MVVM.ViewModels
                         Console.Clear();
                         break;
                     case 4:
+                        DisplayBackupSettings(BackupListInfo);
+                        DeleteBackupSetting(BackupListInfo);
+                        break;
+                    case 5:
                         Lang();
                         Console.Clear();
                         break;
-                    case 5:
+                    case 6:
                         Console.WriteLine(GetTraductor("AppClose"));
                         Environment.Exit(0);
                         break;
@@ -445,49 +459,152 @@ namespace EasySaveConsole.MVVM.ViewModels
             } while (type != "complet" && type != "diff");
 
 
-            BackupListInfo.Add(_backup.CreateBackup(name, sourcePath,destinationPath,type));
+            string jsonContent = File.ReadAllText(filePath);
+
+            JArray jsonArray = JArray.Parse(jsonContent);
+
+            int maxId = 0;
+            bool foundId = false;
+            foreach (var item in jsonArray)
+            {
+                int id = (int)item["Id"];
+                if (id > maxId)
+                {
+                    maxId = id;
+                    maxId++;
+                    foundId = true;
+                }
+            }
+
+            if (!foundId)
+            {
+                maxId = 1;
+            }
+
+            BackupListInfo.Add(_backup.CreateBackup(maxId.ToString(), name, sourcePath, destinationPath, type));
         }
 
         public static void LaunchSlotBackup(List<Backup> backupList)
         {
-            Console.WriteLine("Liste des sauvegardes disponibles :");
-            foreach (Backup backup in backupList)
+            Console.Write("Entrez le(s) sauvegardes : ");
+            string ChoiceBackup = Console.ReadLine();
+
+
+            string[] parts = ChoiceBackup.Split(new char[] { ';' , ' '}, StringSplitOptions.RemoveEmptyEntries);
+
+
+
+            foreach (var backupInfo in backupList)
             {
-                Console.WriteLine(backup.getName());
-            }
-
-            Console.Write("Entrez le nom de la sauvegarde à lancer : ");
-            string Name = Console.ReadLine();
-
-            Backup selectedBackup = backupList.FirstOrDefault(backup => backup.getName() == Name);
-
-            //Create directory if it doesn't already exist
-            if (!Directory.Exists(selectedBackup.getTargetDirectory()))
-            {
-                foreach (string AllDirectory in Directory.GetDirectories(selectedBackup.getSourceDirectory(), "*", SearchOption.AllDirectories))
+                foreach (string part in parts)
                 {
-                    Directory.CreateDirectory(AllDirectory.Replace(selectedBackup.getSourceDirectory(), selectedBackup.getTargetDirectory()));
-                }
-                Log.Information("Creation of directory ", selectedBackup.getTargetDirectory());
-            }
+                    if (part.Contains("-"))
+                    {
+                        string[] rangeParts = part.Split('-');
+                        int start = int.Parse(rangeParts[0]);
+                        int end = int.Parse(rangeParts[1]);
 
-            if (selectedBackup != null)
-            {
-                if (selectedBackup.getType() == "complet" || selectedBackup.getType() == "Complet")
-                {
-                    TypeComplet(selectedBackup.getSourceDirectory(), selectedBackup.getTargetDirectory());
+                        for (int i = start; i <= end; i++)
+                        {
+                            if (i.ToString() == backupInfo.getID())
+                            {
+                                //Create directory if it doesn't already exist
+                                if (Directory.Exists(backupInfo.getTargetDirectory()))
+                                {
+                                    foreach (string AllDirectory in Directory.GetDirectories(backupInfo.getSourceDirectory(), "*", SearchOption.AllDirectories))
+                                    {
+                                        Directory.CreateDirectory(AllDirectory.Replace(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory()));
+                                    }
+                                }
+                                else
+                                {
+                                    Directory.CreateDirectory(backupInfo.getTargetDirectory());
+                                    foreach (string AllDirectory in Directory.GetDirectories(backupInfo.getSourceDirectory(), "*", SearchOption.AllDirectories))
+                                    {
+                                        Directory.CreateDirectory(AllDirectory.Replace(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory()));
+                                    }
+                                }
+
+                                if (backupInfo != null)
+                                {
+                                    if (backupInfo.getType() == "complet" || backupInfo.getType() == "Complet")
+                                    {
+                                        TypeComplet(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory());
+                                    }
+                                    else
+                                    {
+                                        TypeDifferential(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory());
+                                    }
+                                }
+                                else
+                                {
+                                    Log.Information("Sauvegarde non trouvée.");
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        int number;
+                        if (int.TryParse(part, out number))
+                        {
+                            if (number.ToString() == backupInfo.getID())
+                            {
+                                //Create directory if it doesn't already exist
+                                if (Directory.Exists(backupInfo.getTargetDirectory()))
+                                {
+                                    foreach (string AllDirectory in Directory.GetDirectories(backupInfo.getSourceDirectory(), "*", SearchOption.AllDirectories))
+                                    {
+                                        Directory.CreateDirectory(AllDirectory.Replace(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory()));
+                                    }
+                                }
+                                else
+                                {
+                                    Directory.CreateDirectory(backupInfo.getTargetDirectory());
+                                    foreach (string AllDirectory in Directory.GetDirectories(backupInfo.getSourceDirectory(), "*", SearchOption.AllDirectories))
+                                    {
+                                        Directory.CreateDirectory(AllDirectory.Replace(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory()));
+                                    }
+                                }
+
+                                if (backupInfo != null)
+                                {
+                                    if (backupInfo.getType() == "complet" || backupInfo.getType() == "Complet")
+                                    {
+                                        TypeComplet(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory());
+                                    }
+                                    else
+                                    {
+                                        TypeDifferential(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory());
+                                    }
+                                }
+                                else
+                                {
+                                    Log.Information("Sauvegarde non trouvée.");
+                                }
+                            }
+                        }
+                    }
                 }
-                else
-                {
-                    TypeDifferential(selectedBackup.getSourceDirectory(), selectedBackup.getTargetDirectory());
-                }
-            }
-            else
-            {
-                Log.Information("Sauvegarde non trouvée.");
             }
         }
         public static void TypeComplet(string PathSource, string PathTarget)
+        {
+            // Create All Directories
+            foreach (string AllDirectory in Directory.GetDirectories(PathSource, "*", SearchOption.AllDirectories))
+            {
+                Directory.CreateDirectory(AllDirectory.Replace(PathSource, PathTarget));
+            }
+
+            // Copy Files
+            foreach (string AllFiles in Directory.GetFiles(PathSource, "*.*", SearchOption.AllDirectories))
+            {
+                string targetFilePath = Path.Combine(PathTarget, AllFiles.Substring(PathSource.Length + 1));
+                CopyFileWithProgress(AllFiles, targetFilePath);
+                Log.Information($"Le fichier '{AllFiles}' a été copié vers {PathTarget}");
+            }
+        }
+        /*public static void TypeComplet(string PathSource, string PathTarget)
         {
             //Create All Repertories
             foreach (string AllDirectory in Directory.GetDirectories(PathSource, "*", SearchOption.AllDirectories))
@@ -501,7 +618,8 @@ namespace EasySaveConsole.MVVM.ViewModels
                 string targetFilePath = Path.Combine(PathTarget, AllFiles.Substring(PathSource.Length + 1));
                 File.Copy(AllFiles, AllFiles.Replace(PathSource, PathTarget), true);
             }
-        }
+
+        }*/
 
         private static void CopyFileWithProgress(string sourceFilePath, string destinationFilePath)
         {
@@ -527,7 +645,7 @@ namespace EasySaveConsole.MVVM.ViewModels
                         {
                             // Afficher la progression uniquement si elle a changé
                             Console.SetCursorPosition(0, Console.CursorTop);
-                            Console.Write($"Copy progress: {progressPercentage}%");
+                            Console.Write($"Copy progress: {progressPercentage}% pour " +sourceFilePath);
                             lastProgressPercentage = progressPercentage;
                         }
                     }
@@ -545,19 +663,17 @@ namespace EasySaveConsole.MVVM.ViewModels
 
         public static void TypeDifferential(string PathSource, string PathTarget)
         {
-            // Obtenir la liste des fichiers dans le premier dossier
-            string[] files = Directory.GetFiles(PathSource);
-
-            Console.WriteLine("Copy progress: ");
+            // Obtenir la liste des fichiers dans le premier dossier et des sous-dossiers récursivement
+            string[] files = Directory.GetFiles(PathSource, "*.*", SearchOption.AllDirectories);
 
             // Parcourir chaque fichier dans le dossier 1
             foreach (string filePath1 in files)
             {
-                // Obtenir le nom du fichier
-                string fileName = Path.GetFileName(filePath1);
+                // Obtenir le chemin relatif du fichier par rapport au dossier source
+                string relativePath = filePath1.Substring(PathSource.Length + 1);
 
                 // Chemin vers le fichier dans le dossier destination
-                string filePath2 = Path.Combine(PathTarget, fileName);
+                string filePath2 = Path.Combine(PathTarget, relativePath);
 
                 // Vérifie si le fichier existe dans le dossier 2
                 if (File.Exists(filePath2))
@@ -569,24 +685,46 @@ namespace EasySaveConsole.MVVM.ViewModels
                     // Comparer les dates
                     if (lastModified1 > lastModified2)
                     {
-                        // Copier le fichier du premier emplacement vers le deuxième emplacement avec la progression
+                        // Copier le fichier du premier emplacement vers le deuxième emplacement
+                        File.Copy(filePath1, filePath2, true);
                         CopyFileWithProgress(filePath1, filePath2);
-                        Log.Information($"Le fichier '{fileName}' dans {PathSource} a été copié vers {PathTarget} car il a été modifié plus récemment.");
+                        Log.Information($"Le fichier '{relativePath}' dans {PathSource} a été copié vers {PathTarget} car il a été modifié plus récemment.");
                     }
                     else if (lastModified1 < lastModified2)
                     {
-                        Log.Information($"Le fichier '{fileName}' dans {PathTarget} a été modifié après le fichier dans {PathSource}.");
+                        Log.Information($"Le fichier '{relativePath}' dans {PathTarget} a été modifié après le fichier dans {PathSource}.");
                     }
                     else
                     {
-                        Log.Information($"Les fichiers '{fileName}' ont été modifiés à la même date.");
+                        CopyFileWithProgress(filePath1, filePath2);
+                        Log.Information($"Les fichiers '{relativePath}' ont été modifiés à la même date.");
                     }
                 }
                 else
                 {
-                    // Copier le fichier du premier emplacement vers le deuxième emplacement avec la progression
+                    // Créer le répertoire s'il n'existe pas déjà dans le dossier cible
+                    string directoryPath = Path.GetDirectoryName(filePath2);
+                    if (!Directory.Exists(directoryPath))
+                    {
+                        Directory.CreateDirectory(directoryPath);
+                    }
+
+                    // Copier le fichier du premier emplacement vers le deuxième emplacement
+                    File.Copy(filePath1, filePath2);
                     CopyFileWithProgress(filePath1, filePath2);
-                    Log.Information($"Le fichier '{fileName}' a été copié de {PathSource} vers {PathTarget} car il n'existait pas dans {PathTarget}.");
+                    Log.Information($"Le fichier '{relativePath}' a été copié de {PathSource} vers {PathTarget} car il n'existait pas dans {PathTarget}.");
+                }
+            }
+            // Supprimer les fichiers dans le dossier cible qui n'existent plus dans le dossier source
+            string[] targetFiles = Directory.GetFiles(PathTarget, "*.*", SearchOption.AllDirectories);
+            foreach (string targetFilePath in targetFiles)
+            {
+                string relativePath = targetFilePath.Substring(PathTarget.Length + 1);
+                string sourceFilePath = Path.Combine(PathSource, relativePath);
+                if (!File.Exists(sourceFilePath))
+                {
+                    File.Delete(targetFilePath);
+                    Log.Information($"Le fichier '{relativePath}' a été supprimé de {PathTarget} car il n'existe plus dans {PathSource}.");
                 }
             }
         }
@@ -603,7 +741,7 @@ namespace EasySaveConsole.MVVM.ViewModels
             else
                 Console.WriteLine("Error");
 
-            menuInterface = new List<string>() { GetTraductor("Create"), GetTraductor("Launch"), GetTraductor("Edit"), GetTraductor("Language"), GetTraductor("Exit") };
+            menuInterface = new List<string>() { GetTraductor("Create"), GetTraductor("Launch"), GetTraductor("Edit"),GetTraductor("Delete"), GetTraductor("Language"), GetTraductor("Exit") };
             
         }
     }
