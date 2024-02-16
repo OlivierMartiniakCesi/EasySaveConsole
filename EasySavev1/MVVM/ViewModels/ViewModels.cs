@@ -601,7 +601,6 @@ namespace EasySaveConsole.MVVM.ViewModels
             {
                 string targetFilePath = Path.Combine(PathTarget, AllFiles.Substring(PathSource.Length + 1));
                 File.Copy(AllFiles, AllFiles.Replace(PathSource, PathTarget), true);
-                CopyFileWithProgress(PathSource, PathTarget);
             }
         }
 
