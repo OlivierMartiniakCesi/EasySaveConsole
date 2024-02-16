@@ -462,13 +462,20 @@ namespace EasySaveConsole.MVVM.ViewModels
             Backup selectedBackup = backupList.FirstOrDefault(backup => backup.getName() == Name);
 
             //Create directory if it doesn't already exist
-            if (!Directory.Exists(selectedBackup.getTargetDirectory()))
+            if (Directory.Exists(selectedBackup.getTargetDirectory()))
             {
                 foreach (string AllDirectory in Directory.GetDirectories(selectedBackup.getSourceDirectory(), "*", SearchOption.AllDirectories))
                 {
                     Directory.CreateDirectory(AllDirectory.Replace(selectedBackup.getSourceDirectory(), selectedBackup.getTargetDirectory()));
                 }
-                Log.Information("Creation of directory ", selectedBackup.getTargetDirectory());
+            }
+            else
+            {
+                Directory.CreateDirectory(selectedBackup.getTargetDirectory());
+                foreach (string AllDirectory in Directory.GetDirectories(selectedBackup.getSourceDirectory(), "*", SearchOption.AllDirectories))
+                {
+                    Directory.CreateDirectory(AllDirectory.Replace(selectedBackup.getSourceDirectory(), selectedBackup.getTargetDirectory()));
+                }
             }
 
             if (selectedBackup != null)
