@@ -97,6 +97,7 @@ namespace EasySaveConsole.MVVM.ViewModels
             else
             {
                 Log.Information($"Élément de données invalide trouvé.");
+                File.WriteAllText(filePath, "[]");
             }
         }
 
