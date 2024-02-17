@@ -10,6 +10,7 @@
         <ResourceDictionary x:Name="Dictionary">
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Style/MainDictonnary.xaml" />
+                <ResourceDictionary Source="/Style/SettingsDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

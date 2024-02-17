@@ -90,9 +90,10 @@
             </Grid>
             <Grid Margin="172,82,24,24">
                 <DockPanel>
-                    <Border Style="{DynamicResource BordureDash}">
-                        <ContentControl Content="{Binding}" Name="Page"></ContentControl>
-                    </Border>
+                    <Grid>
+                        <Border Style="{DynamicResource BordureDash}"/>
+                        <ContentControl Content="{Binding}" Name="Page"/>
+                    </Grid>
                 </DockPanel>
             </Grid>
         </Grid>
