@@ -471,10 +471,10 @@ namespace EasySaveConsole.MVVM.ViewModels
                 if (id > maxId)
                 {
                     maxId = id;
-                    maxId++;
                     foundId = true;
                 }
             }
+            maxId++;
 
             if (!foundId)
             {
