@@ -28,7 +28,7 @@
     <Style TargetType="Border" x:Key="BorderedTextBlock">
         <Setter Property="Background" Value="#d9d9d9"/>
         <Setter Property="BorderBrush" Value="Black"/>
-        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="CornerRadius" Value="5"/>
     </Style>
 
@@ -42,7 +42,7 @@
         <Setter Property="FontFamily" Value="/Font/#Helvetica"/>
         <Setter Property="FontWeight" Value="Bold"/>
     </Style>
-    
+
     <Style TargetType="Button" x:Key="save">
         <Setter Property="Width" Value="100"/>
         <Setter Property="FontFamily" Value="/Font/#Helvetica"/>
@@ -50,12 +50,15 @@
         <Setter Property="Height" Value="35"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Background" Value="#d9d9d9"/>
+        <Setter Property="Foreground" Value="#41485A"/>
         <Setter Property="Padding" Value="10"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}" CornerRadius="10">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Border BorderBrush="Black" BorderThickness="2" CornerRadius="10">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -69,6 +72,6 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
 
 </ResourceDictionary>
