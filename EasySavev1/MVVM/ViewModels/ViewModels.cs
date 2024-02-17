@@ -155,22 +155,22 @@ namespace EasySaveConsole.MVVM.ViewModels
             {
                 Console.WriteLine($"Sauvegarde trouvée : Nom: {settingToModify.getName()}, Source: {settingToModify.getSourceDirectory()}, Destination: {settingToModify.getTargetDirectory()}, Type: {settingToModify.getType()}");
 
-                Console.WriteLine("Entrez le nouveau nom (ou appuyez sur Entrée pour garder le même) :");
+                Console.WriteLine(GetTraductor("ModifyBackupNewName"));
                 string newName = Console.ReadLine();
                 if (!string.IsNullOrEmpty(newName))
                     settingToModify.setName(newName);
 
-                Console.WriteLine("Entrez le nouveau chemin source (ou appuyez sur Entrée pour garder le même) :");
+                Console.WriteLine(GetTraductor("ModifyBackupNewSourcePath"));
                 string newSourcePath = Console.ReadLine();
                 if (!string.IsNullOrEmpty(newSourcePath))
                     settingToModify.setSourceDirectory(newSourcePath);
 
-                Console.WriteLine("Entrez le nouveau chemin de destination (ou appuyez sur Entrée pour garder le même) :");
+                Console.WriteLine(GetTraductor("ModifyBackupNewDestinationPath"));
                 string newDestinationPath = Console.ReadLine();
                 if (!string.IsNullOrEmpty(newDestinationPath))
                     settingToModify.setTargetDirectory(newDestinationPath);
 
-                Console.WriteLine("Entrez le nouveau type de sauvegarde (Complet ou Diff) (ou appuyez sur Entrée pour garder le même) :");
+                Console.WriteLine(GetTraductor("ModifyBackupNewType"));
                 string typeInput = Console.ReadLine();
                 if (!string.IsNullOrEmpty(typeInput))
                     settingToModify.setType(typeInput);
@@ -185,7 +185,7 @@ namespace EasySaveConsole.MVVM.ViewModels
 
         static void DeleteBackupSetting(List<Backup> backupSettings)
         {
-            Console.WriteLine("Enter the name of backup to delete :");
+            Console.WriteLine(GetTraductor("DeleteBackup"));
             string nameToDelete = Console.ReadLine();
 
             var settingToDelete = backupSettings.Find(s => s.getName() == nameToDelete);
@@ -486,7 +486,7 @@ namespace EasySaveConsole.MVVM.ViewModels
 
         public static void LaunchSlotBackup(List<Backup> backupList)
         {
-            Console.Write("Entrez le(s) sauvegardes : ");
+            Console.Write(GetTraductor("LunchSlopBackup"));
             string ChoiceBackup = Console.ReadLine();
 
 

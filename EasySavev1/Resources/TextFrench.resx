@@ -129,6 +129,9 @@
   <data name="Delete" xml:space="preserve">
     <value>Supprimer</value>
   </data>
+  <data name="DeleteBackup" xml:space="preserve">
+    <value>Entrez le nom de la backup à supprimer : </value>
+  </data>
   <data name="Edit" xml:space="preserve">
     <value>Modifier</value>
   </data>
@@ -153,8 +156,23 @@
   <data name="Launch" xml:space="preserve">
     <value>Lancer</value>
   </data>
+  <data name="LunchSlopBackup" xml:space="preserve">
+    <value>Entrez le(s) nom(s) de la ou des backup à lancer : </value>
+  </data>
   <data name="MaxBackup" xml:space="preserve">
     <value>Le nombre maximum de sauvegardes a été atteint</value>
+  </data>
+  <data name="ModifyBackupNewDesinationPath" xml:space="preserve">
+    <value>Entrez le nouveau chemin de destination (ou appuyez sur Entrée pour garder le même) :</value>
+  </data>
+  <data name="ModifyBackupNewName" xml:space="preserve">
+    <value>Entrez le nouveau nom (ou appuyez sur Entrée pour garder le même) :</value>
+  </data>
+  <data name="ModifyBackupNewSourcePath" xml:space="preserve">
+    <value>Entrez le nouveau chemin source (ou appuyez sur Entrée pour garder le même) :</value>
+  </data>
+  <data name="ModifyBackupNewType" xml:space="preserve">
+    <value>Entrez le nouveau type de sauvegarde (Complet ou Diff) (ou appuyez sur Entrée pour garder le même) :</value>
   </data>
   <data name="NoSave" xml:space="preserve">
     <value>Pas de sauvegarde à sauvegarder</value>

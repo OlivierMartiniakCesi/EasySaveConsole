@@ -97,6 +97,15 @@ namespace EasySaveConsole.Resources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Enter the name of backup to delete :.
+        /// </summary>
+        internal static string DeleteBackup {
+            get {
+                return ResourceManager.GetString("DeleteBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Modify.
         /// </summary>
         internal static string Edit {
@@ -169,11 +178,56 @@ namespace EasySaveConsole.Resources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Enter the backup&apos;s name(s) to launch :.
+        /// </summary>
+        internal static string LunchSlopBackup {
+            get {
+                return ResourceManager.GetString("LunchSlopBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Maximum number of backups has been reached.
         /// </summary>
         internal static string MaxBackup {
             get {
                 return ResourceManager.GetString("MaxBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Enter the new backup&apos;s new destination path (press enter to keep the same) :.
+        /// </summary>
+        internal static string ModifyBackupNewDesinationPath {
+            get {
+                return ResourceManager.GetString("ModifyBackupNewDesinationPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Enter the new backup&apos;s name (press enter to keep the same) :.
+        /// </summary>
+        internal static string ModifyBackupNewName {
+            get {
+                return ResourceManager.GetString("ModifyBackupNewName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Enter the new backup&apos;s new source path (press enter to keep the same) : .
+        /// </summary>
+        internal static string ModifyBackupNewSourcePath {
+            get {
+                return ResourceManager.GetString("ModifyBackupNewSourcePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Enter the new backup&apos;s type (Complet or Diff) (press enter to keep the same) :.
+        /// </summary>
+        internal static string ModifyBackupNewType {
+            get {
+                return ResourceManager.GetString("ModifyBackupNewType", resourceCulture);
             }
         }
         

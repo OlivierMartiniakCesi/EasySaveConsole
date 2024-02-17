@@ -129,6 +129,9 @@
   <data name="Delete" xml:space="preserve">
     <value>Delete</value>
   </data>
+  <data name="DeleteBackup" xml:space="preserve">
+    <value>Enter the name of backup to delete :</value>
+  </data>
   <data name="Edit" xml:space="preserve">
     <value>Modify</value>
   </data>
@@ -153,8 +156,23 @@
   <data name="Launch" xml:space="preserve">
     <value>Launch</value>
   </data>
+  <data name="LunchSlopBackup" xml:space="preserve">
+    <value>Enter the backup's name(s) to launch :</value>
+  </data>
   <data name="MaxBackup" xml:space="preserve">
     <value>Maximum number of backups has been reached</value>
+  </data>
+  <data name="ModifyBackupNewDesinationPath" xml:space="preserve">
+    <value>Enter the new backup's new destination path (press enter to keep the same) :</value>
+  </data>
+  <data name="ModifyBackupNewName" xml:space="preserve">
+    <value>Enter the new backup's name (press enter to keep the same) :</value>
+  </data>
+  <data name="ModifyBackupNewSourcePath" xml:space="preserve">
+    <value>Enter the new backup's new source path (press enter to keep the same) : </value>
+  </data>
+  <data name="ModifyBackupNewType" xml:space="preserve">
+    <value>Enter the new backup's type (Complet or Diff) (press enter to keep the same) :</value>
   </data>
   <data name="NoSave" xml:space="preserve">
     <value>No backup to save</value>
