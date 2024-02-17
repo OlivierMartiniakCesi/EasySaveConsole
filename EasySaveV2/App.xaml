@@ -11,6 +11,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Style/MainDictonnary.xaml" />
                 <ResourceDictionary Source="/Style/SettingsDictionary.xaml" />
+                <ResourceDictionary Source="/Style/BackupDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
