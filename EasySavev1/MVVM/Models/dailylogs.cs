@@ -32,7 +32,6 @@ namespace EasySaveConsole.MVVM.Models
                 .WriteTo.File(@"C:\Temp\log.xml", rollingInterval: RollingInterval.Day) // Write daily logs on JSON File 
                 .CreateLogger();
             }
-
         }
     }
 }

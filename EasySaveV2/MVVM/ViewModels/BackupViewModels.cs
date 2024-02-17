@@ -16,8 +16,6 @@ namespace EasySaveV2.MVVM.ViewModels
     {
         private static XmlDocument doc;
         private static Backup _backup = new Backup();
-        private static dailylogs logs = new dailylogs();
-        static string format_logs;
         static string directoryPath = @"C:\JSON";
         static string filePath = @"C:\JSON\confbackup.json";
         public static List<Backup> BackupListInfo = new List<Backup>();
