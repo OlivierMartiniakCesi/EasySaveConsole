@@ -12,31 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using EasySaveV2.MVVM.ViewModels;
-using EasySaveV2.MVVM.Views;
 
-
-namespace EasySaveV2
+namespace EasySaveV2.MVVM.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Logique d'interaction pour DashboardViews.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class DashboardViews : UserControl
     {
-        public MainWindow()
+        public DashboardViews()
         {
             InitializeComponent();
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-           Home.Content = new DashboardViews();
-        }
-        
-
-        private void CloseApplication(object sender, RoutedEventArgs e)
-        {
-            Close();
         }
     }
 }

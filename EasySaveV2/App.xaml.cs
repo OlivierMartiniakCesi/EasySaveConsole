@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using EasySaveV2.MVVM.ViewModels;
 
 namespace EasySaveV2
 {
@@ -13,5 +14,6 @@ namespace EasySaveV2
     /// </summary>
     public partial class App : Application
     {
+
     }
 }

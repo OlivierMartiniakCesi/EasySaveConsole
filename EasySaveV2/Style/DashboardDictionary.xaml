@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    
+
+    <Style TargetType="Rectangle" x:Key="DashBoard">
+        <Setter Property="Fill" Value="#b9b9b9"/>
+        <Setter Property="Opacity" Value="0.4"/>
+    </Style>
+
+
+</ResourceDictionary>

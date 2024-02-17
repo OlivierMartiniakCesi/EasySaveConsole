@@ -7,6 +7,13 @@
         <Setter Property="Background" Value="#f1f1fb"/>
     </Style>
 
+    <!--  Border Page  -->
+    <Style TargetType="Border" x:Key="BordureDash">
+        <Setter Property="CornerRadius" Value="20"/>
+        <Setter Property="Background" Value="#b9b9b9"/>
+        <Setter Property="Opacity" Value="0.4"/>
+    </Style>
+    
     <Style TargetType="Rectangle" x:Key="LigneMenu">
         <Setter Property="Fill" Value="#b9b9b9"/>
         <Setter Property="Opacity" Value="0.4"/>

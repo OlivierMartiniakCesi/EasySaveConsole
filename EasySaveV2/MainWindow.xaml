@@ -4,6 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EasySaveV2"
+        xmlns:viewModel="clr-namespace:EasySaveV2.MVVM.ViewModels"
+        xmlns:view="clr-namespace:EasySaveV2.MVVM.Views"
         mc:Ignorable="d"
         Height="450" Width="800"
         WindowStyle="None"
@@ -12,8 +14,6 @@
         AllowsTransparency="True"
         WindowStartupLocation="CenterScreen"
         >
-
-
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -27,7 +27,7 @@
         <Grid>
             <Grid Margin="0,0,650,0">
                 <Rectangle Style="{DynamicResource LigneMenu}" HorizontalAlignment="Right" Width="2"/>
-                <StackPanel>
+                <StackPanel  x:Name="Dashboard">
                     <Button Style="{DynamicResource ButtonLeft}" Margin="10,40,10,0" Click="Button_Click">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -40,7 +40,7 @@
                     </Button>
                 </StackPanel>
 
-                <StackPanel>
+                <StackPanel  x:Name="Backup">
                     <Button Style="{DynamicResource ButtonLeft}" Margin="10,168,10,0">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -53,7 +53,7 @@
                     </Button>
                 </StackPanel>
 
-                <StackPanel>
+                <StackPanel x:Name="Settings">
                     <Button Style="{DynamicResource ButtonLeft}" Margin="10,296,10,0">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -79,6 +79,14 @@
                         <Image Stretch="Fill" Source="/Pictures/close.png"/>
                     </Grid>
                 </Button>
+            </Grid>
+            <Grid Margin="172,82,24,24">
+                <DockPanel>
+                    <Border Style="{DynamicResource BordureDash}">
+                        <Frame x:Name="Home" NavigationUIVisibility="Hidden" Content="">
+                        </Frame>
+                    </Border>
+                </DockPanel>
             </Grid>
         </Grid>
     </Border>

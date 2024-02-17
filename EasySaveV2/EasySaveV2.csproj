@@ -24,4 +24,19 @@
     <Resource Include="Pictures\Settings.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="MVVM\Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="MainWindow.xaml">
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Page>
+    <Page Update="MVVM\Views\DashboardViews.xaml">
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Page>
+  </ItemGroup>
+
 </Project>
