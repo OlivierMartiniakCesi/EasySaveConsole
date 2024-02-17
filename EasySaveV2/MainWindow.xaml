@@ -14,21 +14,25 @@
         AllowsTransparency="True"
         WindowStartupLocation="CenterScreen"
         >
+
+
+
     <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Style/MainDictonnary.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
+        <DataTemplate x:Name="DashViews" DataType="{x:Type viewModel:DashboardViewModels}">
+            <view:DashboardViews DataContext="{Binding}"/>
+        </DataTemplate>
+
+        <DataTemplate x:Name="BackupViews" DataType="{x:Type viewModel:BackupViewModels}">
+            <view:DashboardViews DataContext="{Binding}"/>
+        </DataTemplate>
     </Window.Resources>
 
     <Border Style="{DynamicResource BordureMenu}">
-
         <Grid>
             <Grid Margin="0,0,650,0">
                 <Rectangle Style="{DynamicResource LigneMenu}" HorizontalAlignment="Right" Width="2"/>
                 <StackPanel  x:Name="Dashboard">
-                    <Button Style="{DynamicResource ButtonLeft}" Margin="10,40,10,0" Click="Button_Click">
+                    <Button Style="{DynamicResource ButtonLeft}" Margin="10,40,10,0" Click="GoToDashboard">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -41,7 +45,7 @@
                 </StackPanel>
 
                 <StackPanel  x:Name="Backup">
-                    <Button Style="{DynamicResource ButtonLeft}" Margin="10,168,10,0">
+                    <Button Style="{DynamicResource ButtonLeft}" Margin="10,168,10,0" Click="GoToBackup">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -54,7 +58,7 @@
                 </StackPanel>
 
                 <StackPanel x:Name="Settings">
-                    <Button Style="{DynamicResource ButtonLeft}" Margin="10,296,10,0">
+                    <Button Style="{DynamicResource ButtonLeft}" Margin="10,296,10,0" Click="GoToSettings">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>

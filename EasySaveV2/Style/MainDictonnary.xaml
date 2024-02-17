@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-
+        
     <!--  Border Main  -->
     <Style TargetType="Border" x:Key="BordureMenu">
         <Setter Property="CornerRadius" Value="20"/>

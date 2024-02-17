@@ -7,5 +7,10 @@
              StartupUri="MainWindow.xaml"
              >
     <Application.Resources>
+        <ResourceDictionary x:Name="Dictionary">
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Style/MainDictonnary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

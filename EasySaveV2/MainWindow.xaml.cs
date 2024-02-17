@@ -28,11 +28,20 @@ namespace EasySaveV2
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void GoToDashboard(object sender, RoutedEventArgs e)
         {
            Home.Content = new DashboardViews();
         }
-        
+
+        private void GoToBackup(object sender, RoutedEventArgs e)
+        {
+            Home.Content = new BackupViews();
+        }
+
+        private void GoToSettings(object sender, RoutedEventArgs e)
+        {
+            Home.Content = new SettingsViews();
+        }
 
         private void CloseApplication(object sender, RoutedEventArgs e)
         {

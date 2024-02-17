@@ -29,8 +29,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="MVVM\ViewModels\DashboardViewModels.cs">
+      <Generator>MSBuild:Compile</Generator>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <Page Update="MainWindow.xaml">
-      <Generator>XamlIntelliSenseFileGenerator</Generator>
+      <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Page>
     <Page Update="MVVM\Views\DashboardViews.xaml">
