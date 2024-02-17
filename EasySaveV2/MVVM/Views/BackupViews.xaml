@@ -13,9 +13,10 @@
         <Label Content="Destination" Margin="0,120,70,-81" FontSize ="30" Style="{DynamicResource TextBackup}" HorizontalAlignment="Right"/>
         <TextBlock Name="backupSource" Margin="20,-50,0,-81" Style="{DynamicResource Texttest}" MouseLeftButtonDown="OpenFileExplorerSource_Click" Text="Source" TextAlignment="Center" HorizontalAlignment="Left"/>
         <TextBlock Name="backupDest" Margin="0,-50,20,-81" Style="{DynamicResource Texttest}" Text="Destination" MouseLeftButtonDown="OpenFileExplorerDestination_Click" TextAlignment="Center" HorizontalAlignment="Right"/>
-        <RadioButton GroupName="BackupType" Margin="60,225,0,-113" FontSize ="15" Style="{DynamicResource backuptype}" Content="Complete" IsChecked="True" HorizontalAlignment="Left"/>
-        <RadioButton GroupName="BackupType" FontSize ="15" Style="{DynamicResource backuptype}" Content="Differential" HorizontalAlignment="Right" Margin="0,225,150,-113"/>
-        <Button Content="Create" Style="{DynamicResource save}" Margin="100,0,100,40" VerticalAlignment="Bottom"/>
-
+        <StackPanel x:Name="type">
+            <RadioButton GroupName="BackupType" Margin="60,225,0,-113" FontSize ="15" Style="{DynamicResource backuptype}" Content="Complete" IsChecked="True" HorizontalAlignment="Left"/>
+            <RadioButton GroupName="BackupType" FontSize ="15" Style="{DynamicResource backuptype}" Content="Differential" HorizontalAlignment="Right" Margin="0,95,150,0"/>
+        </StackPanel>
+        <Button Content="Create" Style="{DynamicResource save}" Margin="100,0,100,40" VerticalAlignment="Bottom" Click="BackupCreator"/>
     </Grid>
 </UserControl>

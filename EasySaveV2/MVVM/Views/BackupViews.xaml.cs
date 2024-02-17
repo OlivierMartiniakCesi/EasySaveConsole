@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Controls;
+using EasySaveV2.MVVM.ViewModels;
 
 namespace EasySaveV2.MVVM.Views
 {
@@ -15,40 +16,57 @@ namespace EasySaveV2.MVVM.Views
         }
         private void OpenFileExplorerSource_Click(object sender, RoutedEventArgs e)
         {
-            // Créer une boîte de dialogue de sélection de fichier
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
 
-            // Afficher la boîte de dialogue et vérifier si l'utilisateur a sélectionné un fichier
+            openFileDialog.Title = "Sélectionnez un dossier";
+
+            openFileDialog.CheckFileExists = false;
+            openFileDialog.FileName = "Sélectionnez un dossier";
+
             if (openFileDialog.ShowDialog() == true)
             {
-                // Récupérer le chemin du fichier sélectionné
-                string selectedFilePath = openFileDialog.FileName;
-
-                // Stocker le chemin du fichier comme nécessaire (par exemple, dans une variable ou dans une propriété)
-                // Vous pouvez utiliser selectedFilePath comme bon vous semble ici
-                // Par exemple, affecter la valeur à un TextBox, à une propriété, etc.
-
-                // Afficher le chemin du fichier dans votre TextBlock (ou TextBox, selon votre structure)
-                backupSource.Text = selectedFilePath;
+                // Récupérer le chemin du dossier sélectionné
+                string selectedFolderPath = System.IO.Path.GetDirectoryName(openFileDialog.FileName);
+                backupSource.Text = selectedFolderPath;
             }
         }
         private void OpenFileExplorerDestination_Click(object sender, RoutedEventArgs e)
         {
-            // Créer une boîte de dialogue de sélection de fichier
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
 
-            // Afficher la boîte de dialogue et vérifier si l'utilisateur a sélectionné un fichier
+            openFileDialog.Title = "Sélectionnez un dossier";
+
+            openFileDialog.CheckFileExists = false;
+            openFileDialog.FileName = "Sélectionnez un dossier";
+
             if (openFileDialog.ShowDialog() == true)
             {
-                // Récupérer le chemin du fichier sélectionné
-                string selectedFilePath = openFileDialog.FileName;
+                // Récupérer le chemin du dossier sélectionné
+                string selectedFolderPath = System.IO.Path.GetDirectoryName(openFileDialog.FileName);
+                backupDest.Text = selectedFolderPath;
+            }
+        }
 
-                // Stocker le chemin du fichier comme nécessaire (par exemple, dans une variable ou dans une propriété)
-                // Vous pouvez utiliser selectedFilePath comme bon vous semble ici
-                // Par exemple, affecter la valeur à un TextBox, à une propriété, etc.
+        private RadioButton GetSelectedRadioButton(StackPanel stackPanel)
+        {
+            foreach (var child in stackPanel.Children)
+            {
+                if (child is RadioButton radioButton && radioButton.IsChecked == true)
+                {
+                    return radioButton;
+                }
+            }
+            return null;
+        }
 
-                // Afficher le chemin du fichier dans votre TextBlock (ou TextBox, selon votre structure)
-                backupDest.Text = selectedFilePath;
+        public void BackupCreator(object sender, RoutedEventArgs e)
+        {
+            if (backupName.Text != "" && backupSource.Text != "" && backupDest.Text != "")
+            {
+                RadioButton selectedRadioButton = GetSelectedRadioButton(type);
+                string backupType = selectedRadioButton.Content.ToString();
+                BackupViewModels.CreateSlotBackup(backupName.Text, backupSource.Text, backupDest.Text, backupType);
+                MainWindow win = (MainWindow)Window.GetWindow(this);
             }
         }
     }
