@@ -11,7 +11,9 @@
     <None Remove="Pictures\Backup.png" />
     <None Remove="Pictures\close.png" />
     <None Remove="Pictures\DashBoard.png" />
+    <None Remove="Pictures\french.png" />
     <None Remove="Pictures\Logo.png" />
+    <None Remove="Pictures\Rond.png" />
     <None Remove="Pictures\Settings.png" />
   </ItemGroup>
 
@@ -20,7 +22,9 @@
     <Resource Include="Pictures\Backup.png" />
     <Resource Include="Pictures\close.png" />
     <Resource Include="Pictures\DashBoard.png" />
+    <Resource Include="Pictures\french.png" />
     <Resource Include="Pictures\Logo.png" />
+    <Resource Include="Pictures\Rond.png" />
     <Resource Include="Pictures\Settings.png" />
   </ItemGroup>
 

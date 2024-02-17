@@ -7,5 +7,53 @@
         <Setter Property="FontFamily" Value="/Font/#Helvetica"/>
         <Setter Property="FontWeight" Value="Bold"/>
     </Style>
-    
+
+
+    <Style x:Key="ToggleButtonStyle" TargetType="ToggleButton">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="border" 
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="15"
+                        SnapsToDevicePixels="true"
+                        BorderBrush="Black" 
+                        BorderThickness="3">
+                        <Canvas Background="Transparent">
+                            <Ellipse x:Name="ellipse"
+                                Fill="Black"
+                                Width="26" Height="26"
+                                Canvas.Top="1" Canvas.Left="1"
+                                SnapsToDevicePixels="True"/>
+                        </Canvas>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ellipse"
+                                                     Storyboard.TargetProperty="(Canvas.Left)"
+                                                     From="1" To="31" Duration="0:0:0.15"
+                                                     AutoReverse="False"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ellipse"
+                                                     Storyboard.TargetProperty="(Canvas.Left)"
+                                                     From="31" To="1" Duration="0:0:0.15"
+                                                     AutoReverse="False"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>
