@@ -12,6 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Newtonsoft.Json;
+using System.IO;
+using EasySaveV2.MVVM.ViewModels;
 
 namespace EasySaveV2.MVVM.Views
 {
@@ -23,6 +26,15 @@ namespace EasySaveV2.MVVM.Views
         public DashboardViews()
         {
             InitializeComponent();
+        }
+
+        public void BtnLoad_Click(object sender, RoutedEventArgs e)
+        {
+            var json = File.ReadAllText(@"C:\JSON\confbackup.json");
+
+            List<DashboardViewModels.Backup> _personnes = JsonConvert.DeserializeObject<List<DashboardViewModels.Backup>>(json);
+
+            GridPeople.ItemsSource = _personnes;
         }
     }
 }
