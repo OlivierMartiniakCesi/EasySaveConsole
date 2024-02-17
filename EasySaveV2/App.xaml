@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:EasySaveV2"
              xmlns:viewModel="clr-namespace:EasySaveV2.MVVM.ViewModels"
              xmlns:view="clr-namespace:EasySaveV2.MVVM.Views"
+             StartupUri="MainWindow.xaml"
              >
     <Application.Resources>
     </Application.Resources>
