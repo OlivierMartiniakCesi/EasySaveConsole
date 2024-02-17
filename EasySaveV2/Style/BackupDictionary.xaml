@@ -11,7 +11,7 @@
         <Setter Property="Height" Value="20"/>
         <Setter Property="FontSize" Value="15"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Background" Value="#FFFFFF"/>
+        <Setter Property="Background" Value="#d9d9d9"/>
         <Setter Property="FontFamily" Value="/Font/#Helvetica"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Foreground" Value="#41485A"/>
@@ -20,11 +20,18 @@
     <Style TargetType="TextBlock" x:Key="Texttest">
         <Setter Property="FontFamily" Value="/Font/#Helvetica"/>
         <Setter Property="FontSize" Value="15"/>
-        <Setter Property="Background" Value="#FFFFFF"/>
         <Setter Property="Foreground" Value="#41485A"/>
-        <Setter Property="Height" Value="20"/>
+        <Setter Property="Height" Value="35"/>
         <Setter Property="Width" Value="250"/>
     </Style>
+
+    <Style TargetType="Border" x:Key="BorderedTextBlock">
+        <Setter Property="Background" Value="#d9d9d9"/>
+        <Setter Property="BorderBrush" Value="Black"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="5"/>
+    </Style>
+
     <Style TargetType="RadioButton" x:Key="backuptype">
         <Setter Property="RenderTransform">
             <Setter.Value>
@@ -35,14 +42,32 @@
         <Setter Property="FontFamily" Value="/Font/#Helvetica"/>
         <Setter Property="FontWeight" Value="Bold"/>
     </Style>
+    
     <Style TargetType="Button" x:Key="save">
-        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Width" Value="100"/>
         <Setter Property="FontFamily" Value="/Font/#Helvetica"/>
-        <Setter Property="Background" Value="#FFFFFF"/>
-        <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="Height" Value="30"/>
-        <Setter Property="Width" Value="75"/>
-        <Setter Property="FontSize" Value="25"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Height" Value="35"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="#d9d9d9"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="10">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#b9b9b9"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="#b9b9b9"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
     
 
