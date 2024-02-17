@@ -157,7 +157,7 @@
     <value>Lancer</value>
   </data>
   <data name="LunchSlopBackup" xml:space="preserve">
-    <value>Entrez le(s) nom(s) de la ou des backup à lancer : </value>
+    <value>Entrez le(s) ID de la ou des backup à lancer : </value>
   </data>
   <data name="MaxBackup" xml:space="preserve">
     <value>Le nombre maximum de sauvegardes a été atteint</value>

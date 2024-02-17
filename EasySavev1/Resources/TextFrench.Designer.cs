@@ -178,7 +178,7 @@ namespace EasySaveConsole.Resources {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Entrez le(s) nom(s) de la ou des backup à lancer : .
+        ///   Recherche une chaîne localisée semblable à Entrez le(s) ID de la ou des backup à lancer : .
         /// </summary>
         internal static string LunchSlopBackup {
             get {
