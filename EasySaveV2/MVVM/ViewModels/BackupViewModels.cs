@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace EasySaveV2.MVVM.ViewModels
 {
@@ -53,6 +55,47 @@ namespace EasySaveV2.MVVM.ViewModels
             else
             {
                 //Console.WriteLine(GetTraductor("NoSave"));
+            }
+        }
+        public static void GetJSON()
+        {
+            if (File.Exists(filePath))
+            {
+                string fileName = filePath;
+                var fileString = File.ReadAllText(fileName);
+                var array = JArray.Parse(fileString);
+
+                if (array.Count() > 0)
+                {
+                    foreach (var item in array)
+                    {
+                        // Vérifier si toutes les clés nécessaires existent et ne sont pas vides
+                        if (item["Name"] != null && !string.IsNullOrEmpty(item["Name"].ToString()) &&
+                            item["Source"] != null && !string.IsNullOrEmpty(item["Source"].ToString()) &&
+                            item["Target"] != null && !string.IsNullOrEmpty(item["Target"].ToString()) &&
+                            item["Type"] != null && !string.IsNullOrEmpty(item["Type"].ToString()))
+                        {
+                            Backup backup = new Backup(
+                                item["Name"].ToString(),
+                                item["Source"].ToString(),
+                                item["Target"].ToString(),
+                                item["Type"].ToString()
+                            );
+                            try
+                            {
+                                BackupListInfo.Add(backup);   // CorrectElements
+                            }
+                            catch
+                            {
+                                Log.Information($"Erreur lors de l'ajout de données.");
+                            }
+                        }
+                        else
+                        {
+                            Log.Information($"Élément de données invalide trouvé.");
+                        }
+                    }
+                }
             }
         }
     }

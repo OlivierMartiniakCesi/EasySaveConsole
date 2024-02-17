@@ -31,7 +31,8 @@ namespace EasySaveV2
 
         public void GoToDashboard(object sender, RoutedEventArgs e)
         {
-           DataContext = new DashboardViewModels();
+            DataContext = new DashboardViewModels();
+            BackupViewModels.GetJSON();
         }
 
         private void GoToBackup(object sender, RoutedEventArgs e)
