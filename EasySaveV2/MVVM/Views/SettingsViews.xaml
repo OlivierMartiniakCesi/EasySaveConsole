@@ -5,8 +5,28 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:EasySaveV2.MVVM.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="344" d:DesignWidth="604">
     <Grid>
-        <Label Content="Setting" FontSize ="18" Style="{DynamicResource TextSetting}" HorizontalAlignment="Center" Grid.Row="1"/>
+        <Grid HorizontalAlignment="Center">
+            <Label Content="Settings" Margin="20" FontSize ="30" Style="{DynamicResource TextSetting}" HorizontalAlignment="Center" Grid.Row="1"/>
+        </Grid>
+        <Grid>
+            <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Width="300">
+                <StackPanel Height="190">
+                    <Label Content="Format"  FontSize ="25" Style="{DynamicResource TextSetting}" HorizontalAlignment="Center" Grid.Row="1"/>
+                    <ToggleButton Margin="10" VerticalAlignment="Center" HorizontalAlignment="Center" Width="64" Height="35" Style="{DynamicResource ToggleButtonStyle}" />
+                </StackPanel>
+            </DockPanel>
+            <DockPanel VerticalAlignment="Center" HorizontalAlignment="Right" Width="300">
+                <StackPanel Height="190">
+                    <Label Content="Language"  FontSize ="25" Style="{DynamicResource TextSetting}" HorizontalAlignment="Center" Grid.Row="1"/>
+                    <ToggleButton Margin="10" VerticalAlignment="Center" HorizontalAlignment="Center" Width="64" Height="35" Style="{DynamicResource ToggleButtonStyle}" />
+                </StackPanel>
+            </DockPanel>
+        </Grid>
+        <Label Content="EN" FontSize="18" Style="{DynamicResource TextSetting}" Margin="378,130,195,184"/>
+        <Label Content="FR" FontSize="18" Style="{DynamicResource TextSetting}" Margin="502,130,71,184"/>
+        <Label Content="JSON" FontSize="18" Style="{DynamicResource TextSetting}" Margin="53,130,502,184"/>
+        <Label Content="XML" FontSize="18" Style="{DynamicResource TextSetting}" Margin="204,130,352,184"/>
     </Grid>
 </UserControl>
