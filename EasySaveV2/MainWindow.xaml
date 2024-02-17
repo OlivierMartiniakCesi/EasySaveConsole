@@ -91,7 +91,7 @@
             <Grid Margin="172,82,24,24">
                 <DockPanel>
                     <Border Style="{DynamicResource BordureDash}">
-                        <ContentControl Content="{Binding}" Name="Page" Width="801"></ContentControl>
+                        <ContentControl Content="{Binding}" Name="Page"></ContentControl>
                     </Border>
                 </DockPanel>
             </Grid>
