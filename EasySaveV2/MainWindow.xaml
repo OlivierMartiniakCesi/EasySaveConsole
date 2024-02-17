@@ -23,7 +23,11 @@
         </DataTemplate>
 
         <DataTemplate x:Name="BackupViews" DataType="{x:Type viewModel:BackupViewModels}">
-            <view:DashboardViews DataContext="{Binding}"/>
+            <view:BackupViews DataContext="{Binding}"/>
+        </DataTemplate>
+
+        <DataTemplate x:Name="SettingViews" DataType="{x:Type viewModel:SettingsViewModels}">
+            <view:SettingsViews DataContext="{Binding}"/>
         </DataTemplate>
     </Window.Resources>
 
@@ -87,8 +91,7 @@
             <Grid Margin="172,82,24,24">
                 <DockPanel>
                     <Border Style="{DynamicResource BordureDash}">
-                        <Frame x:Name="Home" NavigationUIVisibility="Hidden" Content="">
-                        </Frame>
+                        <ContentControl Content="{Binding}" Name="Page" Width="801"></ContentControl>
                     </Border>
                 </DockPanel>
             </Grid>

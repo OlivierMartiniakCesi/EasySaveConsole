@@ -26,21 +26,22 @@ namespace EasySaveV2
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = new DashboardViewModels();
         }
 
         private void GoToDashboard(object sender, RoutedEventArgs e)
         {
-           Home.Content = new DashboardViews();
+           DataContext = new DashboardViewModels();
         }
 
         private void GoToBackup(object sender, RoutedEventArgs e)
         {
-            Home.Content = new BackupViews();
+            DataContext = new BackupViewModels();
         }
 
         private void GoToSettings(object sender, RoutedEventArgs e)
         {
-            Home.Content = new SettingsViews();
+            DataContext = new SettingsViewModels();
         }
 
         private void CloseApplication(object sender, RoutedEventArgs e)
