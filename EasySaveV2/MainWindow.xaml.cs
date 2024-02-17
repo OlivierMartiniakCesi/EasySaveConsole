@@ -29,7 +29,7 @@ namespace EasySaveV2
             DataContext = new DashboardViewModels();
         }
 
-        private void GoToDashboard(object sender, RoutedEventArgs e)
+        public void GoToDashboard(object sender, RoutedEventArgs e)
         {
            DataContext = new DashboardViewModels();
         }
