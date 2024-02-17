@@ -66,7 +66,11 @@ namespace EasySaveV2.MVVM.Views
                 RadioButton selectedRadioButton = GetSelectedRadioButton(type);
                 string backupType = selectedRadioButton.Content.ToString();
                 BackupViewModels.CreateSlotBackup(backupName.Text, backupSource.Text, backupDest.Text, backupType);
+                backupName.Text = "Type the back-up name";
+                backupSource.Text = "Source";
+                backupDest.Text = "Destination";
                 MainWindow win = (MainWindow)Window.GetWindow(this);
+                win.GoToDashboard(sender, e);
             }
         }
     }
