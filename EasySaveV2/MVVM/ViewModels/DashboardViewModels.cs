@@ -45,8 +45,11 @@ namespace EasySaveV2.MVVM.ViewModels
                             Thread.Sleep(1000); // Wait for 1 second before checking again
                         }
 
+                        string directory = backup.getTargetDirectory() + "\\" + backup.getName();
+                        backup.setTargetDirectory(directory);
+
                         // Create directory if it doesn't already exist
-                        if (!Directory.Exists(backup.getTargetDirectory()))
+                        if (!Directory.Exists(directory))
                         {
                             // Use Semaphore to control access to the shared resource
                             SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
@@ -70,7 +73,7 @@ namespace EasySaveV2.MVVM.ViewModels
                             semaphore.Dispose();
                         }
 
-                        if (backup.getType().Equals("complet", StringComparison.OrdinalIgnoreCase))
+                        if (backup.getType().Equals("Full", StringComparison.OrdinalIgnoreCase) || backup.getType().Equals("Complet", StringComparison.OrdinalIgnoreCase))
                         {
                             TypeComplet(backup.getSourceDirectory(), backup.getTargetDirectory());
                         }
