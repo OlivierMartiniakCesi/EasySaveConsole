@@ -9,7 +9,7 @@ namespace EasySaveV2.MVVM.Models
 {
     class Backup
     {
-        private string Name { get; set; }
+        public string Name { get; set; }
         private string SourceDirectory { get; set; }
         private string TargetDirectory { get; set; }
         private string Type { get; set; }

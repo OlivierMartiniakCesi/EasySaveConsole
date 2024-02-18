@@ -7,8 +7,8 @@
              xmlns:vm="clr-namespace:EasySaveV2.MVVM.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="344" d:DesignWidth="604">
-    
-    <Grid Name="BackupSize">
+
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -19,36 +19,35 @@
             <Button Content="Lauch" FontSize="16" Style="{DynamicResource btn}" Margin="20,0,0,0"/>
         </StackPanel>
 
-
-
-    <Grid Name="ListBackup" Margin="0 10 0 0">
-        <ScrollViewer Height="{Binding ElementName=ListBackup, Path=ActualHeight}" VerticalScrollBarVisibility="Hidden">
-            <ItemsControl ItemsSource="{Binding BackupList}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border Style="{DynamicResource BordureDash}" Margin="30 0 15 20">
-                            <Grid>
-                                <StackPanel Grid.Row="0" Grid.Column="0">
-                                    <Label Style="{DynamicResource NameDashboard}" Content="Name"/>
-                                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Path=DashboardType}" Style="{DynamicResource TextDashBoard}" FontSize="14"/>
+        <Grid Name="ListBackup" Margin="0,10,0,0" Grid.Row="1">
+            <ScrollViewer Height="{Binding ElementName=ListBackup, Path=ActualHeight}" VerticalScrollBarVisibility="Hidden">
+                <ItemsControl ItemsSource="{Binding BackupList}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{DynamicResource BordureDash}" Margin="30,0,15,20">
+                                <Grid>
+                                    <StackPanel Grid.Row="0" Grid.Column="0">
+                                        <TextBlock  Style="{DynamicResource NameDashboard}" Text="{Binding Name}"/>
+                                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Path=DashboardType}" Style="{DynamicResource TextDashBoard}" FontSize="14"/>
+                                        </StackPanel>
                                     </StackPanel>
-                                </StackPanel>
-                                <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0, 10, 0, 0">
-                                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Path=DashboardSource}" Style="{DynamicResource TextDashBoard}" FontSize="14"/>
+                                    <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,10,0,0">
+                                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Path=DashboardSource}" Style="{DynamicResource TextDashBoard}" FontSize="14"/>
+                                        </StackPanel>
                                     </StackPanel>
-                                </StackPanel>
-                                <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0, 0, 0, 10">
-                                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Path=DashboardDestination}" Style="{DynamicResource TextDashBoard}" FontSize="14"/>
+                                    <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Path=DashboardDestination}" Style="{DynamicResource TextDashBoard}" FontSize="14"/>
+                                        </StackPanel>
                                     </StackPanel>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </UserControl>

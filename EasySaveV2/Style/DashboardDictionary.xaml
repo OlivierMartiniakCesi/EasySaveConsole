@@ -13,11 +13,11 @@
         <Setter Property="Background" Value="#b9b9b9"/>
     </Style>
 
-    <Style TargetType="Label" x:Key="NameDashboard">
+    <Style TargetType="TextBlock" x:Key="NameDashboard">
         <Setter Property="Foreground" Value="Black"/>
         <Setter Property="FontFamily" Value="/Font/#Helvetica"/>
         <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Content" Value="{Binding Path=Name}"/>
+        <Setter Property="Text" Value="{Binding Path=Name}"/>
     </Style>
     
     <Style TargetType="TextBlock" x:Key="TextDashBoard">
