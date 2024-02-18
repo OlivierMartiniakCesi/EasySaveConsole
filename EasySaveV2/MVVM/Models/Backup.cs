@@ -15,8 +15,6 @@ namespace EasySaveV2.MVVM.Models
         private string TargetDirectory { get; set; }
         private string Type { get; set; }
 
-        public ICommand LaunchBackupCommand { get; set; }
-
         //Constructor
         public Backup() { }
 
