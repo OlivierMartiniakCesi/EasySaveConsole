@@ -59,7 +59,7 @@ namespace EasySaveV2.MVVM.ViewModels
                                     try
                                     {
                                         Directory.CreateDirectory(AllDirectory.Replace(backup.getSourceDirectory(), backup.getTargetDirectory()));
-                                        Log.Information("Created directory ", AllDirectory.Replace(backup.getSourceDirectory(), backup.getTargetDirectory()));
+                                        dailylogs.selectedLogger.Information("Created directory ", AllDirectory.Replace(backup.getSourceDirectory(), backup.getTargetDirectory()));
                                     }
                                     finally
                                     {
@@ -113,7 +113,7 @@ namespace EasySaveV2.MVVM.ViewModels
                             if (!isBackupPaused)
                             {
                                 PauseBackup();
-                                Log.Information("Backup execution paused due to the CalculatorApp process running.");
+                                dailylogs.selectedLogger.Information("Backup execution paused due to the CalculatorApp process running.");
                             }
                         }
                         else
@@ -122,7 +122,7 @@ namespace EasySaveV2.MVVM.ViewModels
                             if (isBackupPaused)
                             {
                                 ResumeBackup();
-                                Log.Information("Backup execution resumed.");
+                                dailylogs.selectedLogger.Information("Backup execution resumed.");
                             }
                         }
                     }
@@ -182,7 +182,7 @@ namespace EasySaveV2.MVVM.ViewModels
                     try
                     {
                         Directory.CreateDirectory(directory.Replace(PathSource, PathTarget));
-                        Log.Information("Created directory " + directory.Replace(PathSource, PathTarget));
+                        dailylogs.selectedLogger.Information("Created directory " + directory.Replace(PathSource, PathTarget));
                     }
                     finally
                     {
@@ -200,7 +200,7 @@ namespace EasySaveV2.MVVM.ViewModels
                     {
                         string targetFilePath = Path.Combine(PathTarget, filePath.Substring(PathSource.Length + 1));
                         File.Copy(filePath, filePath.Replace(PathSource, PathTarget), true);
-                        Log.Information("Copied file " + filePath.Replace(PathSource, PathTarget));
+                        dailylogs.selectedLogger.Information("Copied file " + filePath.Replace(PathSource, PathTarget));
                     }
                     finally
                     {
@@ -244,22 +244,22 @@ namespace EasySaveV2.MVVM.ViewModels
                         {
                             // Copy the file from the source location to the target location with progress
                             CopyFileWithProgress(file, destinationFilePath);
-                            Log.Information($"File '{fileName}' in {PathSource} has been copied to {PathTarget} as it was modified more recently.");
+                            dailylogs.selectedLogger.Information($"File '{fileName}' in {PathSource} has been copied to {PathTarget} as it was modified more recently.");
                         }
                         else if (lastModifiedSource < lastModifiedTarget)
                         {
-                            Log.Information($"File '{fileName}' in {PathTarget} was modified after the file in {PathSource}.");
+                            dailylogs.selectedLogger.Information($"File '{fileName}' in {PathTarget} was modified after the file in {PathSource}.");
                         }
                         else
                         {
-                            Log.Information($"Files '{fileName}' were modified on the same date.");
+                            dailylogs.selectedLogger.Information($"Files '{fileName}' were modified on the same date.");
                         }
                     }
                     else
                     {
                         // Copy the file from the source location to the target location with progress
                         CopyFileWithProgress(file, destinationFilePath);
-                        Log.Information($"File '{fileName}' has been copied from {PathSource} to {PathTarget} as it didn't exist in {PathTarget}.");
+                        dailylogs.selectedLogger.Information($"File '{fileName}' has been copied from {PathSource} to {PathTarget} as it didn't exist in {PathTarget}.");
                     }
                 }
                 finally
@@ -276,7 +276,7 @@ namespace EasySaveV2.MVVM.ViewModels
             BackupViewModels.BackupListInfo.Remove(backupSettings);
             backupSettings.Remove();
             BackupViewModels.SaveBackupSettings();
-            Log.Information("Backup deleted with success.");
+            dailylogs.selectedLogger.Information("Backup deleted with success.");
         }
 
         private static void CopyFileWithProgress(string sourceFilePath, string destinationFilePath)

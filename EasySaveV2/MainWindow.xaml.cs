@@ -30,7 +30,7 @@ namespace EasySaveV2
             InitializeComponent();
             BackupViewModels.GetJSON();
             SettingsViewModels.typelog();
-            Log.Information("Application start successfully !");
+            dailylogs.selectedLogger.Information("Application start successfully !");
             DataContext = new DashboardViewModels();
             Application.Current.Resources.MergedDictionaries[0].Source = new Uri("Language/DictionaryEnglish.xaml", UriKind.RelativeOrAbsolute);
         }
@@ -58,7 +58,7 @@ namespace EasySaveV2
 
         private void CloseApplication(object sender, RoutedEventArgs e)
         {
-            Log.Information("Application close successfully !");
+            dailylogs.selectedLogger.Information("Application close successfully !");
             Close();
         }
 

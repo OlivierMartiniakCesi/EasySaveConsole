@@ -82,7 +82,7 @@ namespace EasySaveV2.MVVM.Views
                 RadioButton selectedRadioButton = GetSelectedRadioButton(typeEdit);
                 string backupType = selectedRadioButton.Content.ToString();
                 EditsViewModels.SaveBackupSettings(backupNameEdit.Text, backupSourceEdit.Text, backupDestEdit.Text, backupType);
-                Log.Information("Backup {backupName.Text} successfully !");
+                dailylogs.selectedLogger.Information("Backup {backupName.Text} successfully !");
                 backupNameEdit.Text = "Type the back-up name";
                 backupSourceEdit.Text = "Source";
                 backupDestEdit.Text = "Destination";

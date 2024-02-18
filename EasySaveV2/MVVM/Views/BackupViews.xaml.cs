@@ -5,6 +5,7 @@ using EasySaveV2.MVVM.ViewModels;
 using System.Windows.Media.Imaging;
 using System;
 using Serilog;
+using EasySaveV2.MVVM.Models;
 
 namespace EasySaveV2.MVVM.Views
 {
@@ -69,7 +70,7 @@ namespace EasySaveV2.MVVM.Views
                 RadioButton selectedRadioButton = GetSelectedRadioButton(type);
                 string backupType = selectedRadioButton.Content.ToString();
                 BackupViewModels.CreateSlotBackup(backupName.Text, backupSource.Text, backupDest.Text, backupType);
-                Log.Information("Backup {backupName.Text} successfully !");
+                dailylogs.selectedLogger.Information("Backup {backupName.Text} successfully !");
                 backupName.Text = "Type the back-up name";
                 backupSource.Text = "Source";
                 backupDest.Text = "Destination";

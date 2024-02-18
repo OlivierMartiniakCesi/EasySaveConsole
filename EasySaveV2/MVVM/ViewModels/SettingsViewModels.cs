@@ -27,7 +27,7 @@ namespace EasySaveV2.MVVM.ViewModels
         {
             type = format_logs;
             logs.Logsjson(format_logs);
-            Log.Information("Application started successfully");
+            dailylogs.selectedLogger.Information("Application started successfully");
         }
         public static void typelog()
         {
