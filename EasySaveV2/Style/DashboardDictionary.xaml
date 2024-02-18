@@ -20,6 +20,10 @@
         <Setter Property="MaxWidth" Value="130"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
     </Style>
+    <Style TargetType="ListBox" x:Key="list">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
     
     <Style TargetType="TextBlock" x:Key="TextDashBoard">
         <Setter Property="TextElement.FontFamily" Value="Ressources/Font/#Helvetica"/>

@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 using Newtonsoft.Json;
 using System.IO;
 using EasySaveV2.MVVM.ViewModels;
+using System.Collections.ObjectModel;
+using EasySaveV2.MVVM.Models;
 
 namespace EasySaveV2.MVVM.Views
 {
@@ -23,12 +25,28 @@ namespace EasySaveV2.MVVM.Views
     /// </summary>
     public partial class DashboardViews : UserControl
     {
+        private ListBox ListBackupAff;
         public DashboardViews()
         {
             InitializeComponent();
+            ListBackupAff = FindName("BackupList") as ListBox;
         }
 
-        public void BtnLoad_Click(object sender, RoutedEventArgs e)
+        private void BtnLauch_Click(object sender, RoutedEventArgs e)
+        {
+            List<Backup> selectedBackups = new List<Backup>();
+            foreach (var selectedItem in ListBackupAff.SelectedItems)
+            {
+                if (selectedItem is Backup backup)
+                {
+                    selectedBackups.Add(backup);
+                }
+            }
+            DashboardViewModels.LaunchSlotBackup(selectedBackups);
+            MainWindow win = (MainWindow)Window.GetWindow(this);
+            win.GoToDashboard(sender, e);
+        }
+        public void BtnModify_Click(object sender, RoutedEventArgs e)
         {
 
 
