@@ -31,6 +31,10 @@ namespace EasySaveV2.MVVM.ViewModels
 
         public static void CreateSlotBackup(string name, string sourcePath, string destinationPath, string type)
         {
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
             BackupListInfo.Add(_backup.CreateBackup(name, sourcePath, destinationPath, type));
             SaveBackupSettings();
         }

@@ -84,6 +84,10 @@ namespace EasySaveV2.MVVM.ViewModels
                     backupThread.Join(); // Wait for the thread to complete before moving to the next backup
                 }
             });
+            foreach (var backupSetting in BackupViewModels.BackupListInfo)
+            {
+                SettingsViewModels.SetSaveStateBackup(backupSetting.getName(), backupSetting.getSourceDirectory(), backupSetting.getTargetDirectory());
+            }
 
             Console.WriteLine("All selected backups have been launched.");
 

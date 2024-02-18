@@ -188,7 +188,7 @@ namespace EasySaveV2.MVVM.ViewModels
             foreach (FileInfo file in dir.GetFiles())
             {
                 totalFilesDone++;
-                file.CopyTo(Path.Combine(dest, file.Name), true);   // Copy the file into the destination directory
+                //file.CopyTo(Path.Combine(dest, file.Name), true);   // Copy the file into the destination directory
                 string fileSrc = Path.Combine(file.DirectoryName, file.Name);
                 string fileDest = Path.Combine(dest, file.Name);
                 int totalFiles = Directory.GetFiles(src, "*", SearchOption.AllDirectories).Length;
