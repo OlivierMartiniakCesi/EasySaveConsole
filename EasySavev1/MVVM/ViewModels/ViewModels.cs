@@ -483,16 +483,12 @@ namespace EasySaveConsole.MVVM.ViewModels
 
             BackupListInfo.Add(_backup.CreateBackup(maxId.ToString(), name, sourcePath, destinationPath, type));
         }
-
         public static void LaunchSlotBackup(List<Backup> backupList)
         {
             Console.Write(GetTraductor("LunchSlopBackup"));
-            string ChoiceBackup = Console.ReadLine();
+            string choiceBackup = Console.ReadLine();
 
-
-            string[] parts = ChoiceBackup.Split(new char[] { ';' , ' '}, StringSplitOptions.RemoveEmptyEntries);
-
-
+            string[] parts = choiceBackup.Split(new char[] { ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var backupInfo in backupList)
             {
@@ -508,38 +504,20 @@ namespace EasySaveConsole.MVVM.ViewModels
                         {
                             if (i.ToString() == backupInfo.getID())
                             {
-                                //Create directory if it doesn't already exist
-                                if (Directory.Exists(backupInfo.getTargetDirectory()))
+                                // Check disk space before starting backup
+                                long requiredSpace = CalculateEstimatedSpaceNeeded(backupInfo.getSourceDirectory());
+                                string driveName = Path.GetPathRoot(backupInfo.getTargetDirectory());
+
+                                DriveInfo driveInfo = new DriveInfo(driveName);
+                                long availableSpace = driveInfo.AvailableFreeSpace;
+
+                                if (requiredSpace > availableSpace)
                                 {
-                                    foreach (string AllDirectory in Directory.GetDirectories(backupInfo.getSourceDirectory(), "*", SearchOption.AllDirectories))
-                                    {
-                                        Directory.CreateDirectory(AllDirectory.Replace(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory()));
-                                    }
-                                }
-                                else
-                                {
-                                    Directory.CreateDirectory(backupInfo.getTargetDirectory());
-                                    foreach (string AllDirectory in Directory.GetDirectories(backupInfo.getSourceDirectory(), "*", SearchOption.AllDirectories))
-                                    {
-                                        Directory.CreateDirectory(AllDirectory.Replace(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory()));
-                                    }
+                                    Console.WriteLine("Il n'y a pas assez d'espace disponible sur le disque dur cible. La sauvegarde ne peut pas être effectuée.");
+                                    continue; // Skip backup if there's not enough space
                                 }
 
-                                if (backupInfo != null)
-                                {
-                                    if (backupInfo.getType() == "complet" || backupInfo.getType() == "Complet")
-                                    {
-                                        TypeComplet(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory());
-                                    }
-                                    else
-                                    {
-                                        TypeDifferential(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory());
-                                    }
-                                }
-                                else
-                                {
-                                    Log.Information("Sauvegarde non trouvée.");
-                                }
+                                PerformBackup(backupInfo);
                             }
                         }
                     }
@@ -550,44 +528,174 @@ namespace EasySaveConsole.MVVM.ViewModels
                         {
                             if (number.ToString() == backupInfo.getID())
                             {
-                                //Create directory if it doesn't already exist
-                                if (Directory.Exists(backupInfo.getTargetDirectory()))
+                                // Check disk space before starting backup
+                                long requiredSpace = CalculateEstimatedSpaceNeeded(backupInfo.getSourceDirectory());
+                                string driveName = Path.GetPathRoot(backupInfo.getTargetDirectory());
+
+                                DriveInfo driveInfo = new DriveInfo(driveName);
+                                long availableSpace = driveInfo.AvailableFreeSpace;
+
+                                if (requiredSpace > availableSpace)
                                 {
-                                    foreach (string AllDirectory in Directory.GetDirectories(backupInfo.getSourceDirectory(), "*", SearchOption.AllDirectories))
-                                    {
-                                        Directory.CreateDirectory(AllDirectory.Replace(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory()));
-                                    }
-                                }
-                                else
-                                {
-                                    Directory.CreateDirectory(backupInfo.getTargetDirectory());
-                                    foreach (string AllDirectory in Directory.GetDirectories(backupInfo.getSourceDirectory(), "*", SearchOption.AllDirectories))
-                                    {
-                                        Directory.CreateDirectory(AllDirectory.Replace(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory()));
-                                    }
+                                    Console.WriteLine("Il n'y a pas assez d'espace disponible sur le disque dur cible. La sauvegarde ne peut pas être effectuée.");
+                                    Console.ReadKey();
+                                    continue; // Skip backup if there's not enough space
                                 }
 
-                                if (backupInfo != null)
-                                {
-                                    if (backupInfo.getType() == "complet" || backupInfo.getType() == "Complet")
-                                    {
-                                        TypeComplet(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory());
-                                    }
-                                    else
-                                    {
-                                        TypeDifferential(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory());
-                                    }
-                                }
-                                else
-                                {
-                                    Log.Information("Sauvegarde non trouvée.");
-                                }
+                                PerformBackup(backupInfo);
                             }
                         }
                     }
                 }
             }
         }
+
+        static long CalculateEstimatedSpaceNeeded(string directoryPath)
+        {
+            // Calculate total size of the directory and its subdirectories
+            long totalSize = 0;
+
+            DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
+            FileInfo[] files = directoryInfo.GetFiles("*.*", SearchOption.AllDirectories);
+            foreach (FileInfo file in files)
+            {
+                totalSize += file.Length;
+            }
+
+            return totalSize;
+        }
+
+        static void PerformBackup(Backup backupInfo)
+        {
+            // Create directory if it doesn't already exist
+            if (!Directory.Exists(backupInfo.getTargetDirectory()))
+            {
+                foreach (string allDirectory in Directory.GetDirectories(backupInfo.getSourceDirectory(), "*", SearchOption.AllDirectories))
+                {
+                    Directory.CreateDirectory(allDirectory.Replace(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory()));
+                }
+            }
+
+            if (backupInfo != null)
+            {
+                if (backupInfo.getType().Equals("complet", StringComparison.OrdinalIgnoreCase))
+                {
+                    TypeComplet(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory());
+                }
+                else
+                {
+                    TypeDifferential(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory());
+                }
+            }
+            else
+            {
+                Log.Information("Sauvegarde non trouvée.");
+            }
+        }
+        /* public static void LaunchSlotBackup(List<Backup> backupList)
+         {
+             Console.Write(GetTraductor("LunchSlopBackup"));
+             string ChoiceBackup = Console.ReadLine();
+
+
+             string[] parts = ChoiceBackup.Split(new char[] { ';' , ' '}, StringSplitOptions.RemoveEmptyEntries);
+
+
+
+             foreach (var backupInfo in backupList)
+             {
+                 foreach (string part in parts)
+                 {
+                     if (part.Contains("-"))
+                     {
+                         string[] rangeParts = part.Split('-');
+                         int start = int.Parse(rangeParts[0]);
+                         int end = int.Parse(rangeParts[1]);
+
+                         for (int i = start; i <= end; i++)
+                         {
+                             if (i.ToString() == backupInfo.getID())
+                             {
+                                 //Create directory if it doesn't already exist
+                                 if (Directory.Exists(backupInfo.getTargetDirectory()))
+                                 {
+                                     foreach (string AllDirectory in Directory.GetDirectories(backupInfo.getSourceDirectory(), "*", SearchOption.AllDirectories))
+                                     {
+                                         Directory.CreateDirectory(AllDirectory.Replace(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory()));
+                                     }
+                                 }
+                                 else
+                                 {
+                                     Directory.CreateDirectory(backupInfo.getTargetDirectory());
+                                     foreach (string AllDirectory in Directory.GetDirectories(backupInfo.getSourceDirectory(), "*", SearchOption.AllDirectories))
+                                     {
+                                         Directory.CreateDirectory(AllDirectory.Replace(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory()));
+                                     }
+                                 }
+
+                                 if (backupInfo != null)
+                                 {
+                                     if (backupInfo.getType() == "complet" || backupInfo.getType() == "Complet")
+                                     {
+                                         TypeComplet(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory());
+                                     }
+                                     else
+                                     {
+                                         TypeDifferential(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory());
+                                     }
+                                 }
+                                 else
+                                 {
+                                     Log.Information("Sauvegarde non trouvée.");
+                                 }
+                             }
+                         }
+                     }
+                     else
+                     {
+                         int number;
+                         if (int.TryParse(part, out number))
+                         {
+                             if (number.ToString() == backupInfo.getID())
+                             {
+                                 //Create directory if it doesn't already exist
+                                 if (Directory.Exists(backupInfo.getTargetDirectory()))
+                                 {
+                                     foreach (string AllDirectory in Directory.GetDirectories(backupInfo.getSourceDirectory(), "*", SearchOption.AllDirectories))
+                                     {
+                                         Directory.CreateDirectory(AllDirectory.Replace(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory()));
+                                     }
+                                 }
+                                 else
+                                 {
+                                     Directory.CreateDirectory(backupInfo.getTargetDirectory());
+                                     foreach (string AllDirectory in Directory.GetDirectories(backupInfo.getSourceDirectory(), "*", SearchOption.AllDirectories))
+                                     {
+                                         Directory.CreateDirectory(AllDirectory.Replace(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory()));
+                                     }
+                                 }
+
+                                 if (backupInfo != null)
+                                 {
+                                     if (backupInfo.getType() == "complet" || backupInfo.getType() == "Complet")
+                                     {
+                                         TypeComplet(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory());
+                                     }
+                                     else
+                                     {
+                                         TypeDifferential(backupInfo.getSourceDirectory(), backupInfo.getTargetDirectory());
+                                     }
+                                 }
+                                 else
+                                 {
+                                     Log.Information("Sauvegarde non trouvée.");
+                                 }
+                             }
+                         }
+                     }
+                 }
+             }
+         }*/
         public static void TypeComplet(string PathSource, string PathTarget)
         {
             // Create All Directories
