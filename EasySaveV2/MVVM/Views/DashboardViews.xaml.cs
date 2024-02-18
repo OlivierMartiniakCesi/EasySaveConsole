@@ -32,7 +32,7 @@ namespace EasySaveV2.MVVM.Views
         {
             var ListInfo = BackupViewModels.BackupListInfo;
 
-            GridPeople.ItemsSource = ListInfo;
+            //GridPeople.ItemsSource = ListInfo;
         }
     }
 }

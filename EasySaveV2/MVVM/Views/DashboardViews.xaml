@@ -9,9 +9,19 @@
              d:DesignHeight="344" d:DesignWidth="604">
     
     <Grid Name="BackupSize">
-        <ScrollViewer Height="{Binding ElementName=BackupSize}" VerticalScrollBarVisibility="Hidden">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Content="Modify" FontSize="16" Style="{DynamicResource btn}" Margin="0,0,20,0"/>
+            <Button Content="Lauch" FontSize="16" Style="{DynamicResource btn}" Margin="20,0,0,0"/>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" Height="{Binding ElementName=BackupSize}" VerticalScrollBarVisibility="Hidden">
             <ItemsControl ItemsSource="{Binding backupListInfo}">
-                
+
             </ItemsControl>
         </ScrollViewer>
     </Grid>

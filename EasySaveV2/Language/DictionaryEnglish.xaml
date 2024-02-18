@@ -13,4 +13,6 @@
     <system:String x:Key="Launch">Launch</system:String>
     <system:String x:Key="Format">Format</system:String>
     <system:String x:Key="language">Language</system:String>
+    <system:String x:Key="Modify">Language</system:String>
+    <system:String x:Key="Lauch">Language</system:String>
 </ResourceDictionary>
