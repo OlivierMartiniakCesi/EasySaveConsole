@@ -26,7 +26,7 @@
                 <StackPanel Height="100">
                     <Label Content="{DynamicResource Destination}"  FontSize ="30" Style="{DynamicResource TextBackup}" HorizontalAlignment="Center" Grid.Row="1"/>
                     <Border Style="{StaticResource BorderedTextBlock}" Width="250" Height="30">
-                        <TextBlock Name="backupDest" Margin="3" Style="{DynamicResource Texttest}" MouseLeftButtonDown="OpenFileExplorerSource_Click" Text="Destination" TextAlignment="Center" Height="26"/>
+                        <TextBlock Name="backupDest" Margin="3" Style="{DynamicResource Texttest}" MouseLeftButtonDown="OpenFileExplorerDestination_Click" Text="Destination" TextAlignment="Center" Height="26"/>
                     </Border>
                 </StackPanel>
             </DockPanel>

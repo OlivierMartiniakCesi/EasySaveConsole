@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -16,6 +17,7 @@ using EasySaveV2.MVVM.ViewModels;
 using System.Windows.Resources;
 using System.IO;
 using System.Configuration;
+using EasySaveV2.MVVM.ViewModels;
 
 namespace EasySaveV2.MVVM.Views
 {
@@ -49,5 +51,20 @@ namespace EasySaveV2.MVVM.Views
         }
 
 
+        private void ToggleButtonLogs_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is ToggleButton toggleButton)
+            {
+                bool? isChecked = toggleButton.IsChecked;
+                if (isChecked.HasValue)
+                {
+                    SettingsViewModels.Formatlog((bool) isChecked);
+                }
+                else
+                {
+                    // La valeur est indéterminée
+                }
+            }
+        }
     }
 }
