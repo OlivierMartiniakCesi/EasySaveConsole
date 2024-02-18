@@ -9,7 +9,7 @@ namespace EasySaveV2.MVVM.Models
 {
     class Backup
     {
-        public string Name { get; set; }
+        private string Name { get; set; }
         private string SourceDirectory { get; set; }
         private string TargetDirectory { get; set; }
         private string Type { get; set; }
@@ -31,6 +31,14 @@ namespace EasySaveV2.MVVM.Models
             System.Diagnostics.Trace.WriteLine("finalizer is called.");
         }
 
+        public string DashboardName 
+        {
+            get
+            {
+                var NameDash = Name;
+                return NameDash;
+            }
+        }
         public string DashboardSource 
         {
             get 

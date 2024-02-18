@@ -17,7 +17,6 @@
         <Setter Property="Foreground" Value="Black"/>
         <Setter Property="FontFamily" Value="/Font/#Helvetica"/>
         <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Text" Value="{Binding Path=Name}"/>
     </Style>
     
     <Style TargetType="TextBlock" x:Key="TextDashBoard">

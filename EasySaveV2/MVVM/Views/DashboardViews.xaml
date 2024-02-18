@@ -27,7 +27,7 @@
                             <Border Style="{DynamicResource BordureDash}" Margin="30,0,15,20">
                                 <Grid>
                                     <StackPanel Grid.Row="0" Grid.Column="0">
-                                        <TextBlock  Style="{DynamicResource NameDashboard}" Text="{Binding Name}"/>
+                                        <TextBlock  Style="{DynamicResource NameDashboard}" Text="{Binding Path=DashboardName}"/>
                                         <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                             <TextBlock Text="{Binding Path=DashboardType}" Style="{DynamicResource TextDashBoard}" FontSize="14"/>
                                         </StackPanel>
