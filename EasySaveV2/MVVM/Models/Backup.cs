@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace EasySaveV2.MVVM.Models
 {
@@ -28,6 +29,38 @@ namespace EasySaveV2.MVVM.Models
         ~Backup()
         {
             System.Diagnostics.Trace.WriteLine("finalizer is called.");
+        }
+
+        public string DashboardSource 
+        {
+            get 
+            {
+                var Repertory = new DirectoryInfo(SourceDirectory);
+                var getRepertory = Directory.GetParent(Repertory.ToString());
+                var Source = @"..\" + getRepertory.Name + @"\" + Repertory.Name;
+                return Source;
+            }
+        }
+
+        public string DashboardDestination
+        {
+            get
+            {
+                var Repertory = new DirectoryInfo(TargetDirectory);
+                var getRepertory = Directory.GetParent(Repertory.ToString());
+                var Destination = @"..\" + getRepertory.Name + @"\" + Repertory.Name;
+                return Destination;
+            }
+        }
+
+        public string DashboardType 
+        {
+            get
+            {
+                var getTypeBackup = Type;
+
+                return getTypeBackup;
+            }
         }
 
         public string getName()

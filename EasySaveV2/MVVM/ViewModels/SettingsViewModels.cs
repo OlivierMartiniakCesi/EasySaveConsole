@@ -13,7 +13,6 @@ using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using System.Windows;
 using System.Configuration;
-using EasySaveV2.MVVM.Models;
 using EasySaveV2.MVVM.Views;
 using EasySaveV2.MVVM.ViewModels;
 

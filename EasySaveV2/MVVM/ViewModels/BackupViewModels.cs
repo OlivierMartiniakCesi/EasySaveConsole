@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Collections.ObjectModel;
 
 namespace EasySaveV2.MVVM.ViewModels
 {
@@ -18,17 +19,22 @@ namespace EasySaveV2.MVVM.ViewModels
         private static Backup _backup = new Backup();
         static string directoryPath = @"C:\JSON";
         static string filePath = @"C:\JSON\confbackup.json";
-        public static List<Backup> BackupListInfo = new List<Backup>();
+        public static ObservableCollection<Backup> BackupListInfo = new ObservableCollection<Backup>();
         private static List<StateLog> stateLogList = new List<StateLog>();
         //private static int totalFilesDone = 0;
         const int MaxBackupSettings = 5;
+
+        public static ObservableCollection<Backup> getBackupList()
+        {
+            return BackupListInfo;
+        }
 
         public static void CreateSlotBackup(string name, string sourcePath, string destinationPath, string type)
         {
             BackupListInfo.Add(_backup.CreateBackup(name, sourcePath, destinationPath, type));
             SaveBackupSettings();
         }
-        static void SaveBackupSettings()
+        public static void SaveBackupSettings()
         {
             if (BackupListInfo != null && BackupListInfo.Count > 0)
             {

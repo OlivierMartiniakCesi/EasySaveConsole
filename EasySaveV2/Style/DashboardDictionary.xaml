@@ -7,6 +7,27 @@
         <Setter Property="Fill" Value="#b9b9b9"/>
         <Setter Property="Opacity" Value="0.4"/>
     </Style>
+    
+    <Style TargetType="Border" x:Key="BordureDashboard">
+        <Setter Property="CornerRadius" Value="20"/>
+        <Setter Property="Background" Value="#b9b9b9"/>
+    </Style>
+
+    <Style TargetType="Label" x:Key="NameDashboard">
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="FontFamily" Value="/Font/#Helvetica"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Content" Value="{Binding Path=Name}"/>
+    </Style>
+    
+    <Style TargetType="TextBlock" x:Key="TextDashBoard">
+        <Setter Property="TextElement.FontFamily" Value="Ressources/Font/#Helvetica"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="Background" Value="#E0E0E0"/>
+        <Setter Property="Foreground" Value="#41485A"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
 
 
 </ResourceDictionary>

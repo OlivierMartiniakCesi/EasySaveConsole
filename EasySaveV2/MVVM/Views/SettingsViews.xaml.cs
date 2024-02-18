@@ -17,8 +17,6 @@ using EasySaveV2.MVVM.ViewModels;
 using System.Windows.Resources;
 using System.IO;
 using System.Configuration;
-using EasySaveV2.MVVM.ViewModels;
-
 namespace EasySaveV2.MVVM.Views
 {
     /// <summary>

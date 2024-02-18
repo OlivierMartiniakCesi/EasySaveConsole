@@ -13,6 +13,7 @@
                 <ResourceDictionary Source="/Style/MainDictonnary.xaml" />
                 <ResourceDictionary Source="/Style/SettingsDictionary.xaml" />
                 <ResourceDictionary Source="/Style/BackupDictionary.xaml"/>
+                <ResourceDictionary Source="/Style/DashboardDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

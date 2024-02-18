@@ -30,9 +30,8 @@ namespace EasySaveV2.MVVM.Views
 
         public void BtnLoad_Click(object sender, RoutedEventArgs e)
         {
-            var ListInfo = BackupViewModels.BackupListInfo;
 
-            GridPeople.ItemsSource = ListInfo;
+
         }
     }
 }

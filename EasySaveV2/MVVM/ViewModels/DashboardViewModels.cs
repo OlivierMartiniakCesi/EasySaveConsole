@@ -1,4 +1,7 @@
 ﻿using EasySaveV2.MVVM.Models;
+using EasySaveV2;
+using EasySaveV2.MVVM.Views;
+using EasySaveV2.MVVM.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,22 +12,20 @@ using System.Windows;
 using Newtonsoft.Json;
 using System.Windows.Controls;
 using System.Xml;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace EasySaveV2.MVVM.ViewModels
 {
-    public class DashboardViewModels
+
+    class DashboardViewModels
     {
+        public static ObservableCollection<Backup> BackupList { get; set; } = BackupViewModels.BackupListInfo;
+
+
         public DashboardViewModels()
         {
             BackupViewModels.GetJSON();
-        }
-
-        public class Backup
-        {
-            public string Name { get; set; }
-            public string Source { get; set; }
-            public string Target { get; set; }
-            public string Type { get; set; }
         }
     }
 }
