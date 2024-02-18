@@ -14,6 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using EasySaveV2.MVVM.ViewModels;
 using EasySaveV2.MVVM.Views;
+using EasySaveV2.MVVM.Models;
+using System.Collections.ObjectModel;
 using Serilog;
 
 namespace EasySaveV2
@@ -52,5 +54,6 @@ namespace EasySaveV2
             Log.Information("Application close successfully !");
             Close();
         }
+
     }
 }
