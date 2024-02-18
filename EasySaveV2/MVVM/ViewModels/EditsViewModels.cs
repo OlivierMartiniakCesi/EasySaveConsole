@@ -22,6 +22,8 @@ namespace EasySaveV2.MVVM.ViewModels
 
         public static void SaveBackupSettings(string name, string source, string destination, string type)
         {
+            string filePath = @"C:\JSON\confbackup.json";
+
             if (BackupViewModels.BackupListInfo != null && BackupViewModels.BackupListInfo.Count > 0)
             {
                 int backupIndex = BackupViewModels.BackupListInfo.IndexOf(EditorBackup);
@@ -40,7 +42,7 @@ namespace EasySaveV2.MVVM.ViewModels
                 jsonText = jsonText.TrimEnd(',') + "]"; // Remove trailing comma and add closing bracket
                 try
                 {
-                    File.WriteAllText(Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory) + @"\Data\data.json", jsonText);
+                    File.WriteAllText(filePath, jsonText);
                 }
                 catch (Exception ex)
                 {
