@@ -57,7 +57,7 @@ namespace EasySaveV2.MVVM.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    Log.Information("Une erreur est survenue lors de l'enregistrement des paramètres de sauvegarde : " + ex.Message);
+                    dailylogs.selectedLogger.Information("Une erreur est survenue lors de l'enregistrement des paramètres de sauvegarde : " + ex.Message);
                 }
             }
             else
@@ -95,12 +95,12 @@ namespace EasySaveV2.MVVM.ViewModels
                             }
                             catch
                             {
-                                Log.Information($"Erreur lors de l'ajout de données.");
+                                dailylogs.selectedLogger.Information($"Erreur lors de l'ajout de données.");
                             }
                         }
                         else
                         {
-                            Log.Information($"Élément de données invalide trouvé.");
+                            dailylogs.selectedLogger.Information($"Élément de données invalide trouvé.");
                         }
                     }
                 }

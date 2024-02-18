@@ -16,6 +16,7 @@ namespace EasySaveV2.MVVM.Models
         static string logDirectory = @"C:\Temp";
         private static ILogger jsonLogger;
         private static ILogger xmlLogger;
+        public static ILogger selectedLogger;
 
         static dailylogs()
         {
@@ -39,7 +40,7 @@ namespace EasySaveV2.MVVM.Models
             string dateFormat = DateTime.Now.ToString("yyyyMMdd");
             string logFileName = logformat ? $"log{dateFormat}.xml" : $"log{dateFormat}.json";
             string logFilePath = Path.Combine(logDirectory, logFileName);
-            ILogger selectedLogger = logformat ? xmlLogger : jsonLogger;
+            selectedLogger = logformat ? xmlLogger : jsonLogger;
             selectedLogger.Information("Changement d'extension des logs réalisé");
         }
     }

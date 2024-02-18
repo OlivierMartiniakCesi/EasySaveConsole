@@ -46,7 +46,7 @@ namespace EasySaveV2.MVVM.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    Log.Information("Une erreur est survenue lors de l'enregistrement des paramètres de sauvegarde : " + ex.Message);
+                    dailylogs.selectedLogger.Information("Une erreur est survenue lors de l'enregistrement des paramètres de sauvegarde : " + ex.Message);
                 }
             }
         }
