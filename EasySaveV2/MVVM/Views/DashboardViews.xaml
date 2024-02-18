@@ -7,8 +7,12 @@
              xmlns:vm="clr-namespace:EasySaveV2.MVVM.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="344" d:DesignWidth="604">
-    <Grid>
-        <Button x:Name="btn" Content="Load" Click="BtnLoad_Click" Visibility="Visible" HorizontalAlignment="Left" Margin="302,10,0,234" />
-        <DataGrid x:Name="GridPeople" Visibility="Visible" Margin="104,115,104,29"/>
+    
+    <Grid Name="BackupSize">
+        <ScrollViewer Height="{Binding ElementName=BackupSize}" VerticalScrollBarVisibility="Hidden">
+            <ItemsControl ItemsSource="{Binding backupListInfo}">
+                
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </UserControl>
