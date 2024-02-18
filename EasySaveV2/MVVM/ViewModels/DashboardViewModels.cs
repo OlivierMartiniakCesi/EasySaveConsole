@@ -16,25 +16,22 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Serilog;
 using System.Threading;
-
-
+using System.Windows.Input;
 
 namespace EasySaveV2.MVVM.ViewModels
 {
-
     class DashboardViewModels
     {
         public static ObservableCollection<Backup> BackupList { get; set; } = BackupViewModels.BackupListInfo;
         private static bool isBackupPaused = false;
         private static ManualResetEventSlim backupCompletedEvent = new ManualResetEventSlim(false);
+        public ICommand LaunchBackupCommand { get; }
 
         public DashboardViewModels()
         {
         }
         public static void LaunchSlotBackup(List<Backup> backupList)
         {
-  
-
             // Use Parallel.ForEach to process each backup in a separate thread
             Parallel.ForEach(backupList, backup =>
             {

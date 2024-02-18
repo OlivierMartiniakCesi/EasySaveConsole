@@ -29,6 +29,8 @@ namespace EasySaveV2.MVVM.Views
         public DashboardViews()
         {
             InitializeComponent();
+
+            DataContext = new DashboardViewModels();
             ListBackupAff = FindName("BackupList") as ListBox;
         }
 
@@ -46,6 +48,18 @@ namespace EasySaveV2.MVVM.Views
             MainWindow win = (MainWindow)Window.GetWindow(this);
             win.GoToDashboard(sender, e);
         }
+
+        private void BtnLauch_ClickSolo(object sender, RoutedEventArgs e)
+        {
+            // Récupérer le bouton qui a déclenché l'événement
+            Backup backup = ((Button)sender).Tag as Backup;
+            List<Backup> selectedBackups = new List<Backup>();
+            selectedBackups.Add(backup);
+            DashboardViewModels.LaunchSlotBackup(selectedBackups);
+            MainWindow win = (MainWindow)Window.GetWindow(this);
+            win.GoToDashboard(sender, e);
+        }
+
         public void BtnModify_Click(object sender, RoutedEventArgs e)
         {
 
