@@ -10,29 +10,37 @@ namespace EasySaveV2.MVVM.Models
 {
     class dailylogs
     {
-        public void Logsjson(string logformat)
+        private static LoggerConfiguration jsonLoggerConfiguration;
+        private static LoggerConfiguration xmlLoggerConfiguration;
+        private static bool isLoggerCreated = false;
+        static string logDirectory = @"C:\Temp";
+        private static ILogger jsonLogger;
+        private static ILogger xmlLogger;
+
+        static dailylogs()
         {
             // Create directory if it's needed
-            string logDirectory = @"C:\Temp";
             if (!Directory.Exists(logDirectory))
             {
                 Directory.CreateDirectory(logDirectory);
             }
-            if (logformat.ToLower() == "json")
-            {
-                Log.Logger = new LoggerConfiguration()
-                .WriteTo.Console()  // Write logs on console
-                .WriteTo.File(@"C:\Temp\log.json", rollingInterval: RollingInterval.Day) // Write daily logs on JSON File 
-                .CreateLogger();
-            }
-            else
-            {
-                Log.Logger = new LoggerConfiguration()
-                .WriteTo.Console()  // Write logs on console
-                .WriteTo.File(@"C:\Temp\log.xml", rollingInterval: RollingInterval.Day) // Write daily logs on JSON File 
-                .CreateLogger();
-            }
 
+            jsonLoggerConfiguration = new LoggerConfiguration()
+                .WriteTo.File(Path.Combine(logDirectory, "log.json"), rollingInterval: RollingInterval.Day);
+
+            xmlLoggerConfiguration = new LoggerConfiguration()
+                .WriteTo.File(Path.Combine(logDirectory, "log.xml"), rollingInterval: RollingInterval.Day);
+            jsonLogger = jsonLoggerConfiguration.CreateLogger();
+            xmlLogger = xmlLoggerConfiguration.CreateLogger();
+        }
+
+        public void Logsjson(bool logformat)
+        {
+            string dateFormat = DateTime.Now.ToString("yyyyMMdd");
+            string logFileName = logformat ? $"log{dateFormat}.xml" : $"log{dateFormat}.json";
+            string logFilePath = Path.Combine(logDirectory, logFileName);
+            ILogger selectedLogger = logformat ? xmlLogger : jsonLogger;
+            selectedLogger.Information("Changement d'extension des logs réalisé");
         }
     }
 }

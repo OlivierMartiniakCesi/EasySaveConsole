@@ -26,6 +26,7 @@ namespace EasySaveV2
         public MainWindow()
         {
             InitializeComponent();
+            SettingsViewModels.typelog();
             DataContext = new DashboardViewModels();
         }
 
