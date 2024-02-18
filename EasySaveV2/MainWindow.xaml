@@ -35,7 +35,7 @@
         <Grid>
             <Grid Margin="0,0,650,0">
                 <Rectangle Style="{DynamicResource LigneMenu}" HorizontalAlignment="Right" Width="2"/>
-                <StackPanel  x:Name="Dashboard">
+                <StackPanel>
                     <Button Style="{DynamicResource ButtonLeft}" Margin="10,40,10,0" Click="GoToDashboard">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -43,12 +43,12 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <Image Name="DashBoardPage" Source="/Pictures/DashBoard.png" Width="40" Height="40" Grid.Row="0"/>
-                            <Label Content="Dashboard" FontSize ="16" Style="{DynamicResource Text}" HorizontalAlignment="Center" Grid.Row="1"/>
+                            <Label Name="Dashboard" Content="{DynamicResource Dashboard}" FontSize ="16" Style="{DynamicResource Text}" HorizontalAlignment="Center" Grid.Row="1"/>
                         </Grid>
                     </Button>
                 </StackPanel>
 
-                <StackPanel  x:Name="Backup">
+                <StackPanel>
                     <Button Style="{DynamicResource ButtonLeft}" Margin="10,168,10,0" Click="GoToBackup">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -56,12 +56,12 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <Image Name="BackupPage" Source="/Pictures/Backup.png" Width="40" Height="40" Grid.Row="0"/>
-                            <Label Content="Back-up" FontSize ="16" Style="{DynamicResource Text}" HorizontalAlignment="Center" Grid.Row="1"/>
+                            <Label Content="{DynamicResource Backup}" FontSize ="16" Style="{DynamicResource Text}" HorizontalAlignment="Center" Grid.Row="1"/>
                         </Grid>
                     </Button>
                 </StackPanel>
 
-                <StackPanel x:Name="Settings">
+                <StackPanel>
                     <Button Style="{DynamicResource ButtonLeft}" Margin="10,296,10,0" Click="GoToSettings">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -69,7 +69,7 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <Image  Name="SettingPage" Source="/Pictures/Settings.png" Width="40" Height="40" Grid.Row="0"/>
-                            <Label Content="Settings" FontSize ="16" Style="{DynamicResource Text}" HorizontalAlignment="Center"  Grid.Row="1"/>
+                            <Label Content="{DynamicResource settings}" FontSize ="16" Style="{DynamicResource Text}" HorizontalAlignment="Center"  Grid.Row="1"/>
                         </Grid>
                     </Button>
                 </StackPanel>

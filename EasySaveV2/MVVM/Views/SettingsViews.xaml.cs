@@ -12,6 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using EasySaveV2.MVVM.ViewModels;
+using System.Windows.Resources;
+using System.IO;
+using System.Configuration;
 
 namespace EasySaveV2.MVVM.Views
 {
@@ -20,9 +24,30 @@ namespace EasySaveV2.MVVM.Views
     /// </summary>
     public partial class SettingsViews : UserControl
     {
+
+
+        SettingsViewModels Settings = new SettingsViewModels();
         public SettingsViews()
         {
             InitializeComponent();
+            ButtonLanguage.IsChecked = Settings.ToggleButtonState;
         }
+
+
+        public void CheckedLanguage(object sender, RoutedEventArgs e)
+        {
+            Settings.ToggleButtonState = true;
+            DockPanel.SetDock(ButtonLanguage, Dock.Right);
+            Settings.TraductorFrench();
+        }
+
+        public void UncheckedLanguage(object sender, RoutedEventArgs e)
+        {
+            Settings.ToggleButtonState = false;
+            DockPanel.SetDock(ButtonLanguage, Dock.Left);
+            Settings.TraductorEnglish();
+        }
+
+
     }
 }

@@ -2,6 +2,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using EasySaveV2.MVVM.ViewModels;
+using System.Windows.Media.Imaging;
+using System;
 
 namespace EasySaveV2.MVVM.Views
 {
@@ -12,6 +14,7 @@ namespace EasySaveV2.MVVM.Views
     {
         public BackupViews()
         {
+
             InitializeComponent();
         }
         private void OpenFileExplorerSource_Click(object sender, RoutedEventArgs e)

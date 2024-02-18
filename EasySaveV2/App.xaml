@@ -9,6 +9,7 @@
     <Application.Resources>
         <ResourceDictionary x:Name="Dictionary">
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Language/DictionaryEnglish.xaml"/>
                 <ResourceDictionary Source="/Style/MainDictonnary.xaml" />
                 <ResourceDictionary Source="/Style/SettingsDictionary.xaml" />
                 <ResourceDictionary Source="/Style/BackupDictionary.xaml"/>

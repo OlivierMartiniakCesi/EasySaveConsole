@@ -8,7 +8,7 @@
              d:DesignHeight="344" d:DesignWidth="604">
     <Grid>
         <Grid HorizontalAlignment="Center" Height="344" Width="604" >
-            <Label Content="Back-up" Margin="0,20,0,280" FontSize ="30" Style="{DynamicResource TextBackup}" HorizontalAlignment="Center"/>
+            <Label Content="{DynamicResource Backup}" Margin="0,15,0,280" FontSize ="30" Style="{DynamicResource TextBackup}" HorizontalAlignment="Center"/>
             <Border Style="{StaticResource BorderedTextBlock}" Height="30" Margin="25,69,23,245">
                 <TextBox Name="backupName" Margin="9,4,9,4" Style="{DynamicResource TextboxBackup}" Text="Type the back-up name" TextAlignment="Center"/>
             </Border>
@@ -16,7 +16,7 @@
         <Grid>
             <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Width="300">
                 <StackPanel Height="100">
-                    <Label Content="Format"  FontSize ="30" Style="{DynamicResource TextBackup}" HorizontalAlignment="Center" Grid.Row="1"/>
+                    <Label Content="{DynamicResource Source}"  FontSize ="30" Style="{DynamicResource TextBackup}" HorizontalAlignment="Center" Grid.Row="1"/>
                     <Border Style="{StaticResource BorderedTextBlock}" Width="250" Height="30">
                         <TextBlock Name="backupSource" Margin="3" Style="{DynamicResource Texttest}" MouseLeftButtonDown="OpenFileExplorerSource_Click" HorizontalAlignment="Center" Text="Source" TextAlignment="Center"/>
                     </Border>
@@ -24,7 +24,7 @@
             </DockPanel>
             <DockPanel VerticalAlignment="Center" HorizontalAlignment="Right" Width="300">
                 <StackPanel Height="100">
-                    <Label Content="Destination"  FontSize ="30" Style="{DynamicResource TextBackup}" HorizontalAlignment="Center" Grid.Row="1"/>
+                    <Label Content="{DynamicResource Destination}"  FontSize ="30" Style="{DynamicResource TextBackup}" HorizontalAlignment="Center" Grid.Row="1"/>
                     <Border Style="{StaticResource BorderedTextBlock}" Width="250" Height="30">
                         <TextBlock Name="backupDest" Margin="3" Style="{DynamicResource Texttest}" MouseLeftButtonDown="OpenFileExplorerSource_Click" Text="Destination" TextAlignment="Center" Height="26"/>
                     </Border>
@@ -32,11 +32,13 @@
             </DockPanel>
             <DockPanel>
                 <StackPanel x:Name="type">
-                    <RadioButton GroupName="BackupType" Margin="60,225,0,-113" FontSize ="15" Style="{DynamicResource backuptype}" Content="Complete" IsChecked="True" HorizontalAlignment="Left"/>
-                    <RadioButton GroupName="BackupType" FontSize ="15" Style="{DynamicResource backuptype}" Content="Differential" HorizontalAlignment="Right" Margin="0,95,150,0"/>
+                    <RadioButton GroupName="BackupType" Margin="60,225,0,-113" FontSize ="15" Style="{DynamicResource backuptype}" Content="{DynamicResource Full}" IsChecked="True" HorizontalAlignment="Left"/>
+
+                    <RadioButton GroupName="BackupType" FontSize ="15" Style="{DynamicResource backuptype}" Content="{DynamicResource Differential}" HorizontalAlignment="Right" Margin="0,95,150,0"/>
                 </StackPanel>
             </DockPanel>
-            <Button Content="Create" FontSize="16" Style="{DynamicResource save}" Margin="100,0,100,40" VerticalAlignment="Bottom" Click="BackupCreator"/>
+            <Image x:Name="NathanPicture" Source="/Pictures/Nathan.png"  Margin="237,159,208,55"/>
+            <Button Content="{DynamicResource Create}" FontSize="16" Style="{DynamicResource save}" Margin="100,0,100,40" VerticalAlignment="Bottom" Click="BackupCreator"/>
         </Grid>
     </Grid>
 </UserControl>

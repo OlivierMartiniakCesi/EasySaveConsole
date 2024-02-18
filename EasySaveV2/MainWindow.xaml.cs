@@ -27,6 +27,7 @@ namespace EasySaveV2
         {
             InitializeComponent();
             DataContext = new DashboardViewModels();
+            Application.Current.Resources.MergedDictionaries[0].Source = new Uri("Language/DictionaryEnglish.xaml", UriKind.RelativeOrAbsolute);
         }
 
         public void GoToDashboard(object sender, RoutedEventArgs e)

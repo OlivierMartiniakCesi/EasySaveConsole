@@ -8,19 +8,19 @@
              d:DesignHeight="344" d:DesignWidth="604">
     <Grid>
         <Grid HorizontalAlignment="Center">
-            <Label Content="Settings" Margin="20" FontSize ="30" Style="{DynamicResource TextSetting}" HorizontalAlignment="Center" Grid.Row="1"/>
+            <Label Content="{DynamicResource settings}" Margin="20" FontSize ="30" Style="{DynamicResource TextSetting}" HorizontalAlignment="Center" Grid.Row="1"/>
         </Grid>
         <Grid>
             <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Width="300">
                 <StackPanel Height="190">
-                    <Label Content="Format"  FontSize ="25" Style="{DynamicResource TextSetting}" HorizontalAlignment="Center" Grid.Row="1"/>
+                    <Label Content="{DynamicResource Format}"  FontSize ="25" Style="{DynamicResource TextSetting}" HorizontalAlignment="Center" Grid.Row="1"/>
                     <ToggleButton Margin="10" VerticalAlignment="Center" HorizontalAlignment="Center" Width="64" Height="35" Style="{DynamicResource ToggleButtonStyle}" />
                 </StackPanel>
             </DockPanel>
             <DockPanel VerticalAlignment="Center" HorizontalAlignment="Right" Width="300">
                 <StackPanel Height="190">
-                    <Label Content="Language"  FontSize ="25" Style="{DynamicResource TextSetting}" HorizontalAlignment="Center" Grid.Row="1"/>
-                    <ToggleButton Margin="10" VerticalAlignment="Center" HorizontalAlignment="Center" Width="64" Height="35" Style="{DynamicResource ToggleButtonStyle}" />
+                    <Label Content="{DynamicResource language}"  FontSize ="25" Style="{DynamicResource TextSetting}" HorizontalAlignment="Center" Grid.Row="1"/>
+                    <ToggleButton x:Name="ButtonLanguage" IsEnabled="True" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Center" Width="64" Height="35" Style="{DynamicResource ToggleButtonStyle}" Checked="CheckedLanguage" Unchecked="UncheckedLanguage" />
                 </StackPanel>
             </DockPanel>
         </Grid>

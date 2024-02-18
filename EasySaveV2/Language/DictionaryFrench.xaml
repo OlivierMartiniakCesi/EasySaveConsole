@@ -1,0 +1,16 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <system:String x:Key="Dashboard">Tableau</system:String>
+    <system:String x:Key="settings">Paramètres</system:String>
+    <system:String x:Key="Backup">Sauvegarde</system:String>
+    <system:String x:Key="Source">Source</system:String>
+    <system:String x:Key="Destination">Destination</system:String>
+    <system:String x:Key="Full">Complet</system:String>
+    <system:String x:Key="Differential">Differentiel</system:String>
+    <system:String x:Key="Create">Créer</system:String>
+    <system:String x:Key="Edit">Modifier</system:String>
+    <system:String x:Key="Launch">Lancer</system:String>
+    <system:String x:Key="Format">Format</system:String>
+    <system:String x:Key="language">Langue</system:String>
+</ResourceDictionary>
