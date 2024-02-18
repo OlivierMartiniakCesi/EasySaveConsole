@@ -29,6 +29,10 @@
         <DataTemplate x:Name="SettingViews" DataType="{x:Type viewModel:SettingsViewModels}">
             <view:SettingsViews DataContext="{Binding}"/>
         </DataTemplate>
+
+        <DataTemplate x:Name="EditViews" DataType="{x:Type viewModel:EditsViewModels}">
+            <view:EditsViews DataContext="{Binding}"/>
+        </DataTemplate>
     </Window.Resources>
 
     <Border Style="{DynamicResource BordureMenu}">

@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CA2211: Les champs non constants ne doivent pas être visibles
+dotnet_diagnostic.CA2211.severity = none
