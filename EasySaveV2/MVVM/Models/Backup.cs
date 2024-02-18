@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Windows.Input;
 
 namespace EasySaveV2.MVVM.Models
 {
@@ -13,6 +14,8 @@ namespace EasySaveV2.MVVM.Models
         private string SourceDirectory { get; set; }
         private string TargetDirectory { get; set; }
         private string Type { get; set; }
+
+        public ICommand LaunchBackupCommand { get; set; }
 
         //Constructor
         public Backup() { }

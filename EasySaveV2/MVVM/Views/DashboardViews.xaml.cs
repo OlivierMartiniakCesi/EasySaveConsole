@@ -26,9 +26,13 @@ namespace EasySaveV2.MVVM.Views
     public partial class DashboardViews : UserControl
     {
         private ListBox ListBackupAff;
+        public RelayCommand LaunchBackupCommand { get; set; }
         public DashboardViews()
         {
             InitializeComponent();
+
+            DataContext = new DashboardViewModels();
+            LaunchBackupCommand = new RelayCommand(BtnLauch_ClickSolo);
             ListBackupAff = FindName("BackupList") as ListBox;
         }
 
@@ -46,7 +50,30 @@ namespace EasySaveV2.MVVM.Views
             MainWindow win = (MainWindow)Window.GetWindow(this);
             win.GoToDashboard(sender, e);
         }
+
+        private void BtnLauch_ClickSolo(object parameter)
+        {
+            // Récupérer le bouton qui a déclenché l'événement
+            Button clickedButton = parameter as Button;
+
+            if (clickedButton != null)
+            {
+                // Récupérer la sauvegarde associée au bouton
+                Backup selectedBackup = clickedButton.DataContext as Backup;
+
+                if (selectedBackup != null)
+                {
+                    // Appeler la méthode BtnLauch_Click avec la sauvegarde sélectionnée
+                    BtnLauch_Click(clickedButton, new RoutedEventArgs(Button.ClickEvent));
+                }
+            }
+        }
+
         public void BtnModify_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        public void LaunchBackups(object sender, RoutedEventArgs e)
         {
 
         }
