@@ -20,28 +20,6 @@ using System.Windows.Input;
 
 namespace EasySaveV2.MVVM.ViewModels
 {
-    public class RelayCommand : ICommand
-    {
-        private readonly Action<object> _execute;
-        private readonly Predicate<object> _canExecute;
-
-        public RelayCommand(Action<object> execute, Predicate<object> canExecute = null)
-        {
-            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
-            _canExecute = canExecute;
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object parameter) => _canExecute == null || _canExecute(parameter);
-
-        public void Execute(object parameter) => _execute(parameter);
-    }
-
     class DashboardViewModels
     {
         public static ObservableCollection<Backup> BackupList { get; set; } = BackupViewModels.BackupListInfo;
@@ -54,8 +32,6 @@ namespace EasySaveV2.MVVM.ViewModels
         }
         public static void LaunchSlotBackup(List<Backup> backupList)
         {
-  
-
             // Use Parallel.ForEach to process each backup in a separate thread
             Parallel.ForEach(backupList, backup =>
             {
