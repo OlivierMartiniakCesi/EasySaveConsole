@@ -16,15 +16,41 @@
     <Style TargetType="TextBlock" x:Key="NameDashboard">
         <Setter Property="Foreground" Value="Black"/>
         <Setter Property="FontFamily" Value="/Font/#Helvetica"/>
-        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontSize" Value="18"/>
         <Setter Property="MaxWidth" Value="130"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
     </Style>
-    
+
+    <Style TargetType="Button" x:Key="ButtonDash">
+        <Setter Property="Width" Value="15"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Height" Value="15"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="30">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="TextBlock" x:Key="TextDashBoard">
         <Setter Property="TextElement.FontFamily" Value="Ressources/Font/#Helvetica"/>
         <Setter Property="FontSize" Value="15"/>
-        <Setter Property="Foreground" Value="#41485A"/>
+        <Setter Property="Foreground" Value="Black"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="MaxWidth" Value="130"/>

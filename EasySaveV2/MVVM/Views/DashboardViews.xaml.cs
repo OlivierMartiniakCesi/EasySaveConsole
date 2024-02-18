@@ -28,9 +28,8 @@ namespace EasySaveV2.MVVM.Views
             InitializeComponent();
         }
 
-        public void BtnLoad_Click(object sender, RoutedEventArgs e)
+        private void LaunchBackups(object sender, RoutedEventArgs e)
         {
-
 
         }
     }

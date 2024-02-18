@@ -24,24 +24,63 @@
                 <ItemsControl ItemsSource="{Binding BackupList}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Style="{DynamicResource BordureDash}" Margin="30,0,15,20">
+                            <Border Style="{DynamicResource BordureDashboard}" Margin="30,0,15,20">
                                 <Grid>
-                                    <StackPanel Grid.Row="0" Grid.Column="0">
-                                        <TextBlock  Style="{DynamicResource NameDashboard}" Text="{Binding Path=DashboardName}" Margin="10,10,0,10" />
+                                    <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
+                                        <TextBlock  Style="{DynamicResource NameDashboard}" Text="{Binding Path=DashboardName}" Margin="5,6,0,10" />
                                     </StackPanel>
-                                    <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="160,10,0,10">
+                                    <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="140,10,0,10" VerticalAlignment="Center">
                                         <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                             <TextBlock Text="{Binding Path=DashboardSource}" Style="{DynamicResource TextDashBoard}" FontSize="14"/>
                                         </StackPanel>
                                     </StackPanel>
-                                    <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="310,10,0,10">
+                                    <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" Margin="290,10,0,10" VerticalAlignment="Center">
                                         <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                             <TextBlock Text="{Binding Path=DashboardDestination}" Style="{DynamicResource TextDashBoard}" FontSize="14"/>
                                         </StackPanel>
                                     </StackPanel>
-                                    <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Left" Margin="460,10,0,10">
+                                    <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Left" Margin="440,10,0,10" VerticalAlignment="Center">
                                         <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                             <TextBlock Text="{Binding Path=DashboardType}" Style="{DynamicResource TextDashBoard}" FontSize="14"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" Margin="510,10,0,12" VerticalAlignment="Center">
+                                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                            <Button Style="{DynamicResource ButtonDash}" Click="LaunchBackups">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Image Name="Delete" Source="/Pictures/trash.png" Width="15" Height="15"/>
+                                                </Grid>
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" Margin="525,10,0,12" VerticalAlignment="Center">
+                                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                            <Button Style="{DynamicResource ButtonDash}">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Image Name="Edit" Source="/Pictures/edit.png" Width="15" Height="15"/>
+                                                </Grid>
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" Margin="535,10,0,12" VerticalAlignment="Center">
+                                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                            <Button Style="{DynamicResource ButtonDash}">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Image Name="Play" Source="/Pictures/play.png" Width="20" Height="20"/>
+                                                </Grid>
+                                            </Button>
                                         </StackPanel>
                                     </StackPanel>
                                 </Grid>
