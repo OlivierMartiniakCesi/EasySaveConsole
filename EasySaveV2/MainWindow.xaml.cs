@@ -28,6 +28,7 @@ namespace EasySaveV2
         public MainWindow()
         {
             InitializeComponent();
+            BackupViewModels.GetJSON();
             SettingsViewModels.typelog();
             Log.Information("Application start successfully !");
             DataContext = new DashboardViewModels();

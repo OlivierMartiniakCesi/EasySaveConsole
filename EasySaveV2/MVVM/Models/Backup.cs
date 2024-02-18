@@ -133,5 +133,14 @@ namespace EasySaveV2.MVVM.Models
             return FileStock.Replace("\\", "\\\\");
         }
 
+        public void Remove() 
+        {
+            this.Name = null;
+            this.SourceDirectory = null;
+            this.TargetDirectory = null;
+            this.Type = null;
+
+            GC.Collect();
+        }
     }
 }

@@ -50,5 +50,13 @@ namespace EasySaveV2.MVVM.Views
         {
 
         }
+
+        private void RemoveBackups(object sender, RoutedEventArgs e)
+        {
+            Backup backup = ((Button)sender).Tag as Backup;
+            DashboardViewModels.DeleteBackupSetting(backup);
+            MainWindow win = (MainWindow)Window.GetWindow(this);
+            win.GoToDashboard(sender, e);
+        }
     }
 }

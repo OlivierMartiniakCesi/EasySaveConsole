@@ -44,9 +44,9 @@
                                             <TextBlock Text="{Binding Path=DashboardType}" Style="{DynamicResource TextDashBoard}" FontSize="14"/>
                                         </StackPanel>
                                     </StackPanel>
-                                    <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" Margin="510,10,0,12" VerticalAlignment="Center">
+                                    <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" Margin="510,10,0,12" Tag="{Binding}" VerticalAlignment="Center">
                                         <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                                            <Button Style="{DynamicResource ButtonDash}" Click="LaunchBackups">
+                                            <Button Style="{DynamicResource ButtonDash}" Click="RemoveBackups" Tag="{Binding}">
                                                 <Grid>
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="Auto"/>
@@ -57,7 +57,7 @@
                                             </Button>
                                         </StackPanel>
                                     </StackPanel>
-                                    <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" Margin="525,10,0,12" VerticalAlignment="Center">
+                                    <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" Margin="525,10,0,12" Tag="{Binding}" VerticalAlignment="Center">
                                         <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                             <Button Style="{DynamicResource ButtonDash}">
                                                 <Grid>
@@ -70,8 +70,8 @@
                                             </Button>
                                         </StackPanel>
                                     </StackPanel>
-                                    <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" Margin="535,10,0,12" VerticalAlignment="Center">
-                                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                    <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" Margin="535,10,0,12" Tag="{Binding}" VerticalAlignment="Center">
+                                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" >
                                             <Button Style="{DynamicResource ButtonDash}">
                                                 <Grid>
                                                     <Grid.RowDefinitions>
