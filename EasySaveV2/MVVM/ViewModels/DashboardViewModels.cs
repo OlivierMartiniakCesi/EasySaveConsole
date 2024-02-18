@@ -51,8 +51,6 @@ namespace EasySaveV2.MVVM.ViewModels
 
         public DashboardViewModels()
         {
-            BackupViewModels.GetJSON();
-            LaunchBackupCommand = new RelayCommand(DashboardViews.BtnLauch_ClickSolo);
         }
         public static void LaunchSlotBackup(List<Backup> backupList)
         {
@@ -292,6 +290,15 @@ namespace EasySaveV2.MVVM.ViewModels
 
             semaphore.Dispose();
         }
+
+        public static void DeleteBackupSetting(Backup backupSettings)
+        {
+            BackupViewModels.BackupListInfo.Remove(backupSettings);
+            backupSettings.Remove();
+            BackupViewModels.SaveBackupSettings();
+            Log.Information("Backup deleted with success.");
+        }
+
         private static void CopyFileWithProgress(string sourceFilePath, string destinationFilePath)
         {
             using (FileStream sourceStream = File.Open(sourceFilePath, FileMode.Open))
@@ -323,6 +330,7 @@ namespace EasySaveV2.MVVM.ViewModels
                     Console.WriteLine(); // Nouvelle ligne après la copie complète
                 }
             }
+
         }
     }
 }
