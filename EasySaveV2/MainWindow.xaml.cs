@@ -40,6 +40,12 @@ namespace EasySaveV2
             DataContext = new DashboardViewModels();
         }
 
+        public void GoToEdit(object sender, RoutedEventArgs e)
+        {
+            Backup backup = ((Button)sender).Tag as Backup;
+            DataContext = new EditsViewModels(backup);
+        }
+
         private void GoToBackup(object sender, RoutedEventArgs e)
         {
             DataContext = new BackupViewModels();

@@ -58,5 +58,12 @@ namespace EasySaveV2.MVVM.Views
             MainWindow win = (MainWindow)Window.GetWindow(this);
             win.GoToDashboard(sender, e);
         }
+
+        private void EditsBackups(object sender, RoutedEventArgs e)
+        {
+            Backup backup = ((Button)sender).Tag as Backup;
+            MainWindow win = (MainWindow)Window.GetWindow(this);
+            win.GoToEdit(sender, e);
+        }
     }
 }

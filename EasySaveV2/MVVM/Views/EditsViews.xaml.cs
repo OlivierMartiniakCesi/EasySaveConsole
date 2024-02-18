@@ -1,28 +1,41 @@
-﻿using Microsoft.Win32;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using EasySaveV2.MVVM.ViewModels;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using EasySaveV2.MVVM.Models;
+using EasySaveV2.MVVM.ViewModels;
+using EasySaveV2.MVVM.Views;
 using Serilog;
 
 namespace EasySaveV2.MVVM.Views
 {
     /// <summary>
-    /// Logique d'interaction pour BackupViews.xaml
+    /// Logique d'interaction pour EditsViews.xaml
     /// </summary>
-    public partial class BackupViews : UserControl
+    public partial class EditsViews : UserControl
     {
-        public BackupViews()
-        {
 
-            InitializeComponent();
-        }
-        private void OpenFileExplorerSource_Click(object sender, RoutedEventArgs e)
+        public EditsViews()
         {
-            OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            InitializeComponent();
+
+        }
+        private void OpenFileExplorerDestination(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
 
             openFileDialog.Title = "Sélectionnez un dossier";
+
             openFileDialog.CheckFileExists = false;
             openFileDialog.FileName = "Sélectionnez un dossier";
 
@@ -30,12 +43,13 @@ namespace EasySaveV2.MVVM.Views
             {
                 // Récupérer le chemin du dossier sélectionné
                 string selectedFolderPath = System.IO.Path.GetDirectoryName(openFileDialog.FileName);
-                backupSource.Text = selectedFolderPath;
+                backupDestEdit.Text = selectedFolderPath;
             }
         }
-        private void OpenFileExplorerDestination_Click(object sender, RoutedEventArgs e)
+
+        private void OpenFileExplorerSource(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
 
             openFileDialog.Title = "Sélectionnez un dossier";
 
@@ -46,7 +60,7 @@ namespace EasySaveV2.MVVM.Views
             {
                 // Récupérer le chemin du dossier sélectionné
                 string selectedFolderPath = System.IO.Path.GetDirectoryName(openFileDialog.FileName);
-                backupDest.Text = selectedFolderPath;
+                backupSourceEdit.Text = selectedFolderPath;
             }
         }
 
@@ -61,18 +75,17 @@ namespace EasySaveV2.MVVM.Views
             }
             return null;
         }
-
-        public void BackupCreator(object sender, RoutedEventArgs e)
+        private void EditBackup(object sender, RoutedEventArgs e)
         {
-            if (backupName.Text != "" && backupSource.Text != "" && backupDest.Text != "")
+            if (backupNameEdit.Text != "" && backupSourceEdit.Text != "" && backupDestEdit.Text != "")
             {
-                RadioButton selectedRadioButton = GetSelectedRadioButton(type);
+                RadioButton selectedRadioButton = GetSelectedRadioButton(typeEdit);
                 string backupType = selectedRadioButton.Content.ToString();
-                BackupViewModels.CreateSlotBackup(backupName.Text, backupSource.Text, backupDest.Text, backupType);
+                EditsViewModels.SaveBackupSettings(backupNameEdit.Text, backupSourceEdit.Text, backupDestEdit.Text, backupType);
                 Log.Information("Backup {backupName.Text} successfully !");
-                backupName.Text = "Type the back-up name";
-                backupSource.Text = "Source";
-                backupDest.Text = "Destination";
+                backupNameEdit.Text = "Type the back-up name";
+                backupSourceEdit.Text = "Source";
+                backupDestEdit.Text = "Destination";
                 MainWindow win = (MainWindow)Window.GetWindow(this);
                 win.GoToDashboard(sender, e);
             }
