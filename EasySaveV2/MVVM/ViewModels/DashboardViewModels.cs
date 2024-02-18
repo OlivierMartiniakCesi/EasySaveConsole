@@ -14,6 +14,11 @@ namespace EasySaveV2.MVVM.ViewModels
 {
     public class DashboardViewModels
     {
+        public DashboardViewModels()
+        {
+            BackupViewModels.GetJSON();
+        }
+
         public class Backup
         {
             public string Id { get; set; }

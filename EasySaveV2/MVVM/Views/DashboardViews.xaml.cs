@@ -30,11 +30,9 @@ namespace EasySaveV2.MVVM.Views
 
         public void BtnLoad_Click(object sender, RoutedEventArgs e)
         {
-            var json = File.ReadAllText(@"C:\JSON\confbackup.json");
+            var ListInfo = BackupViewModels.BackupListInfo;
 
-            List<DashboardViewModels.Backup> _personnes = JsonConvert.DeserializeObject<List<DashboardViewModels.Backup>>(json);
-
-            GridPeople.ItemsSource = _personnes;
+            GridPeople.ItemsSource = ListInfo;
         }
     }
 }
