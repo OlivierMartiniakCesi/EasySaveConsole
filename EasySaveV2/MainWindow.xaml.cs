@@ -61,6 +61,5 @@ namespace EasySaveV2
             dailylogs.selectedLogger.Information("Application close successfully !");
             Close();
         }
-
     }
 }
