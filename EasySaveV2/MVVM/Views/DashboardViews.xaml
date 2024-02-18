@@ -7,6 +7,19 @@
              xmlns:vm="clr-namespace:EasySaveV2.MVVM.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="344" d:DesignWidth="604">
+    
+    <Grid Name="BackupSize">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Content="Modify" FontSize="16" Style="{DynamicResource btn}" Margin="0,0,20,0"/>
+            <Button Content="Lauch" FontSize="16" Style="{DynamicResource btn}" Margin="20,0,0,0"/>
+        </StackPanel>
+
+
 
     <Grid Name="ListBackup" Margin="0 10 0 0">
         <ScrollViewer Height="{Binding ElementName=ListBackup, Path=ActualHeight}" VerticalScrollBarVisibility="Hidden">
