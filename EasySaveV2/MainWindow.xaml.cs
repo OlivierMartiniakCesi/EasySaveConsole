@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using EasySaveV2.MVVM.ViewModels;
 using EasySaveV2.MVVM.Views;
-
+using Serilog;
 
 namespace EasySaveV2
 {
@@ -27,6 +27,7 @@ namespace EasySaveV2
         {
             InitializeComponent();
             SettingsViewModels.typelog();
+            Log.Information("Application start successfully !");
             DataContext = new DashboardViewModels();
             Application.Current.Resources.MergedDictionaries[0].Source = new Uri("Language/DictionaryEnglish.xaml", UriKind.RelativeOrAbsolute);
         }
@@ -48,6 +49,7 @@ namespace EasySaveV2
 
         private void CloseApplication(object sender, RoutedEventArgs e)
         {
+            Log.Information("Application close successfully !");
             Close();
         }
     }
