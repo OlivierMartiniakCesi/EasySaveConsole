@@ -25,7 +25,6 @@ namespace EasySaveV2.MVVM.ViewModels
         public static ObservableCollection<Backup> BackupList { get; set; } = BackupViewModels.BackupListInfo;
         private static bool isBackupPaused = false;
         private static ManualResetEventSlim backupCompletedEvent = new ManualResetEventSlim(false);
-        public ICommand LaunchBackupCommand { get; }
 
         public DashboardViewModels()
         {
