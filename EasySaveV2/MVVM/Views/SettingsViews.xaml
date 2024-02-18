@@ -13,7 +13,7 @@
         <Grid>
             <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Width="300">
                 <StackPanel Height="190">
-                    <Label Content="{DynamicRessource Format}"  FontSize ="25" Style="{DynamicResource TextSetting}" HorizontalAlignment="Center" Grid.Row="1"/>
+                    <Label Content="{DynamicResource Format}"  FontSize ="25" Style="{DynamicResource TextSetting}" HorizontalAlignment="Center" Grid.Row="1"/>
                     <ToggleButton Name="formatlog" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Center" Width="64" Height="35" Click="ToggleButtonLogs_Click" Style="{DynamicResource ToggleButtonStyle}" />
                 </StackPanel>
             </DockPanel>
