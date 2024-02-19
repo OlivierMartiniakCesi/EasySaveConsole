@@ -23,69 +23,56 @@ namespace EasySaveV2.MVVM.ViewModels
     class DashboardViewModels
     {
         public static ObservableCollection<Backup> BackupList { get; set; } = BackupViewModels.BackupListInfo;
-        private static bool isBackupPaused = false;
+        private static volatile bool isBackupPaused = false;
         private static ManualResetEventSlim backupCompletedEvent = new ManualResetEventSlim(false);
+
+        // Semaphore for the pause
+        private static SemaphoreSlim pauseSemaphore = new SemaphoreSlim(1, 1);
 
         public DashboardViewModels()
         {
         }
+
         public static void LaunchSlotBackup(List<Backup> backupList)
         {
-            // Use Parallel.ForEach to process each backup in a separate thread
             Parallel.ForEach(backupList, backup =>
             {
+                Thread backupThread = new Thread(() =>
                 {
-                    // Use a separate thread for each backup
-                    Thread backupThread = new Thread(() =>
+                    // Check if the backup is paused before starting the backup process
+                    while (IsBackupPaused())
                     {
-                        // Check if the backup is paused
-                        while (IsBackupPaused())
-                        {
-                            Thread.Sleep(1000); // Wait for 1 second before checking again
-                        }
+                        Thread.Sleep(1000); // Wait for 1 second before checking again
+                    }
 
-                        string directory = backup.getTargetDirectory() + "\\" + backup.getName();
-                        backup.setTargetDirectory(directory);
+                    string directory = backup.getTargetDirectory() + "\\" + backup.getName();
+                    backup.setTargetDirectory(directory);
 
-                        // Create directory if it doesn't already exist
-                        if (!Directory.Exists(directory))
-                        {
-                            // Use Semaphore to control access to the shared resource
-                            SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+                    if (!Directory.Exists(directory))
+                    {
+                        Parallel.ForEach(Directory.GetDirectories(backup.getSourceDirectory(), "*", SearchOption.AllDirectories),
+                            new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
+                            (allDirectory) =>
+                            {
+                                Directory.CreateDirectory(allDirectory.Replace(backup.getSourceDirectory(), backup.getTargetDirectory()));
+                                dailylogs.selectedLogger.Information("Created directory ", allDirectory.Replace(backup.getSourceDirectory(), backup.getTargetDirectory()));
+                            });
+                    }
 
-                            Parallel.ForEach(Directory.GetDirectories(backup.getSourceDirectory(), "*", SearchOption.AllDirectories),
-                                new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
-                                (AllDirectory) =>
-                                {
-                                    semaphore.Wait();
-                                    try
-                                    {
-                                        Directory.CreateDirectory(AllDirectory.Replace(backup.getSourceDirectory(), backup.getTargetDirectory()));
-                                        dailylogs.selectedLogger.Information("Created directory ", AllDirectory.Replace(backup.getSourceDirectory(), backup.getTargetDirectory()));
-                                    }
-                                    finally
-                                    {
-                                        semaphore.Release();
-                                    }
-                                });
+                    if (backup.getType().Equals("Full", StringComparison.OrdinalIgnoreCase) || backup.getType().Equals("Complet", StringComparison.OrdinalIgnoreCase))
+                    {
+                        TypeComplet(backup.getSourceDirectory(), backup.getTargetDirectory());
+                    }
+                    else
+                    {
+                        TypeDifferential(backup.getSourceDirectory(), backup.getTargetDirectory());
+                    }
+                });
 
-                            semaphore.Dispose();
-                        }
-
-                        if (backup.getType().Equals("Full", StringComparison.OrdinalIgnoreCase) || backup.getType().Equals("Complet", StringComparison.OrdinalIgnoreCase))
-                        {
-                            TypeComplet(backup.getSourceDirectory(), backup.getTargetDirectory());
-                        }
-                        else
-                        {
-                            TypeDifferential(backup.getSourceDirectory(), backup.getTargetDirectory());
-                        }
-                    });
-
-                    backupThread.Start();
-                    backupThread.Join(); // Wait for the thread to complete before moving to the next backup
-                }
+                backupThread.Start();
+                // backupThread.Join(); // Removed this line to allow parallel execution of backups
             });
+
             foreach (var backupSetting in BackupViewModels.BackupListInfo)
             {
                 SettingsViewModels.SetSaveStateBackup(backupSetting.getName(), backupSetting.getSourceDirectory(), backupSetting.getTargetDirectory());
@@ -93,7 +80,6 @@ namespace EasySaveV2.MVVM.ViewModels
 
             Console.WriteLine("All selected backups have been launched.");
 
-            // Signal that the backup has completed
             backupCompletedEvent.Set();
         }
 
@@ -105,14 +91,14 @@ namespace EasySaveV2.MVVM.ViewModels
                 while (true)
                 {
                     // Check if backup execution is paused
-                    if (!isBackupPaused)
+                    if (!IsBackupPaused())
                     {
                         // Check for running processes
                         Process[] processes = Process.GetProcessesByName("CalculatorApp");
                         if (processes.Length > 0)
                         {
                             // Pause backup execution
-                            if (!isBackupPaused)
+                            if (!IsBackupPaused())
                             {
                                 PauseBackup();
                                 dailylogs.selectedLogger.Information("Backup execution paused due to the CalculatorApp process running.");
@@ -121,7 +107,7 @@ namespace EasySaveV2.MVVM.ViewModels
                         else
                         {
                             // Resume backup execution if it was paused
-                            if (isBackupPaused)
+                            if (IsBackupPaused())
                             {
                                 ResumeBackup();
                                 dailylogs.selectedLogger.Information("Backup execution resumed.");
@@ -156,18 +142,17 @@ namespace EasySaveV2.MVVM.ViewModels
 
         private static void PauseBackup()
         {
-            isBackupPaused = true;
+            pauseSemaphore.Wait();
         }
 
         private static void ResumeBackup()
         {
-            isBackupPaused = false;
+            pauseSemaphore.Release();
         }
 
-        // Méthode pour vérifier si la sauvegarde est en pause
         private static bool IsBackupPaused()
         {
-            return isBackupPaused;
+            return pauseSemaphore.CurrentCount == 0;
         }
 
         public static void TypeComplet(string PathSource, string PathTarget)
