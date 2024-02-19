@@ -40,7 +40,7 @@ namespace EasySaveV2.MVVM.ViewModels
         }
         public static void SaveBackupSettings()
         {
-            if (BackupListInfo != null && BackupListInfo.Count > 0)
+            if (BackupListInfo != null && BackupListInfo.Count >= 0)
             {
                 string jsonText = "[";
 

@@ -275,10 +275,17 @@ namespace EasySaveV2.MVVM.ViewModels
 
         public static void DeleteBackupSetting(Backup backupSettings)
         {
-            BackupViewModels.BackupListInfo.Remove(backupSettings);
-            backupSettings.Remove();
-            BackupViewModels.SaveBackupSettings();
-            dailylogs.selectedLogger.Information("Backup deleted with success.");
+            if (BackupViewModels.BackupListInfo.Contains(backupSettings))
+            {
+                BackupViewModels.BackupListInfo.Remove(backupSettings);
+                backupSettings.Remove();
+                BackupViewModels.SaveBackupSettings();
+                dailylogs.selectedLogger.Information("Backup deleted with success.");
+            }
+            else
+            {
+                dailylogs.selectedLogger.Information("Backup list is empty");
+            }
         }
 
         private static void CopyFileWithProgress(string sourceFilePath, string destinationFilePath)
