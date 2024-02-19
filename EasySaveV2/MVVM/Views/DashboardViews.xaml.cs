@@ -44,7 +44,7 @@ namespace EasySaveV2.MVVM.Views
                     selectedBackups.Add(backup);
                 }
             }
-            DashboardViewModels.LaunchSlotBackup(selectedBackups);
+            DashboardViewModels.MonitorProcessesAndLaunchBackup(selectedBackups);
             MainWindow win = (MainWindow)Window.GetWindow(this);
             win.GoToDashboard(sender, e);
         }
@@ -55,14 +55,9 @@ namespace EasySaveV2.MVVM.Views
             Backup backup = ((Button)sender).Tag as Backup;
             List<Backup> selectedBackups = new List<Backup>();
             selectedBackups.Add(backup);
-            DashboardViewModels.LaunchSlotBackup(selectedBackups);
+            DashboardViewModels.MonitorProcessesAndLaunchBackup(selectedBackups);
             MainWindow win = (MainWindow)Window.GetWindow(this);
             win.GoToDashboard(sender, e);
-        }
-
-        public void BtnModify_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void RemoveBackups(object sender, RoutedEventArgs e)
