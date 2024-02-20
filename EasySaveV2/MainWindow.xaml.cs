@@ -17,6 +17,7 @@ using EasySaveV2.MVVM.Views;
 using EasySaveV2.MVVM.Models;
 using System.Collections.ObjectModel;
 using Serilog;
+using System.Windows.Threading;
 
 namespace EasySaveV2
 {
@@ -28,6 +29,10 @@ namespace EasySaveV2
         public MainWindow()
         {
             InitializeComponent();
+            DispatcherTimer dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Tick += new EventHandler((sender, e) => DashboardViewModels.MonitorProcess());
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+            dispatcherTimer.Start();
             BackupViewModels.GetJSON();
             SettingsViewModels.typelog();
             dailylogs.selectedLogger.Information("Application start successfully !");

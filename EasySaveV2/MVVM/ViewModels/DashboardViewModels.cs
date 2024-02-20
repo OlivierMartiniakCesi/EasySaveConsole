@@ -26,6 +26,8 @@ namespace EasySaveV2.MVVM.ViewModels
         private static ManualResetEventSlim backupCompletedEvent = new ManualResetEventSlim(false);
         private static object pauseLock = new object();
         private static bool isBackupPaused = false;
+        private static bool canBeExecuted = true;
+        private static bool IsInExecution = false;
 
         public DashboardViewModels()
         {
@@ -41,22 +43,19 @@ namespace EasySaveV2.MVVM.ViewModels
                     Thread backupThread = new Thread(() =>
                     {
                         // Check if the backup is paused
-                        while (IsBackupPaused())
+                        if (!canBeExecuted)
                         {
-                            Thread.Sleep(1000); // Wait for 1 second before checking again
+                            Thread.Sleep(1000); // Wait for 1 second before checking again+promptimpossile
                         }
                         string directory = backup.getTargetDirectory() + "\\" + backup.getName();
                         backup.setTargetDirectory(directory);
                         // Create directory if it doesn't already exist
                         if (!Directory.Exists(directory))
                         {
-                            // Use Semaphore to control access to the shared resource
-                            SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
                             Parallel.ForEach(Directory.GetDirectories(backup.getSourceDirectory(), "*", SearchOption.AllDirectories),
                                 new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
                                 (AllDirectory) =>
                                 {
-                                    semaphore.Wait();
                                     try
                                     {
                                         Directory.CreateDirectory(AllDirectory.Replace(backup.getSourceDirectory(), backup.getTargetDirectory()));
@@ -64,22 +63,22 @@ namespace EasySaveV2.MVVM.ViewModels
                                     }
                                     finally
                                     {
-                                        semaphore.Release();
                                     }
                                 });
-                            semaphore.Dispose();
                         }
                         if (backup.getType().Equals("Full", StringComparison.OrdinalIgnoreCase) || backup.getType().Equals("Complet", StringComparison.OrdinalIgnoreCase))
                         {
                             TypeComplet(backup.getSourceDirectory(), backup.getTargetDirectory());
+                            IsInExecution = false;
+
                         }
                         else
                         {
                             TypeDifferential(backup.getSourceDirectory(), backup.getTargetDirectory());
+                            IsInExecution = false;
                         }
                     });
                     backupThread.Start();
-                    backupThread.Join(); // Wait for the thread to complete before moving to the next backup
                 }
             });
             foreach (var backupSetting in BackupViewModels.BackupListInfo)
@@ -88,69 +87,26 @@ namespace EasySaveV2.MVVM.ViewModels
             }
 
             Console.WriteLine("All selected backups have been launched.");
-
             // Signal that the backup has completed
             backupCompletedEvent.Set();
         }
 
-        public static void MonitorProcessesAndLaunchBackup(List<Backup> backupList)
+        public static void MonitorProcess()
         {
             // Start the process monitoring thread
-            Thread monitorThread = new Thread(() =>
+            Process[] processes = Process.GetProcessesByName("CalculatorApp");
+            if (processes.Length > 0)   // check if a software of the list is running
             {
-                while (true)
-                {
-                    lock (pauseLock)
-                    {
-                        // Check if backup execution is paused
-                        if (!isBackupPaused)
+                    canBeExecuted = false;
+                    if (IsInExecution == true)
                         {
-                            // Check for running processes
-                            Process[] processes = Process.GetProcessesByName("CalculatorApp");
-                            if (processes.Length > 0)
-                            {
-                                // Pause backup execution
-                                if (!isBackupPaused)
-                                {
-                                    PauseBackup();
-                                    dailylogs.selectedLogger.Information("Backup execution paused due to the CalculatorApp process running.");
-                                }
-                            }
-                            else
-                            {
-                                // Resume backup execution if it was paused
-                                if (isBackupPaused)
-                                {
-                                    ResumeBackup();
-                                    dailylogs.selectedLogger.Information("Backup execution resumed.");
-                                }
-                            }
+                        // Pause
+                            Thread.Sleep(1000);
                         }
-                        else
-                        {
-                            ResumeBackup();
-                        }
-                    }
-
-                    // Check if the backup has completed to exit the loop
-                    if (backupCompletedEvent.Wait(0))
-                    {
-                        break;
-                    }
-
-                    // Sleep for a short duration before checking again
-                    Thread.Sleep(2000); // Adjust the sleep duration as needed
-                }
-            });
-
-            // Start the monitoring thread
-            monitorThread.Start();
-
-            // Continue with the regular backup launch
-            LaunchSlotBackup(backupList);
-
-            // Join the monitoring thread to ensure it finishes before the application exits
-            monitorThread.Join();
+                    
+            }
+            else
+                canBeExecuted = true;
         }
 
         private static void PauseBackup()
@@ -176,21 +132,31 @@ namespace EasySaveV2.MVVM.ViewModels
                 new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
                 (directory) =>
                 {
+                    while(!canBeExecuted)
+                    {
+                                Thread.Sleep(1000);
+                        dailylogs.selectedLogger.Information("Backup execution paused due to the CalculatorApp process running.");
+                    }
                     try
-                    {
-                        Directory.CreateDirectory(directory.Replace(PathSource, PathTarget));
-                        dailylogs.selectedLogger.Information("Created directory " + directory.Replace(PathSource, PathTarget));
-                    }
+                        {
+                            Directory.CreateDirectory(directory.Replace(PathSource, PathTarget));
+                            dailylogs.selectedLogger.Information("Created directory " + directory.Replace(PathSource, PathTarget));
+                        }
                     finally
-                    {
-                    }
+                        {
+                        }
+                    
                 });
 
-            // Copy files concurrently
             Parallel.ForEach(Directory.GetFiles(PathSource, "*.*", SearchOption.AllDirectories),
                 new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
                 (filePath) =>
                 {
+                    while (!canBeExecuted)
+                    {
+                        Thread.Sleep(1000);
+                        dailylogs.selectedLogger.Information("Backup execution paused due to the CalculatorApp process running.");
+                    }
                     try
                     {
                         string targetFilePath = Path.Combine(PathTarget, filePath.Substring(PathSource.Length + 1));
