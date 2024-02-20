@@ -27,6 +27,7 @@ namespace EasySaveV2.MVVM.Views
 
 
         SettingsViewModels Settings = new SettingsViewModels();
+
         public SettingsViews()
         {
             InitializeComponent();
@@ -61,6 +62,23 @@ namespace EasySaveV2.MVVM.Views
                 else
                 {
                     // La valeur est indéterminée
+                }
+            }
+        }
+
+        private void AddExtensionEncrypt(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                string extension = ExtensionBackup.Text.Trim(); 
+                if (!string.IsNullOrEmpty(extension) && extension[0] == '.')
+                {
+                    Settings.AddList(extension);
+                    Alerte.Content = "";
+                }
+                else
+                {
+                    Alerte.Content = "Start by '.' like '.exe'";
                 }
             }
         }

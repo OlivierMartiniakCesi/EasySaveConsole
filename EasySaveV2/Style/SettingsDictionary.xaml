@@ -8,7 +8,6 @@
         <Setter Property="FontWeight" Value="Bold"/>
     </Style>
 
-
     <Style x:Key="ToggleButtonStyle" TargetType="ToggleButton">
         <Setter Property="Template">
             <Setter.Value>

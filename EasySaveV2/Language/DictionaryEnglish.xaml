@@ -15,4 +15,5 @@
     <system:String x:Key="language">Language</system:String>
     <system:String x:Key="Modify">Language</system:String>
     <system:String x:Key="Lauch">Language</system:String>
+    <system:String x:Key="Add">Add</system:String>
 </ResourceDictionary>

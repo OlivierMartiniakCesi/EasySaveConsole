@@ -22,7 +22,7 @@
         </StackPanel>
 
         <Grid Name="ListBackup" Margin="0,10,0,0" Grid.Row="1">
-            <ScrollViewer Height="{Binding ElementName=ListBackup}" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Hidden">
+            <ScrollViewer Height="{Binding ElementName=ListBackup, Path=ActualHeight}" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Hidden">
                 <ListBox Name="BackupList" ItemsSource="{Binding BackupList}" SelectionMode="Extended" Style="{DynamicResource list}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>

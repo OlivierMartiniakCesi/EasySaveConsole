@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:EasySaveV2.MVVM.Views"
+             xmlns:local="clr-namespace:EasySaveV2.MVVM.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="344" d:DesignWidth="604">
     <Grid>
@@ -21,6 +21,31 @@
                 <StackPanel Height="190">
                     <Label Content="{DynamicResource language}"  FontSize ="25" Style="{DynamicResource TextSetting}" HorizontalAlignment="Center" Grid.Row="1"/>
                     <ToggleButton x:Name="ButtonLanguage" IsEnabled="True" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Center" Width="64" Height="35" Style="{DynamicResource ToggleButtonStyle}" Checked="CheckedLanguage" Unchecked="UncheckedLanguage" />
+                </StackPanel>
+            </DockPanel>
+        </Grid>
+        <Grid>
+            <DockPanel VerticalAlignment="Bottom" HorizontalAlignment="Center" Width="500">
+                <StackPanel Height="150">
+                    <Border Style="{StaticResource BorderedTextBlock}" Width="300" Margin="2">
+                        <TextBox Name="ExtensionBackup" Margin="9,4,9,4" Style="{DynamicResource TextboxBackup}" Text="Extension" TextAlignment="Center" KeyDown="AddExtensionEncrypt"/>
+                    </Border>
+                    <ScrollViewer Height="100" Width="300" VerticalScrollBarVisibility="Hidden">
+                        <ListView ItemsSource="{Binding ExtensionCryptoSoft}" >
+                            <ListView.Template>
+                                <ControlTemplate>
+                                    <Border Style="{DynamicResource BorderedTextBlock}">
+                                        <ItemsPresenter/>
+                                    </Border>
+                                </ControlTemplate>
+                            </ListView.Template>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Style="{DynamicResource Texttest}" Width="280" Text="{Binding}"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </ScrollViewer>
                 </StackPanel>
             </DockPanel>
         </Grid>

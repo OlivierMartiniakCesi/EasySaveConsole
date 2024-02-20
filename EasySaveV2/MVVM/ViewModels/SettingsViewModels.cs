@@ -20,6 +20,7 @@ namespace EasySaveV2.MVVM.ViewModels
 {
     class SettingsViewModels
     {
+        public static ObservableCollection<string> ExtensionCryptoSoft { get; set; } = new ObservableCollection<string>();
         private static dailylogs logs = new dailylogs();
         static bool type;
 
@@ -28,6 +29,11 @@ namespace EasySaveV2.MVVM.ViewModels
             type = format_logs;
             logs.Logsjson(format_logs);
             dailylogs.selectedLogger.Information("Application started successfully");
+        }
+
+        public void AddList(string ext)
+        {
+            ExtensionCryptoSoft.Add(ext);
         }
         public static void typelog()
         {
