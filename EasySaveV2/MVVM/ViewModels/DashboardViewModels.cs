@@ -186,15 +186,11 @@ namespace EasySaveV2.MVVM.ViewModels
 
         public static void TypeComplet(string PathSource, string PathTarget)
         {
-            // Use Semaphore to control access to the shared resource
-            SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
-
             // Create all directories concurrently
             Parallel.ForEach(Directory.GetDirectories(PathSource, "*", SearchOption.AllDirectories),
                 new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
                 (directory) =>
                 {
-                    semaphore.Wait();
                     try
                     {
                         Directory.CreateDirectory(directory.Replace(PathSource, PathTarget));
@@ -202,7 +198,6 @@ namespace EasySaveV2.MVVM.ViewModels
                     }
                     finally
                     {
-                        semaphore.Release();
                     }
                 });
 
@@ -211,7 +206,6 @@ namespace EasySaveV2.MVVM.ViewModels
                 new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
                 (filePath) =>
                 {
-                    semaphore.Wait();
                     try
                     {
                         string targetFilePath = Path.Combine(PathTarget, filePath.Substring(PathSource.Length + 1));
@@ -220,11 +214,8 @@ namespace EasySaveV2.MVVM.ViewModels
                     }
                     finally
                     {
-                        semaphore.Release();
                     }
                 });
-
-            semaphore.Dispose();
         }
         public static void TypeDifferential(string PathSource, string PathTarget)
         {
@@ -233,13 +224,9 @@ namespace EasySaveV2.MVVM.ViewModels
 
             //Console.WriteLine("Copy progress: ");
 
-            // Use Semaphore to control access to the shared resource
-            SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
-
             // Parallelize the loop for concurrent file operations
             Parallel.ForEach(files, file =>
             {
-                semaphore.Wait();
                 try
                 {
                     // Get the file name
@@ -280,11 +267,8 @@ namespace EasySaveV2.MVVM.ViewModels
                 }
                 finally
                 {
-                    semaphore.Release();
                 }
             });
-
-            semaphore.Dispose();
         }
 
         public static void DeleteBackupSetting(Backup backupSettings)
