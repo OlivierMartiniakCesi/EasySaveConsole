@@ -64,5 +64,17 @@ namespace EasySaveV2.MVVM.Views
                 }
             }
         }
+
+        private void AddExtensionEncrypt(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                string extension = ExtensionBackup.Text.Trim(); 
+                if (!string.IsNullOrEmpty(extension) && extension[0] == '.')
+                {
+                    Settings.AddList(extension);
+                }
+            }
+        }
     }
 }
