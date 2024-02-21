@@ -178,6 +178,11 @@ namespace EasySaveV2.MVVM.ViewModels
                         // Compare the dates
                         if (lastModifiedSource > lastModifiedTarget)
                         {
+                            while (!canBeExecuted)
+                            {
+                                Thread.Sleep(1000);
+                                dailylogs.selectedLogger.Information("Backup execution paused due to the CalculatorApp process running.");
+                            }
                             // Copy the file from the source location to the target location with progress
                             CopyFileWithProgress(file, destinationFilePath);
                             dailylogs.selectedLogger.Information($"File '{fileName}' in {PathSource} has been copied to {PathTarget} as it was modified more recently.");
