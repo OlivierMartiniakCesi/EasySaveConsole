@@ -24,8 +24,6 @@ namespace EasySaveV2.MVVM.ViewModels
     {
         public static ObservableCollection<Backup> BackupList { get; set; } = BackupViewModels.BackupListInfo;
         private static ManualResetEventSlim backupCompletedEvent = new ManualResetEventSlim(false);
-        private static object pauseLock = new object();
-        private static bool isBackupPaused = false;
         private static bool canBeExecuted = true;
         private static bool IsInExecution = false;
 
@@ -107,22 +105,6 @@ namespace EasySaveV2.MVVM.ViewModels
             }
             else
                 canBeExecuted = true;
-        }
-
-        private static void PauseBackup()
-        {
-            isBackupPaused = true;
-        }
-
-        private static void ResumeBackup()
-        {
-            isBackupPaused = false;
-        }
-
-        // Méthode pour vérifier si la sauvegarde est en pause
-        private static bool IsBackupPaused()
-        {
-            return isBackupPaused;
         }
 
         public static void TypeComplet(string PathSource, string PathTarget)
