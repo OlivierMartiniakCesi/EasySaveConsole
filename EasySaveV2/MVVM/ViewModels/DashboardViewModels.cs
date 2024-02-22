@@ -24,8 +24,6 @@ namespace EasySaveV2.MVVM.ViewModels
     {
         public static ObservableCollection<Backup> BackupList { get; set; } = BackupViewModels.BackupListInfo;
         private static ManualResetEventSlim backupCompletedEvent = new ManualResetEventSlim(false);
-        private static object pauseLock = new object();
-        private static bool isBackupPaused = false;
         private static bool canBeExecuted = true;
         private static bool IsInExecution = false;
 
@@ -109,22 +107,6 @@ namespace EasySaveV2.MVVM.ViewModels
                 canBeExecuted = true;
         }
 
-        private static void PauseBackup()
-        {
-            isBackupPaused = true;
-        }
-
-        private static void ResumeBackup()
-        {
-            isBackupPaused = false;
-        }
-
-        // Méthode pour vérifier si la sauvegarde est en pause
-        private static bool IsBackupPaused()
-        {
-            return isBackupPaused;
-        }
-
         public static void TypeComplet(string PathSource, string PathTarget)
         {
             // Create all directories concurrently
@@ -196,6 +178,11 @@ namespace EasySaveV2.MVVM.ViewModels
                         // Compare the dates
                         if (lastModifiedSource > lastModifiedTarget)
                         {
+                            while (!canBeExecuted)
+                            {
+                                Thread.Sleep(1000);
+                                dailylogs.selectedLogger.Information("Backup execution paused due to the CalculatorApp process running.");
+                            }
                             // Copy the file from the source location to the target location with progress
                             CopyFileWithProgress(file, destinationFilePath);
                             dailylogs.selectedLogger.Information($"File '{fileName}' in {PathSource} has been copied to {PathTarget} as it was modified more recently.");
