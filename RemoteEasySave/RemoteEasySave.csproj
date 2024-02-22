@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Pictures\Backup.png" />
+    <None Remove="Pictures\close.png" />
+    <None Remove="Pictures\DashBoard.png" />
+    <None Remove="Pictures\edit.png" />
+    <None Remove="Pictures\french.png" />
+    <None Remove="Pictures\Logo.png" />
+    <None Remove="Pictures\play.png" />
+    <None Remove="Pictures\Rond.png" />
+    <None Remove="Pictures\Settings.png" />
+    <None Remove="Pictures\trash.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Pictures\Backup.png" />
+    <Resource Include="Pictures\close.png" />
+    <Resource Include="Pictures\DashBoard.png" />
+    <Resource Include="Pictures\edit.png" />
+    <Resource Include="Pictures\french.png" />
+    <Resource Include="Pictures\Logo.png" />
+    <Resource Include="Pictures\play.png" />
+    <Resource Include="Pictures\Rond.png" />
+    <Resource Include="Pictures\Settings.png" />
+    <Resource Include="Pictures\trash.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Style\BackupDictionary.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Style\DashboardDictionary.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Style\MainDictonnary.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Style\SettingsDictionary.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+  </ItemGroup>
+
+</Project>

@@ -24,6 +24,31 @@
                 </StackPanel>
             </DockPanel>
         </Grid>
+        <Grid>
+            <DockPanel VerticalAlignment="Bottom" HorizontalAlignment="Center" Width="500">
+                <StackPanel Height="150">
+                    <Border Style="{StaticResource BorderedTextBlock}" Width="300" Margin="2">
+                        <TextBox Name="ExtensionBackup" Margin="9,4,9,4" Style="{DynamicResource TextboxBackup}" Text="Extension" TextAlignment="Center" KeyDown="AddExtensionEncrypt"/>
+                    </Border>
+                    <ScrollViewer Height="100" Width="300" VerticalScrollBarVisibility="Hidden">
+                        <ListView ItemsSource="{Binding ExtensionCryptoSoft}" >
+                            <ListView.Template>
+                                <ControlTemplate>
+                                    <Border Style="{DynamicResource BorderedTextBlock}">
+                                        <ItemsPresenter/>
+                                    </Border>
+                                </ControlTemplate>
+                            </ListView.Template>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Style="{DynamicResource Texttest}" Width="280" Text="{Binding}"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </ScrollViewer>
+                </StackPanel>
+            </DockPanel>
+        </Grid>
         <Label Content="EN" FontSize="18" Style="{DynamicResource TextSetting}" Margin="378,130,195,184"/>
         <Label Content="FR" FontSize="18" Style="{DynamicResource TextSetting}" Margin="502,130,71,184"/>
         <Label Content="JSON" FontSize="18" Style="{DynamicResource TextSetting}" Margin="53,130,502,184"/>

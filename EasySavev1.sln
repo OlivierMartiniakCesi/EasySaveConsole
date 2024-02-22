@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteEasySave", "RemoteEasySave\RemoteEasySave.csproj", "{51E41B6F-6071-428A-A95D-E8CDECAC6168}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{26E136E2-F42C-416B-BADD-0D34E6F103F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26E136E2-F42C-416B-BADD-0D34E6F103F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26E136E2-F42C-416B-BADD-0D34E6F103F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51E41B6F-6071-428A-A95D-E8CDECAC6168}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51E41B6F-6071-428A-A95D-E8CDECAC6168}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51E41B6F-6071-428A-A95D-E8CDECAC6168}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51E41B6F-6071-428A-A95D-E8CDECAC6168}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
