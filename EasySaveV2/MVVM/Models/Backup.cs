@@ -27,6 +27,8 @@ namespace EasySaveV2.MVVM.Models
             this.SourceDirectory = PathSource;
             this.TargetDirectory = PathTarget;
             this.Type = type;
+            this.State = State;
+            this.Stopped = Stopped;
         }
 
         ~Backup()
@@ -127,9 +129,9 @@ namespace EasySaveV2.MVVM.Models
             return Stopped;
         }
 
-        public void setStopped(string State)
+        public void setStopped(string Stopped)
         {
-            this.Stopped = State;
+            this.Stopped = Stopped;
         }
 
         public string getAllInfo()
@@ -149,7 +151,7 @@ namespace EasySaveV2.MVVM.Models
              Environment.NewLine + "\t\"Name\":\"" + Name + "\"," +
              Environment.NewLine + "\t\"Source\":\"" + SourceDirectory + "\"," +
              Environment.NewLine + "\t\"Target\":\"" + TargetDirectory + "\"," +
-             Environment.NewLine + "\t\"Type\":\"" + Type + "\"" +
+             Environment.NewLine + "\t\"Type\":\"" + Type + "\"," +
              Environment.NewLine + "\t\"State\":\"" + State + "\"," +
              Environment.NewLine + "\t\"Stopped\":\"" + Stopped + "\""+
              Environment.NewLine + "}";

@@ -35,7 +35,7 @@ namespace EasySaveV2.MVVM.ViewModels
             {
                 Directory.CreateDirectory(directoryPath);
             }
-            BackupListInfo.Add(_backup.CreateBackup(name, sourcePath, destinationPath, type, "Off", "True"));
+            BackupListInfo.Add(_backup.CreateBackup(name, sourcePath, destinationPath, type, "Off", "False"));
             SaveBackupSettings();
         }
         public static void SaveBackupSettings()
@@ -104,7 +104,7 @@ namespace EasySaveV2.MVVM.ViewModels
                         }
                         else
                         {
-                            dailylogs.selectedLogger.Information($"Élément de données invalide trouvé.");
+                            //dailylogs.selectedLogger.Information($"Élément de données invalide trouvé.");
                         }
                     }
                 }
