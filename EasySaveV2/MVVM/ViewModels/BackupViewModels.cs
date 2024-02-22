@@ -22,7 +22,6 @@ namespace EasySaveV2.MVVM.ViewModels
         public static ObservableCollection<Backup> BackupListInfo = new ObservableCollection<Backup>();
         private static List<StateLog> stateLogList = new List<StateLog>();
         //private static int totalFilesDone = 0;
-        const int MaxBackupSettings = 5;
 
         public static ObservableCollection<Backup> getBackupList()
         {

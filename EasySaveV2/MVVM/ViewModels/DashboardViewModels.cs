@@ -39,6 +39,7 @@ namespace EasySaveV2.MVVM.ViewModels
                     // Use a separate thread for each backup
                     Thread backupThread = new Thread(() =>
                     {
+                        backup.setState("On");
                         // Check if the backup is paused
                         if (!canBeExecuted)
                         {
@@ -100,7 +101,7 @@ namespace EasySaveV2.MVVM.ViewModels
                     if (backup.getState() == "On")
                     {
                         // Pause
-                        Thread.Sleep(1000);
+                        //Thread.Sleep(1000);
                         backup.setState("Off");
                     }
                 }
@@ -129,10 +130,11 @@ namespace EasySaveV2.MVVM.ViewModels
                     while(!canBeExecuted || (State == "Off"))
                     {
                                 Thread.Sleep(1000);
-                        dailylogs.selectedLogger.Information("Backup {Name} execution paused due to the CalculatorApp process running.");
+                        dailylogs.selectedLogger.Information("Backup " + Name + " execution paused");
                     }
                     if(Stopped == "True")
                     {
+                        dailylogs.selectedLogger.Information("Backup " + Name + " execution stopped");
                         return;
                     }
                     try
@@ -153,10 +155,11 @@ namespace EasySaveV2.MVVM.ViewModels
                     while (!canBeExecuted || (State == "Off"))
                     {
                         Thread.Sleep(1000);
-                        dailylogs.selectedLogger.Information("Backup {Name} execution paused due to the CalculatorApp process running.");
+                        dailylogs.selectedLogger.Information("Backup " + Name + " execution paused");
                     }
                     if (Stopped == "True")
                     {
+                        dailylogs.selectedLogger.Information("Backup " + Name + " execution stopped");
                         return;
                     }
                     try
@@ -201,10 +204,11 @@ namespace EasySaveV2.MVVM.ViewModels
                             while (!canBeExecuted || (State == "Off"))
                             {
                                 Thread.Sleep(1000);
-                                dailylogs.selectedLogger.Information("Backup {Name} execution paused due to the CalculatorApp process running.");
+                                dailylogs.selectedLogger.Information("Backup " + Name + " execution paused");
                             }
                             if (Stopped == "True")
                             {
+                                dailylogs.selectedLogger.Information("Backup " + Name + " execution stopped");
                                 return;
                             }
                             // Copy the file from the source location to the target location with progress
