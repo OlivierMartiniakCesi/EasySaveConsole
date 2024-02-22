@@ -14,12 +14,14 @@ namespace EasySaveV2.MVVM.Models
         private string SourceDirectory { get; set; }
         private string TargetDirectory { get; set; }
         private string Type { get; set; }
+        private string State { get; set; }
+        private string Stopped { get; set; }
 
         //Constructor
         public Backup() { }
 
         //Constructor with parameter
-        public Backup(string Name, string PathSource, string PathTarget, string type)
+        public Backup(string Name, string PathSource, string PathTarget, string type, string State, string Stopped)
         {
             this.Name = Name;
             this.SourceDirectory = PathSource;
@@ -111,15 +113,34 @@ namespace EasySaveV2.MVVM.Models
             this.Type = Type;
         }
 
+        public string getState()
+        {
+            return State;
+        }
+
+        public void setState(string State)
+        {
+            this.State = State;
+        }
+        public string getStopped()
+        {
+            return Stopped;
+        }
+
+        public void setStopped(string State)
+        {
+            this.Stopped = State;
+        }
+
         public string getAllInfo()
         {
             string Information = "Name : " + Name + "\tSource directory : " + SourceDirectory + "\tTarget directory : " + TargetDirectory + "\tType : " + Type;
             return Information;
         }
 
-        public Backup CreateBackup(string Name, string PathSource, string PathTarget, string type)
+        public Backup CreateBackup(string Name, string PathSource, string PathTarget, string type, string State, string Stopped)
         {
-            return new Backup(Name, PathSource, PathTarget, type);
+            return new Backup(Name, PathSource, PathTarget, type, State, Stopped);
         }
 
         public string SaveJson()
@@ -129,6 +150,8 @@ namespace EasySaveV2.MVVM.Models
              Environment.NewLine + "\t\"Source\":\"" + SourceDirectory + "\"," +
              Environment.NewLine + "\t\"Target\":\"" + TargetDirectory + "\"," +
              Environment.NewLine + "\t\"Type\":\"" + Type + "\"" +
+             Environment.NewLine + "\t\"State\":\"" + State + "\"," +
+             Environment.NewLine + "\t\"Stopped\":\"" + Stopped + "\""+
              Environment.NewLine + "}";
 
             return FileStock.Replace("\\", "\\\\");
@@ -140,6 +163,8 @@ namespace EasySaveV2.MVVM.Models
             this.SourceDirectory = null;
             this.TargetDirectory = null;
             this.Type = null;
+            this.State = null;
+            this.Stopped = null;
 
             GC.Collect();
         }
