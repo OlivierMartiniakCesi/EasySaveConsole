@@ -45,10 +45,10 @@ namespace EasySaveV2.MVVM.ViewModels
                         {
                             Thread.Sleep(1000); // Wait for 1 second before checking again+promptimpossile
                         }
-                        string directory = backup.getTargetDirectory() + "\\" + backup.getName();
-                        backup.setTargetDirectory(directory);
+                        //string directory = backup.getTargetDirectory() + "\\" + backup.getName();
+                        //backup.setTargetDirectory(directory);
                         // Create directory if it doesn't already exist
-                        if (!Directory.Exists(directory))
+                        if (!Directory.Exists(backup.getTargetDirectory()))
                         {
                             Parallel.ForEach(Directory.GetDirectories(backup.getSourceDirectory(), "*", SearchOption.AllDirectories),
                                 new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
