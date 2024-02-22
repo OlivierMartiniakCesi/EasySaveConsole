@@ -24,5 +24,10 @@ namespace RemoteEasySave
         {
             InitializeComponent();
         }
+
+        private void CloseApplication(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
     }
 }

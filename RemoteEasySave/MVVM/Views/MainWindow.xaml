@@ -1,0 +1,121 @@
+﻿<Window x:Class="RemoteEasySave.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RemoteEasySave"
+        xmlns:viewModel="clr-namespace:RemoteEasySave.MVVM.ViewModels"
+        mc:Ignorable="d"
+        Height="450" Width="800"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        Background="Transparent"
+        AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen"
+        >
+
+
+
+    <Window.Resources>
+
+    </Window.Resources>
+
+    <Border Style="{DynamicResource BordureMenu}">
+        <Grid>
+            <Grid Margin="0,0,0,393">
+                <Rectangle Style="{DynamicResource LigneMenu}" VerticalAlignment="Bottom" Height="2"/>
+                <Image Margin="9,10,650,7" Stretch="Fill" Source="/Pictures/Logo.png"/>
+
+                <Button Style="{DynamicResource ButtonTop}" Margin="597,8,13,9" Click="CloseApplication">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Image Stretch="Fill" Source="/Pictures/close.png" Margin="148,0,0,143"/>
+                    </Grid>
+                </Button>
+            </Grid>
+            <Grid Margin="32,82,30,24">
+                <DockPanel>
+                    <Grid>
+                        <Border Style="{DynamicResource BordureDash}"/>
+                        <ContentControl Content="{Binding}" Name="Page"/>
+                    </Grid>
+                </DockPanel>
+            </Grid>
+
+            <Grid Name="ListBackup" Margin="32,82,30,24">
+                <ScrollViewer Height="{Binding ElementName=ListBackup, Path=ActualHeight}" VerticalScrollBarVisibility="Hidden">
+                    <ListBox Name="BackupList" ItemsSource="{Binding BackupList}" SelectionMode="Extended" Style="{DynamicResource list}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{DynamicResource BordureDashboard}" Margin="30,0,15,20">
+                                    <Grid>
+                                        <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
+                                            <TextBlock  Style="{DynamicResource NameDashboard}" Text="{Binding Path=DashboardName}" Margin="5,6,0,10" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="140,10,0,10" VerticalAlignment="Center">
+                                            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Path=DashboardSource}" Style="{DynamicResource TextDashBoard}" FontSize="14"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" Margin="290,10,0,10" VerticalAlignment="Center">
+                                            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Path=DashboardDestination}" Style="{DynamicResource TextDashBoard}" FontSize="14"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Left" Margin="440,10,0,10" VerticalAlignment="Center">
+                                            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Path=DashboardType}" Style="{DynamicResource TextDashBoard}" FontSize="14"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" Margin="510,10,0,12" VerticalAlignment="Center">
+                                            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                                <Button Style="{DynamicResource ButtonDash}" Tag="{Binding}">
+                                                    <Grid>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                        </Grid.RowDefinitions>
+                                                        <Image Name="Delete" Source="/Pictures/trash.png" Width="15" Height="15"/>
+                                                    </Grid>
+                                                </Button>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" Margin="525,10,0,12"  VerticalAlignment="Center">
+                                            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                                <Button Style="{DynamicResource ButtonDash}" Tag="{Binding}">
+                                                    <Grid>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                        </Grid.RowDefinitions>
+                                                        <Image Name="Edit" Source="/Pictures/edit.png" Width="15" Height="15"/>
+                                                    </Grid>
+                                                </Button>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" Margin="535,10,0,12" VerticalAlignment="Center">
+                                            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" >
+                                                <Button Style="{DynamicResource ButtonDash}" Tag="{Binding}">
+                                                    <Grid>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                        </Grid.RowDefinitions>
+                                                        <Image Name="Play" Source="/Pictures/play.png" Width="20" Height="20"/>
+                                                    </Grid>
+                                                </Button>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
