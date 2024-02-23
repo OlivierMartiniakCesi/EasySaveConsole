@@ -24,17 +24,13 @@ namespace EasySaveV2.MVVM.ViewModels
     class DashboardViewModels
     {
         public static ObservableCollection<Backup> BackupList { get; set; } = BackupViewModels.BackupListInfo;
+        private static ServerViewModels serverViewModels = new ServerViewModels();
+
         private static ManualResetEventSlim backupCompletedEvent = new ManualResetEventSlim(false);
         private static bool canBeExecuted = true;
-        public Socket socket;
-        private Socket client;
 
-        private static Server server = new Server();
         public DashboardViewModels()
         {
-            socket = server.SeConnecter();
-            client = server.AccepterConnection(socket);
-            server.EcouterReseau(client);
         }
 
         public static void LaunchSlotBackup(List<Backup> backupList)
@@ -70,7 +66,8 @@ namespace EasySaveV2.MVVM.ViewModels
                                     {
                                     }
                                 });
-                        }
+                        } 
+
                         if (backup.getType().Equals("Full", StringComparison.OrdinalIgnoreCase) || backup.getType().Equals("Complet", StringComparison.OrdinalIgnoreCase))
                         {
                             TypeComplet(backup.getName(), backup.getSourceDirectory(), backup.getTargetDirectory(), backup.getState(), backup.getStopped());
@@ -84,6 +81,7 @@ namespace EasySaveV2.MVVM.ViewModels
                         }
                     });
                     backupThread.Start();
+                    serverViewModels.receiveBackupInfo(backup.getName(), backup.getSourceDirectory(), backup.getTargetDirectory(), backup.getType());
                 }
             });
             foreach (var backupSetting in BackupViewModels.BackupListInfo)

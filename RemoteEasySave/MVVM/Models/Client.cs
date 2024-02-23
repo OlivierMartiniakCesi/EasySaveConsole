@@ -15,14 +15,13 @@ namespace RemoteEasySave.MVVM.Models
     class Client
     {
         private static IPEndPoint ipep;
-        public static List<Backup> BackupListInfo { get; set; } = new List<Backup>();
 
 
         public Client() { }
 
         public Socket SeConnecter()
         {
-            ipep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9050);
+            ipep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 10001);
             Socket Sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
            
@@ -32,10 +31,8 @@ namespace RemoteEasySave.MVVM.Models
             return Sock;
         }
 
-        public void DialoguerReseau(Socket server)
+        public void DialoguerReseau(Socket server, List<Backup> BackupListInfo)
         {
-            ObservableCollection<Backup> backups = new ObservableCollection<Backup>();
-
             byte[] data = new byte[1024];
             int recv = server.Receive(data);
             string stringData = Encoding.UTF8.GetString(data, 0, recv);

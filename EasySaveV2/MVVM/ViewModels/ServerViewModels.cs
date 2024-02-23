@@ -12,8 +12,9 @@ namespace EasySaveV2.MVVM.ViewModels
 {
     class ServerViewModels
     {
-        private static Server server = new Server();
-        private static Socket socket;
+        public static Server server = new Server();
+        public static Socket socket;
+        public static Socket client;
         public static ObservableCollection<Backup> BackupList { get; set; } = BackupViewModels.BackupListInfo;
 
         public void start()
@@ -22,9 +23,14 @@ namespace EasySaveV2.MVVM.ViewModels
 
         }
 
-        public void receiveBackupInfo()
+        public void receiveBackupInfo(string name, string source, string destination, string type)
         {
-            server.EcouterReseau(socket);
+            server.EcouterReseau(name, source, destination, type);
+        }
+
+        public void AcceptSocket()
+        {
+            server.AccepterConnection(socket);
         }
 
 

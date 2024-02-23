@@ -11,11 +11,12 @@
         ResizeMode="NoResize"
         Background="Transparent"
         AllowsTransparency="True"
-        WindowStartupLocation="CenterScreen"
         >
 
 
-
+    <Window.DataContext>
+        <viewModel:MainViewModels/>
+    </Window.DataContext>
     <Window.Resources>
         
     </Window.Resources>
@@ -26,13 +27,22 @@
                 <Rectangle Style="{DynamicResource LigneMenu}" VerticalAlignment="Bottom" Height="2"/>
                 <Image Margin="9,10,650,7" Stretch="Fill" Source="/Pictures/Logo.png"/>
 
-                <Button Style="{DynamicResource ButtonTop}" Margin="600,8,13,9" Click="CloseApplication">
-                    <Grid>
+                <Button Style="{DynamicResource ButtonTop}" Margin="736,8,13,7" Click="CloseApplication">
+                    <Grid Height="47">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <Image Stretch="Fill" Source="/Pictures/close.png" Margin="148,0,0,143"/>
+                        <Image Stretch="Fill" Source="/Pictures/close.png" RenderTransformOrigin="0.5,0.5" Margin="0,-6,0,6">
+                            <Image.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="-1"/>
+                                    <SkewTransform/>
+                                    <RotateTransform/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </Image.RenderTransform>
+                        </Image>
                     </Grid>
                 </Button>
             </Grid>

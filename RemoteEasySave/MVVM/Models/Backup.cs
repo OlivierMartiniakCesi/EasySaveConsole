@@ -10,10 +10,34 @@ namespace RemoteEasySave.MVVM.Models
 {
     class Backup
     {
-        private string Name { get; set; }
-        private string SourceDirectory { get; set; }
-        private string TargetDirectory { get; set; }
-        private string Type { get; set; }
+        private string Name;
+        private string SourceDirectory;
+        private string TargetDirectory;
+        private string Type;
+
+
+        public string DashboardName
+        {
+            get { return Name; }
+            set { Name = value; }
+        }
+        public string DashboardSource
+        {
+            get { return SourceDirectory; }
+            set { SourceDirectory = value; }
+        }
+
+        public string DashboardDestination
+        {
+            get { return TargetDirectory; }
+            set { TargetDirectory = value; }
+        }
+
+        public string DashboardType
+        {
+            get { return Type; }
+            set { Type = value; }
+        }
 
         //Constructor
         public Backup() { }
@@ -30,46 +54,6 @@ namespace RemoteEasySave.MVVM.Models
         ~Backup()
         {
             System.Diagnostics.Trace.WriteLine("finalizer is called.");
-        }
-
-        public string DashboardName 
-        {
-            get
-            {
-                var NameDash = Name;
-                return NameDash;
-            }
-        }
-        public string DashboardSource 
-        {
-            get 
-            {
-                var Repertory = new DirectoryInfo(SourceDirectory);
-                var getRepertory = Directory.GetParent(Repertory.ToString());
-                var Source = @"..\" + getRepertory.Name + @"\" + Repertory.Name;
-                return Source;
-            }
-        }
-
-        public string DashboardDestination
-        {
-            get
-            {
-                var Repertory = new DirectoryInfo(TargetDirectory);
-                var getRepertory = Directory.GetParent(Repertory.ToString());
-                var Destination = @"..\" + getRepertory.Name + @"\" + Repertory.Name;
-                return Destination;
-            }
-        }
-
-        public string DashboardType 
-        {
-            get
-            {
-                var getTypeBackup = Type;
-
-                return getTypeBackup;
-            }
         }
 
         public string getName()

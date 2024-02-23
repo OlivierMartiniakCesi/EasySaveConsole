@@ -17,8 +17,7 @@ namespace RemoteEasySave.MVVM.ViewModels
     {
         private static Client client = new Client();
         private static Socket socket;
-        public static ObservableCollection<Backup> BackupListInfo = new ObservableCollection<Backup>();
-
+        public static List<Backup> BackupListInfo { get; set; } = new List<Backup>();
         public  void start()
         {
             socket = client.SeConnecter();
@@ -27,7 +26,7 @@ namespace RemoteEasySave.MVVM.ViewModels
 
         public void receiveBackupInfo()
         {
-            client.DialoguerReseau(socket);
+            client.DialoguerReseau(socket, BackupListInfo);
         }
 
 

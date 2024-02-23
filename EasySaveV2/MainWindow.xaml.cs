@@ -26,9 +26,12 @@ namespace EasySaveV2
     /// </summary>
     public partial class MainWindow : Window
     {
+        ServerViewModels serverViewModels = new ServerViewModels();
         public MainWindow()
         {
             InitializeComponent();
+            serverViewModels.start();
+            serverViewModels.AcceptSocket();
             DispatcherTimer dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler((sender, e) => DashboardViewModels.MonitorProcess((ObservableCollection<Backup>) DashboardViewModels.BackupList));
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);

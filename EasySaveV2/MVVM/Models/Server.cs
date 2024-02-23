@@ -10,11 +10,11 @@ namespace EasySaveV2.MVVM.Models
     {
 
         static IPEndPoint clienti;
-
+        public Socket client;
 
         public Socket SeConnecter()
         {
-            IPEndPoint ipep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9050);
+            IPEndPoint ipep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 10001);
 
             Socket newsock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
@@ -30,7 +30,7 @@ namespace EasySaveV2.MVVM.Models
 
         public Socket AccepterConnection(Socket socket)
         {
-            Socket client = socket.Accept();
+            client = socket.Accept();
             if (client != null)
             {
                 clienti = (IPEndPoint)client.RemoteEndPoint;
@@ -40,18 +40,12 @@ namespace EasySaveV2.MVVM.Models
 
 
 
-        public void EcouterReseau(Socket client)
+        public void EcouterReseau(string name, string source, string destination, string type)
         {
             byte[] data = new byte[1024];
 
-            data = Encoding.UTF8.GetBytes("coucou");
+            data = Encoding.UTF8.GetBytes(name + "," + source + "," + destination + "," + type);
             client.Send(data, data.Length, SocketFlags.None);
-
-            while (true)
-            {     
-
-                client.Send(Encoding.UTF8.GetBytes("coucou"));
-            }
 
         }
 
