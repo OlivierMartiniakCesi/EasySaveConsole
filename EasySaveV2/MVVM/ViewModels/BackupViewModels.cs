@@ -23,8 +23,6 @@ namespace EasySaveV2.MVVM.ViewModels
         private static List<StateLog> stateLogList = new List<StateLog>();
         //private static int totalFilesDone = 0;
 
-        private static Server server;
-
         public static ObservableCollection<Backup> getBackupList()
         {
             return BackupListInfo;

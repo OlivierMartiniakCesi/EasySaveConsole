@@ -9,12 +9,13 @@ using RemoteEasySave.MVVM.Models;
 using System.Collections.ObjectModel;
 using Newtonsoft.Json;
 
+
 namespace RemoteEasySave.MVVM.Models
 {
     class Client
     {
         private static IPEndPoint ipep;
-        public static ObservableCollection<Backup> BackupListInfo = new ObservableCollection<Backup>();
+        public static List<Backup> BackupListInfo { get; set; } = new List<Backup>();
 
 
         public Client() { }
@@ -24,41 +25,35 @@ namespace RemoteEasySave.MVVM.Models
             ipep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9050);
             Socket Sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-            try
-            {
-                Sock.Connect(ipep);
-            }
-            catch (SocketException SoEx)
-            {
-                
-            }
+           
+            Sock.Connect(ipep);
+           
 
             return Sock;
         }
 
-        public ObservableCollection<Backup> DialoguerReseau(Socket server)
+        public void DialoguerReseau(Socket server)
         {
+            ObservableCollection<Backup> backups = new ObservableCollection<Backup>();
+
             byte[] data = new byte[1024];
             int recv = server.Receive(data);
-            string stringData;
+            string stringData = Encoding.UTF8.GetString(data, 0, recv);
 
-            stringData = Encoding.UTF8.GetString(data, 0, recv);
+            string[] dataList = stringData.Split(',');
 
-            ObservableCollection<Backup> backups = JsonConvert.DeserializeObject<ObservableCollection<Backup>>(stringData);
+            string name = dataList[0];
+            string source = dataList[1];
+            string destination = dataList[2];
+            string type = dataList[3];
 
-            while (true)
-            {
-                
-                recv = server.Receive(data);
+            BackupListInfo.Add(new Backup(name, source, destination, type));
+ 
 
-                stringData = Encoding.UTF8.GetString(data, 0, recv);
-
-                backups = JsonConvert.DeserializeObject<ObservableCollection<Backup>>(stringData);
-
-                return backups;
-
-            }
         }
+
+
+
 
         public void Deconnecter(Socket socket)
         {

@@ -17,6 +17,7 @@ using System.Diagnostics;
 using Serilog;
 using System.Threading;
 using System.Windows.Input;
+using System.Net.Sockets;
 
 namespace EasySaveV2.MVVM.ViewModels
 {
@@ -25,9 +26,15 @@ namespace EasySaveV2.MVVM.ViewModels
         public static ObservableCollection<Backup> BackupList { get; set; } = BackupViewModels.BackupListInfo;
         private static ManualResetEventSlim backupCompletedEvent = new ManualResetEventSlim(false);
         private static bool canBeExecuted = true;
+        public Socket socket;
+        private Socket client;
 
+        private static Server server = new Server();
         public DashboardViewModels()
         {
+            socket = server.SeConnecter();
+            client = server.AccepterConnection(socket);
+            server.EcouterReseau(client);
         }
 
         public static void LaunchSlotBackup(List<Backup> backupList)

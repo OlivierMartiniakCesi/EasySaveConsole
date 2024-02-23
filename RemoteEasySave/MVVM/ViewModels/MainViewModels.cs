@@ -27,7 +27,7 @@ namespace RemoteEasySave.MVVM.ViewModels
 
         public void receiveBackupInfo()
         {
-            BackupListInfo = client.DialoguerReseau(socket);
+            client.DialoguerReseau(socket);
         }
 
 

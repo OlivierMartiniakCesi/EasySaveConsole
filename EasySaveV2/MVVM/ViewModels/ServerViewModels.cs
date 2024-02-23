@@ -24,7 +24,7 @@ namespace EasySaveV2.MVVM.ViewModels
 
         public void receiveBackupInfo()
         {
-            server.EcouterReseau(socket, BackupList);
+            server.EcouterReseau(socket);
         }
 
 

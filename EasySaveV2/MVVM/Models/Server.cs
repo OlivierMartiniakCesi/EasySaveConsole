@@ -31,27 +31,26 @@ namespace EasySaveV2.MVVM.Models
         public Socket AccepterConnection(Socket socket)
         {
             Socket client = socket.Accept();
-
-            clienti = (IPEndPoint)client.RemoteEndPoint;
-
-            Console.WriteLine("Client connecté à l'ip {0} sur le port {1}", clienti.Address, clienti.Port);
-
+            if (client != null)
+            {
+                clienti = (IPEndPoint)client.RemoteEndPoint;
+            }
             return client;
         }
 
 
 
-        public void EcouterReseau(Socket client, ObservableCollection<Backup> envoie)
+        public void EcouterReseau(Socket client)
         {
             byte[] data = new byte[1024];
 
-            data = Encoding.UTF8.GetBytes(envoie.ToString());
+            data = Encoding.UTF8.GetBytes("coucou");
             client.Send(data, data.Length, SocketFlags.None);
 
             while (true)
             {     
 
-                client.Send(Encoding.UTF8.GetBytes(envoie.ToString()));
+                client.Send(Encoding.UTF8.GetBytes("coucou"));
             }
 
         }
