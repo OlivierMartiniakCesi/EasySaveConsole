@@ -30,7 +30,7 @@ namespace EasySaveV2
         {
             InitializeComponent();
             DispatcherTimer dispatcherTimer = new DispatcherTimer();
-            dispatcherTimer.Tick += new EventHandler((sender, e) => DashboardViewModels.MonitorProcess());
+            dispatcherTimer.Tick += new EventHandler((sender, e) => DashboardViewModels.MonitorProcess((ObservableCollection<Backup>) DashboardViewModels.BackupList));
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
             dispatcherTimer.Start();
             BackupViewModels.GetJSON();

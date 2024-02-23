@@ -25,7 +25,6 @@ namespace EasySaveV2.MVVM.ViewModels
         public static ObservableCollection<Backup> BackupList { get; set; } = BackupViewModels.BackupListInfo;
         private static ManualResetEventSlim backupCompletedEvent = new ManualResetEventSlim(false);
         private static bool canBeExecuted = true;
-        private static bool IsInExecution = false;
 
         public DashboardViewModels()
         {
@@ -40,15 +39,16 @@ namespace EasySaveV2.MVVM.ViewModels
                     // Use a separate thread for each backup
                     Thread backupThread = new Thread(() =>
                     {
+                        backup.setState("On");
                         // Check if the backup is paused
                         if (!canBeExecuted)
                         {
                             Thread.Sleep(1000); // Wait for 1 second before checking again+promptimpossile
                         }
-                        string directory = backup.getTargetDirectory() + "\\" + backup.getName();
-                        backup.setTargetDirectory(directory);
+                        //string directory = backup.getTargetDirectory() + "\\" + backup.getName();
+                        //backup.setTargetDirectory(directory);
                         // Create directory if it doesn't already exist
-                        if (!Directory.Exists(directory))
+                        if (!Directory.Exists(backup.getTargetDirectory()))
                         {
                             Parallel.ForEach(Directory.GetDirectories(backup.getSourceDirectory(), "*", SearchOption.AllDirectories),
                                 new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
@@ -66,14 +66,14 @@ namespace EasySaveV2.MVVM.ViewModels
                         }
                         if (backup.getType().Equals("Full", StringComparison.OrdinalIgnoreCase) || backup.getType().Equals("Complet", StringComparison.OrdinalIgnoreCase))
                         {
-                            TypeComplet(backup.getSourceDirectory(), backup.getTargetDirectory());
-                            IsInExecution = false;
+                            TypeComplet(backup.getName(), backup.getSourceDirectory(), backup.getTargetDirectory(), backup.getState(), backup.getStopped());
+                            backup.setState("Off");
 
                         }
                         else
                         {
-                            TypeDifferential(backup.getSourceDirectory(), backup.getTargetDirectory());
-                            IsInExecution = false;
+                            TypeDifferential(backup.getName(), backup.getSourceDirectory(), backup.getTargetDirectory(), backup.getState(), backup.getStopped());
+                            backup.setState("Off");
                         }
                     });
                     backupThread.Start();
@@ -89,35 +89,53 @@ namespace EasySaveV2.MVVM.ViewModels
             backupCompletedEvent.Set();
         }
 
-        public static void MonitorProcess()
+        public static void MonitorProcess(ObservableCollection<Backup> backupList)
         {
             // Start the process monitoring thread
             Process[] processes = Process.GetProcessesByName("CalculatorApp");
             if (processes.Length > 0)   // check if a software of the list is running
             {
-                    canBeExecuted = false;
-                    if (IsInExecution == true)
-                        {
+                canBeExecuted = false;
+                foreach (Backup backup in backupList)
+                {
+                    if (backup.getState() == "On")
+                    {
                         // Pause
-                            Thread.Sleep(1000);
-                        }
-                    
+                        //Thread.Sleep(1000);
+                        backup.setState("Off");
+                    }
+                }
             }
             else
                 canBeExecuted = true;
         }
 
-        public static void TypeComplet(string PathSource, string PathTarget)
+        public static void StopLauch(Backup backup)
+        {
+                backup.setStopped("True");
+        }
+
+        public static void PauseLauch(Backup backup)
+        {
+                backup.setState("Off");
+        }
+
+        public static void TypeComplet(string Name, string PathSource, string PathTarget, string State, string Stopped)
         {
             // Create all directories concurrently
             Parallel.ForEach(Directory.GetDirectories(PathSource, "*", SearchOption.AllDirectories),
                 new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
                 (directory) =>
                 {
-                    while(!canBeExecuted)
+                    while(!canBeExecuted || (State == "Off"))
                     {
                                 Thread.Sleep(1000);
-                        dailylogs.selectedLogger.Information("Backup execution paused due to the CalculatorApp process running.");
+                        dailylogs.selectedLogger.Information("Backup " + Name + " execution paused");
+                    }
+                    if(Stopped == "True")
+                    {
+                        dailylogs.selectedLogger.Information("Backup " + Name + " execution stopped");
+                        return;
                     }
                     try
                         {
@@ -134,10 +152,15 @@ namespace EasySaveV2.MVVM.ViewModels
                 new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
                 (filePath) =>
                 {
-                    while (!canBeExecuted)
+                    while (!canBeExecuted || (State == "Off"))
                     {
                         Thread.Sleep(1000);
-                        dailylogs.selectedLogger.Information("Backup execution paused due to the CalculatorApp process running.");
+                        dailylogs.selectedLogger.Information("Backup " + Name + " execution paused");
+                    }
+                    if (Stopped == "True")
+                    {
+                        dailylogs.selectedLogger.Information("Backup " + Name + " execution stopped");
+                        return;
                     }
                     try
                     {
@@ -150,7 +173,7 @@ namespace EasySaveV2.MVVM.ViewModels
                     }
                 });
         }
-        public static void TypeDifferential(string PathSource, string PathTarget)
+        public static void TypeDifferential(string Name, string PathSource, string PathTarget, string State, string Stopped)
         {
             // Get the list of files in the source folder
             string[] files = Directory.GetFiles(PathSource);
@@ -178,10 +201,15 @@ namespace EasySaveV2.MVVM.ViewModels
                         // Compare the dates
                         if (lastModifiedSource > lastModifiedTarget)
                         {
-                            while (!canBeExecuted)
+                            while (!canBeExecuted || (State == "Off"))
                             {
                                 Thread.Sleep(1000);
-                                dailylogs.selectedLogger.Information("Backup execution paused due to the CalculatorApp process running.");
+                                dailylogs.selectedLogger.Information("Backup " + Name + " execution paused");
+                            }
+                            if (Stopped == "True")
+                            {
+                                dailylogs.selectedLogger.Information("Backup " + Name + " execution stopped");
+                                return;
                             }
                             // Copy the file from the source location to the target location with progress
                             CopyFileWithProgress(file, destinationFilePath);

@@ -22,7 +22,7 @@ namespace EasySaveV2.MVVM.ViewModels
         public static ObservableCollection<Backup> BackupListInfo = new ObservableCollection<Backup>();
         private static List<StateLog> stateLogList = new List<StateLog>();
         //private static int totalFilesDone = 0;
-        const int MaxBackupSettings = 5;
+
         private static Server server;
 
         public static ObservableCollection<Backup> getBackupList()
@@ -36,7 +36,7 @@ namespace EasySaveV2.MVVM.ViewModels
             {
                 Directory.CreateDirectory(directoryPath);
             }
-            BackupListInfo.Add(_backup.CreateBackup(name, sourcePath, destinationPath, type));
+            BackupListInfo.Add(_backup.CreateBackup(name, sourcePath, destinationPath, type, "Off", "False"));
             SaveBackupSettings();
         }
         public static void SaveBackupSettings()
@@ -82,13 +82,17 @@ namespace EasySaveV2.MVVM.ViewModels
                         if (item["Name"] != null && !string.IsNullOrEmpty(item["Name"].ToString()) &&
                             item["Source"] != null && !string.IsNullOrEmpty(item["Source"].ToString()) &&
                             item["Target"] != null && !string.IsNullOrEmpty(item["Target"].ToString()) &&
-                            item["Type"] != null && !string.IsNullOrEmpty(item["Type"].ToString()))
+                            item["Type"] != null && !string.IsNullOrEmpty(item["Type"].ToString()) &&
+                            item["State"] != null && !string.IsNullOrEmpty(item["State"].ToString()) &&
+                            item["Stopped"] != null && !string.IsNullOrEmpty(item["Stopped"].ToString()))
                         {
                             Backup backup = new Backup(
                                 item["Name"].ToString(),
                                 item["Source"].ToString(),
                                 item["Target"].ToString(),
-                                item["Type"].ToString()
+                                item["Type"].ToString(),
+                                item["State"].ToString(),
+                                item["Stopped"].ToString()
                             );
                             try
                             {
@@ -101,7 +105,7 @@ namespace EasySaveV2.MVVM.ViewModels
                         }
                         else
                         {
-                            dailylogs.selectedLogger.Information($"Élément de données invalide trouvé.");
+                            //dailylogs.selectedLogger.Information($"Élément de données invalide trouvé.");
                         }
                     }
                 }

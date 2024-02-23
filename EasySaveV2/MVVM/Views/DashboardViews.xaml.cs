@@ -51,10 +51,38 @@ namespace EasySaveV2.MVVM.Views
 
         private void BtnLauch_ClickSolo(object sender, RoutedEventArgs e)
         {
-            // Récupérer le bouton qui a déclenché l'événement
             Backup backup = ((Button)sender).Tag as Backup;
             List<Backup> selectedBackups = new List<Backup>();
             selectedBackups.Add(backup);
+            DashboardViewModels.LaunchSlotBackup(selectedBackups);
+            MainWindow win = (MainWindow)Window.GetWindow(this);
+            win.GoToDashboard(sender, e);
+        }
+
+        private void BtnPause_Click(object sender, RoutedEventArgs e)
+        {
+            List<Backup> selectedBackups = new List<Backup>();
+            foreach (var selectedItem in ListBackupAff.SelectedItems)
+            {
+                if (selectedItem is Backup backup)
+                {
+                    DashboardViewModels.PauseLauch(backup);
+                }
+            }
+            MainWindow win = (MainWindow)Window.GetWindow(this);
+            win.GoToDashboard(sender, e);
+        }
+
+        private void BtnStop_Click(object sender, RoutedEventArgs e)
+        {
+            List<Backup> selectedBackups = new List<Backup>();
+            foreach (var selectedItem in ListBackupAff.SelectedItems)
+            {
+                if (selectedItem is Backup backup)
+                {
+                    DashboardViewModels.StopLauch(backup);
+                }
+            }
             DashboardViewModels.LaunchSlotBackup(selectedBackups);
             MainWindow win = (MainWindow)Window.GetWindow(this);
             win.GoToDashboard(sender, e);
