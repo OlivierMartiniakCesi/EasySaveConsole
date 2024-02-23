@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using RemoteEasySave.MVVM.Models;
+using RemoteEasySave.MVVM.ViewModels;
 
 namespace RemoteEasySave
 {
@@ -20,13 +22,19 @@ namespace RemoteEasySave
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        MainViewModels main = new MainViewModels();
         public MainWindow()
         {
             InitializeComponent();
+            main.start();
+            main.receiveBackupInfo();
+
         }
 
         private void CloseApplication(object sender, RoutedEventArgs e)
         {
+            main.exit();
             Close();
         }
     }

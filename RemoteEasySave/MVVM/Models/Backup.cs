@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Input;
 
-namespace EasySaveV2.MVVM.Models
+namespace RemoteEasySave.MVVM.Models
 {
     class Backup
     {

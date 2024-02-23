@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RemoteEasySave"
         xmlns:viewModel="clr-namespace:RemoteEasySave.MVVM.ViewModels"
+        xmlns:view="clr-namespace:RemoteEasySave.MVVM.Views"
         mc:Ignorable="d"
         Height="450" Width="800"
         WindowStyle="None"
@@ -17,7 +18,7 @@
 
 
     <Window.Resources>
-
+        
     </Window.Resources>
 
     <Border Style="{DynamicResource BordureMenu}">
@@ -40,14 +41,13 @@
                 <DockPanel>
                     <Grid>
                         <Border Style="{DynamicResource BordureDash}"/>
-                        <ContentControl Content="{Binding}" Name="Page"/>
                     </Grid>
                 </DockPanel>
             </Grid>
 
             <Grid Name="ListBackup" Margin="32,82,30,24">
                 <ScrollViewer Height="{Binding ElementName=ListBackup, Path=ActualHeight}" VerticalScrollBarVisibility="Hidden">
-                    <ListBox Name="BackupList" ItemsSource="{Binding BackupList}" SelectionMode="Extended" Style="{DynamicResource list}">
+                    <ListBox Name="BackupList" ItemsSource="{Binding BackupListInfo}" SelectionMode="Extended" Style="{DynamicResource list}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Border Style="{DynamicResource BordureDashboard}" Margin="30,0,15,20">
