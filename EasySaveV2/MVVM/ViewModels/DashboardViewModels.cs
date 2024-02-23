@@ -107,17 +107,36 @@ namespace EasySaveV2.MVVM.ViewModels
                 }
             }
             else
+            {
                 canBeExecuted = true;
-        }
+                foreach (Backup backup in backupList)
+                {
+                    if (backup.getState() == "Off")
+                    {
+                        backup.setState("On");
+                    }
+                }
+            }
 
-        public static void StopLauch(Backup backup)
-        {
-                backup.setStopped("True");
         }
 
         public static void PauseLauch(Backup backup)
         {
+            if (backup.getState() == "On")
+            {
+                backup.setState("Pause");
+                dailylogs.selectedLogger.Information($"Backup {backup.getName()} en pause");
+            }
+        }
+
+        public static void StopLauch(Backup backup)
+        {
+            if (backup.getState() == "On")
+            {
+                backup.setStopped("True");
                 backup.setState("Off");
+                dailylogs.selectedLogger.Information($"Backup {backup.getName()} arrêté");
+            }
         }
 
         public static void TypeComplet(string Name, string PathSource, string PathTarget, string State, string Stopped)
@@ -127,7 +146,7 @@ namespace EasySaveV2.MVVM.ViewModels
                 new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
                 (directory) =>
                 {
-                    while(!canBeExecuted || (State == "Off"))
+                    while(!canBeExecuted || (State == "Pause"))
                     {
                                 Thread.Sleep(1000);
                         dailylogs.selectedLogger.Information("Backup " + Name + " execution paused");
