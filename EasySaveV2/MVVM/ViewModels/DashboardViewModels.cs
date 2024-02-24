@@ -31,6 +31,11 @@ namespace EasySaveV2.MVVM.ViewModels
 
         public DashboardViewModels()
         {
+            foreach (Backup backup in BackupList)
+            {
+                serverViewModels.receiveBackupInfo(backup.getName(), backup.getSourceDirectory(), backup.getTargetDirectory(), backup.getType());
+            }
+           
         }
 
         public static void LaunchSlotBackup(List<Backup> backupList)
@@ -81,7 +86,7 @@ namespace EasySaveV2.MVVM.ViewModels
                         }
                     });
                     backupThread.Start();
-                    serverViewModels.receiveBackupInfo(backup.getName(), backup.getSourceDirectory(), backup.getTargetDirectory(), backup.getType());
+                    
                 }
             });
             foreach (var backupSetting in BackupViewModels.BackupListInfo)
@@ -151,25 +156,25 @@ namespace EasySaveV2.MVVM.ViewModels
                 new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
                 (directory) =>
                 {
-                    while(!canBeExecuted || (State == "Pause"))
+                    while (!canBeExecuted || (State == "Off"))
                     {
-                                Thread.Sleep(1000);
+                        Thread.Sleep(1000);
                         dailylogs.selectedLogger.Information("Backup " + Name + " execution paused");
                     }
-                    if(Stopped == "True")
+                    if (Stopped == "True")
                     {
                         dailylogs.selectedLogger.Information("Backup " + Name + " execution stopped");
                         return;
                     }
                     try
-                        {
-                            Directory.CreateDirectory(directory.Replace(PathSource, PathTarget));
-                            dailylogs.selectedLogger.Information("Created directory " + directory.Replace(PathSource, PathTarget));
-                        }
+                    {
+                        Directory.CreateDirectory(directory.Replace(PathSource, PathTarget));
+                        dailylogs.selectedLogger.Information("Created directory " + directory.Replace(PathSource, PathTarget));
+                    }
                     finally
-                        {
-                        }
-                    
+                    {
+                    }
+
                 });
 
             Parallel.ForEach(Directory.GetFiles(PathSource, "*.*", SearchOption.AllDirectories),
@@ -191,11 +196,25 @@ namespace EasySaveV2.MVVM.ViewModels
                         string targetFilePath = Path.Combine(PathTarget, filePath.Substring(PathSource.Length + 1));
                         File.Copy(filePath, filePath.Replace(PathSource, PathTarget), true);
                         dailylogs.selectedLogger.Information("Copied file " + filePath.Replace(PathSource, PathTarget));
+                        long fileSize = new FileInfo(filePath).Length;
+
+
                     }
                     finally
                     {
                     }
                 });
+            // Supprimer les fichiers de la destination qui n'existent plus dans la source
+            string[] targetFiles = Directory.GetFiles(PathTarget, "*.*", SearchOption.AllDirectories);
+            foreach (string targetFile in targetFiles)
+            {
+                string sourceFile = Path.Combine(PathSource, targetFile.Substring(PathTarget.Length + 1));
+                if (!File.Exists(sourceFile))
+                {
+                    File.Delete(targetFile);
+                    dailylogs.selectedLogger.Information("Deleted file " + targetFile + " from destination as it no longer exists in source.");
+                }
+            }
         }
         public static void TypeDifferential(string Name, string PathSource, string PathTarget, string State, string Stopped)
         {

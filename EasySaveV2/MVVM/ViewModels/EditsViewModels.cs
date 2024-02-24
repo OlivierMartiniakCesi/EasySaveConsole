@@ -24,7 +24,7 @@ namespace EasySaveV2.MVVM.ViewModels
         {
             string filePath = @"C:\JSON\confbackup.json";
 
-            if (BackupViewModels.BackupListInfo != null && BackupViewModels.BackupListInfo.Count > 0)
+            if (BackupViewModels.BackupListInfo != null && BackupViewModels.BackupListInfo.Count >= 0)
             {
                 int backupIndex = BackupViewModels.BackupListInfo.IndexOf(EditorBackup);
                 string jsonText = "[";

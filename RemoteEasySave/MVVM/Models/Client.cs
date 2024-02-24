@@ -15,7 +15,7 @@ namespace RemoteEasySave.MVVM.Models
     class Client
     {
         private static IPEndPoint ipep;
-
+        public static List<Backup> BackupListInfo { get; set; } = new List<Backup>();
 
         public Client() { }
 
@@ -31,7 +31,7 @@ namespace RemoteEasySave.MVVM.Models
             return Sock;
         }
 
-        public void DialoguerReseau(Socket server, List<Backup> BackupListInfo)
+        public List<Backup> DialoguerReseau(Socket server)
         {
             byte[] data = new byte[1024];
             int recv = server.Receive(data);
@@ -45,7 +45,8 @@ namespace RemoteEasySave.MVVM.Models
             string type = dataList[3];
 
             BackupListInfo.Add(new Backup(name, source, destination, type));
- 
+
+            return BackupListInfo;
 
         }
 

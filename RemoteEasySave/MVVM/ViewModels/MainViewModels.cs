@@ -9,15 +9,15 @@ using System.Collections.ObjectModel;
 using System.Net.Sockets;
 using System.Net;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace RemoteEasySave.MVVM.ViewModels
 {
-
     class MainViewModels
     {
         private static Client client = new Client();
         private static Socket socket;
-        public static List<Backup> BackupListInfo { get; set; } = new List<Backup>();
+        public List<Backup> BackupList { get; set; } = Client.BackupListInfo;
         public  void start()
         {
             socket = client.SeConnecter();
@@ -26,9 +26,32 @@ namespace RemoteEasySave.MVVM.ViewModels
 
         public void receiveBackupInfo()
         {
-            client.DialoguerReseau(socket, BackupListInfo);
-        }
+            int currentPosition = 0;
 
+
+            while (true)
+            {
+                BackupList = client.DialoguerReseau(socket);
+
+                bool backupListFull = false;
+
+                if (currentPosition == BackupList.Count)
+                {
+                    backupListFull = true;
+                    if (backupListFull == true)
+                    {
+                        break;
+                    }
+                }
+                else
+                {
+                    currentPosition += BackupList.Count;
+                    backupListFull = false;
+                }
+              
+            }
+
+        }
 
         public void exit()
         {
