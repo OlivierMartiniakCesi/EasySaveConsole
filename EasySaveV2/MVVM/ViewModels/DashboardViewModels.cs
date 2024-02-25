@@ -191,14 +191,29 @@ namespace EasySaveV2.MVVM.ViewModels
                         dailylogs.selectedLogger.Information("Backup " + Name + " execution stopped");
                         return;
                     }
+                    string cryptSoftExecutablePath = @"..\..\EasySavev1\CryptSoft\bin\Debug\net5.0\CryptSoft.exe";
+                    FileInfo file = new FileInfo(filePath);
+                    string targetFilePath = Path.Combine(PathTarget, filePath.Substring(PathSource.Length + 1));
+
                     try
                     {
-                        string targetFilePath = Path.Combine(PathTarget, filePath.Substring(PathSource.Length + 1));
-                        File.Copy(filePath, filePath.Replace(PathSource, PathTarget), true);
-                        dailylogs.selectedLogger.Information("Copied file " + filePath.Replace(PathSource, PathTarget));
-                        long fileSize = new FileInfo(filePath).Length;
-
-
+                        // Vérifie si le fichier a une extension qui nécessite un cryptage
+                        if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
+                        {
+                            //Lance le processus de cryptage sur les fichiers avec l'extension
+                            Process cryptProcess = new Process();
+                            string args = $"\"{PathSource}\" \"{PathTarget}\"";
+                            cryptProcess.StartInfo.FileName = cryptSoftExecutablePath;
+                            cryptProcess.StartInfo.Arguments = args;
+                            cryptProcess.Start();
+                            cryptProcess.WaitForExit();
+                        }
+                        else
+                        {
+                            // Sinon, copie simplement le fichier vers la destination
+                            File.Copy(filePath, targetFilePath, true);
+                            dailylogs.selectedLogger.Information("Copied file " + filePath + " to " + targetFilePath);
+                        }
                     }
                     finally
                     {
@@ -254,8 +269,24 @@ namespace EasySaveV2.MVVM.ViewModels
                                 dailylogs.selectedLogger.Information("Backup " + Name + " execution stopped");
                                 return;
                             }
-                            // Copy the file from the source location to the target location with progress
-                            CopyFileWithProgress(file, destinationFilePath);
+                            string cryptSoftExecutablePath = @"..\..\EasySavev1\CryptSoft\bin\Debug\net5.0\CryptSoft.exe";
+                            FileInfo fileE = new FileInfo(fileName);
+                            // Vérifie si le fichier a une extension qui nécessite un cryptage
+                            if (SettingsViewModels.ExtensionCryptoSoft.Contains(fileE.Extension))
+                            {
+                                //Lance le processus de cryptage sur les fichiers avec l'extension
+                                Process cryptProcess = new Process();
+                                string args = $"\"{PathSource}\" \"{PathTarget}\"";
+                                cryptProcess.StartInfo.FileName = cryptSoftExecutablePath;
+                                cryptProcess.StartInfo.Arguments = args;
+                                cryptProcess.Start();
+                                cryptProcess.WaitForExit();
+                            }
+                            else
+                            {
+                                // Copy the file from the source location to the target location with progress
+                                CopyFileWithProgress(file, destinationFilePath);
+                            }
                             dailylogs.selectedLogger.Information($"File '{fileName}' in {PathSource} has been copied to {PathTarget} as it was modified more recently.");
                         }
                         else if (lastModifiedSource < lastModifiedTarget)
@@ -269,8 +300,24 @@ namespace EasySaveV2.MVVM.ViewModels
                     }
                     else
                     {
-                        // Copy the file from the source location to the target location with progress
-                        CopyFileWithProgress(file, destinationFilePath);
+                        string cryptSoftExecutablePath = @"..\..\EasySavev1\CryptSoft\bin\Debug\net5.0\CryptSoft.exe";
+                        FileInfo fileE = new FileInfo(fileName);
+                        // Vérifie si le fichier a une extension qui nécessite un cryptage
+                        if (SettingsViewModels.ExtensionCryptoSoft.Contains(fileE.Extension))
+                        {
+                            //Lance le processus de cryptage sur les fichiers avec l'extension
+                            Process cryptProcess = new Process();
+                            string args = $"\"{PathSource}\" \"{PathTarget}\"";
+                            cryptProcess.StartInfo.FileName = cryptSoftExecutablePath;
+                            cryptProcess.StartInfo.Arguments = args;
+                            cryptProcess.Start();
+                            cryptProcess.WaitForExit();
+                        }
+                        else
+                        {
+                            // Copy the file from the source location to the target location with progress
+                            CopyFileWithProgress(file, destinationFilePath);
+                        }
                         dailylogs.selectedLogger.Information($"File '{fileName}' has been copied from {PathSource} to {PathTarget} as it didn't exist in {PathTarget}.");
                     }
                 }

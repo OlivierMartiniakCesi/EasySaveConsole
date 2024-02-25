@@ -70,7 +70,7 @@ namespace EasySaveV2.MVVM.Views
             if (e.Key == Key.Enter)
             {
                 string extension = ExtensionBackup.Text.Trim(); 
-                if (!string.IsNullOrEmpty(extension) && extension[0] == '.')
+                if (!string.IsNullOrEmpty(extension) && extension[0] != '.')
                 {
                     Settings.AddList(extension);
                 }
