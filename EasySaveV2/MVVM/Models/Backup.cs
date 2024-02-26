@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Input;
+using System.ComponentModel;
 
 namespace EasySaveV2.MVVM.Models
 {
-    class Backup
+    class Backup : INotifyPropertyChanged
     {
         private string Name { get; set; }
         private string SourceDirectory { get; set; }
@@ -30,7 +31,26 @@ namespace EasySaveV2.MVVM.Models
             this.State = State;
             this.Stopped = Stopped;
         }
+        private int progress;
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        public int Progress
+        {
+            get { return progress; }
+            set
+            {
+                if (progress != value)
+                {
+                    progress = value;
+                    OnPropertyChanged(nameof(Progress));
+                }
+            }
+        }
         ~Backup()
         {
             System.Diagnostics.Trace.WriteLine("finalizer is called.");

@@ -35,7 +35,7 @@ namespace EasySaveV2.MVVM.ViewModels
             {
                 serverViewModels.receiveBackupInfo(backup.getName(), backup.getSourceDirectory(), backup.getTargetDirectory(), backup.getType());
             }
-           
+
         }
 
         public static void LaunchSlotBackup(List<Backup> backupList)
@@ -71,7 +71,7 @@ namespace EasySaveV2.MVVM.ViewModels
                                     {
                                     }
                                 });
-                        } 
+                        }
 
                         if (backup.getType().Equals("Full", StringComparison.OrdinalIgnoreCase) || backup.getType().Equals("Complet", StringComparison.OrdinalIgnoreCase))
                         {
@@ -86,7 +86,7 @@ namespace EasySaveV2.MVVM.ViewModels
                         }
                     });
                     backupThread.Start();
-                    
+
                 }
             });
             foreach (var backupSetting in BackupViewModels.BackupListInfo)
@@ -233,47 +233,81 @@ namespace EasySaveV2.MVVM.ViewModels
         }
         public static void TypeDifferential(string Name, string PathSource, string PathTarget, string State, string Stopped)
         {
-            // Get the list of files in the source folder
-            string[] files = Directory.GetFiles(PathSource);
-
-            //Console.WriteLine("Copy progress: ");
-
-            // Parallelize the loop for concurrent file operations
-            Parallel.ForEach(files, file =>
-            {
-                try
+            // Create all directories concurrently
+            Parallel.ForEach(Directory.GetDirectories(PathSource, "*", SearchOption.AllDirectories),
+                new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
+                (directory) =>
                 {
-                    // Get the file name
-                    string fileName = Path.GetFileName(file);
-
-                    // Path to the file in the destination folder
-                    string destinationFilePath = Path.Combine(PathTarget, fileName);
-
-                    // Check if the file exists in the target folder
-                    if (File.Exists(destinationFilePath))
+                    while (!canBeExecuted || (State == "Off"))
                     {
-                        // Get the last modification date of both files
-                        DateTime lastModifiedSource = File.GetLastWriteTime(file);
-                        DateTime lastModifiedTarget = File.GetLastWriteTime(destinationFilePath);
+                        Thread.Sleep(1000);
+                        dailylogs.selectedLogger.Information("Backup " + Name + " execution paused");
+                    }
+                    if (Stopped == "True")
+                    {
+                        dailylogs.selectedLogger.Information("Backup " + Name + " execution stopped");
+                        return;
+                    }
+                    try
+                    {
+                        Directory.CreateDirectory(directory.Replace(PathSource, PathTarget));
+                        dailylogs.selectedLogger.Information("Created directory " + directory.Replace(PathSource, PathTarget));
+                    }
+                    finally
+                    {
+                    }
+                });
 
-                        // Compare the dates
-                        if (lastModifiedSource > lastModifiedTarget)
+            Parallel.ForEach(Directory.GetFiles(PathSource, "*.*", SearchOption.AllDirectories),
+                new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
+                (filePath) =>
+                {
+                    while (!canBeExecuted || (State == "Off"))
+                    {
+                        Thread.Sleep(1000);
+                        dailylogs.selectedLogger.Information("Backup " + Name + " execution paused");
+                    }
+                    if (Stopped == "True")
+                    {
+                        dailylogs.selectedLogger.Information("Backup " + Name + " execution stopped");
+                        return;
+                    }
+                    FileInfo file = new FileInfo(filePath);
+                    string targetFilePath = Path.Combine(PathTarget, filePath.Substring(PathSource.Length + 1));
+                    string cryptSoftExecutablePath = @"..\..\EasySavev1\CryptSoft\bin\Debug\net5.0\CryptSoft.exe";
+                    try
+                    {
+                // Vérifie si le fichier existe dans la cible et s'il est plus ancien que celui de la source
+                if (File.Exists(targetFilePath))
                         {
-                            while (!canBeExecuted || (State == "Off"))
+                            FileInfo targetFile = new FileInfo(targetFilePath);
+                            if (targetFile.LastWriteTime < file.LastWriteTime)
                             {
-                                Thread.Sleep(1000);
-                                dailylogs.selectedLogger.Information("Backup " + Name + " execution paused");
+                        // Copie le fichier seulement s'il est plus récent
+                        if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
+                                {
+                                    //Lance le processus de cryptage sur les fichiers avec l'extension
+                                    Process cryptProcess = new Process();
+                                    string args = $"\"{PathSource}\" \"{PathTarget}\"";
+                                    cryptProcess.StartInfo.FileName = cryptSoftExecutablePath;
+                                    cryptProcess.StartInfo.Arguments = args;
+                                    cryptProcess.Start();
+                                    cryptProcess.WaitForExit();
+                                }
+                                else
+                                {
+                            // Sinon, copie simplement le fichier vers la destination
+                            File.Copy(filePath, targetFilePath, true);
+                                    dailylogs.selectedLogger.Information("Copied file " + filePath + " to " + targetFilePath);
+                                }
                             }
-                            if (Stopped == "True")
+                        }
+                        else
+                        {
+                    // Si le fichier n'existe pas dans la cible, le copie
+                    if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
                             {
-                                dailylogs.selectedLogger.Information("Backup " + Name + " execution stopped");
-                                return;
-                            }
-                            string cryptSoftExecutablePath = @"..\..\EasySavev1\CryptSoft\bin\Debug\net5.0\CryptSoft.exe";
-                            FileInfo fileE = new FileInfo(fileName);
-                            // Vérifie si le fichier a une extension qui nécessite un cryptage
-                            if (SettingsViewModels.ExtensionCryptoSoft.Contains(fileE.Extension))
-                            {
+                                //Lance le processus de cryptage sur les fichiers avec l'extension
                                 //Lance le processus de cryptage sur les fichiers avec l'extension
                                 Process cryptProcess = new Process();
                                 string args = $"\"{PathSource}\" \"{PathTarget}\"";
@@ -284,47 +318,28 @@ namespace EasySaveV2.MVVM.ViewModels
                             }
                             else
                             {
-                                // Copy the file from the source location to the target location with progress
-                                CopyFileWithProgress(file, destinationFilePath);
+                        // Sinon, copie simplement le fichier vers la destination
+                        File.Copy(filePath, targetFilePath, true);
+                                dailylogs.selectedLogger.Information("Copied file " + filePath + " to " + targetFilePath);
                             }
-                            dailylogs.selectedLogger.Information($"File '{fileName}' in {PathSource} has been copied to {PathTarget} as it was modified more recently.");
-                        }
-                        else if (lastModifiedSource < lastModifiedTarget)
-                        {
-                            dailylogs.selectedLogger.Information($"File '{fileName}' in {PathTarget} was modified after the file in {PathSource}.");
-                        }
-                        else
-                        {
-                            dailylogs.selectedLogger.Information($"Files '{fileName}' were modified on the same date.");
                         }
                     }
-                    else
+                    finally
                     {
-                        string cryptSoftExecutablePath = @"..\..\EasySavev1\CryptSoft\bin\Debug\net5.0\CryptSoft.exe";
-                        FileInfo fileE = new FileInfo(fileName);
-                        // Vérifie si le fichier a une extension qui nécessite un cryptage
-                        if (SettingsViewModels.ExtensionCryptoSoft.Contains(fileE.Extension))
-                        {
-                            //Lance le processus de cryptage sur les fichiers avec l'extension
-                            Process cryptProcess = new Process();
-                            string args = $"\"{PathSource}\" \"{PathTarget}\"";
-                            cryptProcess.StartInfo.FileName = cryptSoftExecutablePath;
-                            cryptProcess.StartInfo.Arguments = args;
-                            cryptProcess.Start();
-                            cryptProcess.WaitForExit();
-                        }
-                        else
-                        {
-                            // Copy the file from the source location to the target location with progress
-                            CopyFileWithProgress(file, destinationFilePath);
-                        }
-                        dailylogs.selectedLogger.Information($"File '{fileName}' has been copied from {PathSource} to {PathTarget} as it didn't exist in {PathTarget}.");
                     }
-                }
-                finally
+                });
+
+            // Supprimer les fichiers de la destination qui n'existent plus dans la source
+            string[] targetFiles = Directory.GetFiles(PathTarget, "*.*", SearchOption.AllDirectories);
+            foreach (string targetFile in targetFiles)
+            {
+                string sourceFile = Path.Combine(PathSource, targetFile.Substring(PathTarget.Length + 1));
+                if (!File.Exists(sourceFile))
                 {
+                    File.Delete(targetFile);
+                    dailylogs.selectedLogger.Information("Deleted file " + targetFile + " from destination as it no longer exists in source.");
                 }
-            });
+            }
         }
 
         public static void DeleteBackupSetting(Backup backupSettings)
