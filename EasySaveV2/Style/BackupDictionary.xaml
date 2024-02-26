@@ -17,12 +17,13 @@
         <Setter Property="Foreground" Value="#41485A"/>
     </Style>
 
-    <Style TargetType="TextBlock" x:Key="Texttest">
+    <Style TargetType="TextBlock" x:Key="TextExtension">
         <Setter Property="FontFamily" Value="/Font/#Helvetica"/>
-        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontSize" Value="12"/>
         <Setter Property="Foreground" Value="#41485A"/>
-        <Setter Property="Height" Value="35"/>
+        <Setter Property="Height" Value="20"/>
         <Setter Property="Width" Value="250"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
 
     <Style TargetType="Border" x:Key="BorderedTextBlock">

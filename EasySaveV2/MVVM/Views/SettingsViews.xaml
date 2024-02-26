@@ -107,43 +107,81 @@
 
                     <Border Style="{StaticResource BorderedTextBlock}"
                                 Width="230"
-                                Margin="0, 2">
+                                Margin="0, 2"
+                                HorizontalAlignment="Left">
 
-                        <TextBox Name="ExtensionBackup"
-                                     Margin="9,4,9,4"
-                                     Style="{DynamicResource TextboxBackup}"
-                                     Text="Extension"
-                                     TextAlignment="Center"
-                                     KeyDown="AddExtensionEncrypt" />
+                        <TextBox x:Name="ExtensionBackupTextBox"
+                                 Margin="9,4,9,4"
+                                 Style="{DynamicResource TextboxBackup}"
+                                 Text="Extension"
+                                 TextAlignment="Center"
+                                 GotFocus="ExtensionBackupTextBox_GotFocus"
+                                 LostFocus="ExtensionBackupTextBox_LostFocus"
+                                 KeyDown="AddExtensionEncrypt"/>
 
                     </Border>
 
-                    <ScrollViewer Height="100"
-                                      Width="230"
-                                      VerticalScrollBarVisibility="Hidden"
-                                      HorizontalAlignment="Left">
 
-                        <ListView ItemsSource="{Binding ExtensionCryptoSoft}">
 
-                            <ListView.Template>
-                                <ControlTemplate>
-                                    <Border Style="{DynamicResource BorderedTextBlock}">
-                                        <ItemsPresenter/>
-                                    </Border>
-                                </ControlTemplate>
-                            </ListView.Template>
+                    <StackPanel Orientation="Horizontal"
+                                Width="230">
+                        
+                        <!--// Barre de défilemement (scrollbar) //-->
+                        <ScrollViewer Height="100"
+                                          Width="190"
+                                          VerticalScrollBarVisibility="Hidden"
+                                          HorizontalAlignment="Left">
 
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Style="{DynamicResource Texttest}"
-                                                   Width="280"
-                                                   Text="{Binding}"/>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
+                            <ListView ItemsSource="{Binding ExtensionCryptoSoft}">
 
-                        </ListView>
+                                <ListView.Template>
+                                    <ControlTemplate>
+                                        <Border Style="{DynamicResource BorderedTextBlock}">
+                                            <ItemsPresenter/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </ListView.Template>
 
-                    </ScrollViewer>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Style="{DynamicResource TextExtension}"
+                                                       Width="280"
+                                                       Text="{Binding}"/>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+
+                            </ListView>
+
+                        </ScrollViewer>
+
+                        
+                        
+                        <StackPanel>
+                            
+                            <!--// Bouton d'importation du fichier contenant les extensions //-->
+                            <Button Content="{DynamicResource ImportExt}"
+                                    Style="{DynamicResource save}"
+                                    FontSize="9"
+                                    Width="40"
+                                    Height="50"
+                                    VerticalAlignment="Top"
+                                    Click="ExportButton" />
+
+                            
+                            <!--// Bouton d'exportation du fichier contenant les extensions //-->
+                            <Button Content="{DynamicResource ExportExt}"
+                                    Style="{DynamicResource save}"
+                                    FontSize="9"
+                                    Width="40"
+                                    Height="50"
+                                    VerticalAlignment="Bottom"
+                                    Click="ExportButton" />
+                            
+                        </StackPanel>
+                        
+
+                    </StackPanel>
+
 
                 </StackPanel>
 
@@ -178,10 +216,10 @@
 
                             <!--// Slider 0-500 MB //-->
                             <Slider x:Name="Slider"
-                                        Width="190"
+                                        Width="185"
                                         HorizontalAlignment="Left"
                                         Background="Transparent"
-                                        Margin="0, 15, 0, 0"
+                                        Margin="5, 15, 0, 0"
                                         Minimum="0"
                                         Maximum="500"
                                         Value="{Binding SliderValue, Mode=TwoWay}"/>
@@ -197,7 +235,8 @@
                                            HorizontalAlignment="Right"/>
                             </Grid>
                         </StackPanel>
-                        
+
+                        <!--// TextBox affichant la valeur du curseur du slider //-->
                         <TextBox Text="{Binding ElementName=Slider, Path=Value, UpdateSourceTrigger=PropertyChanged, StringFormat=N0}"
                                  Style="{DynamicResource TextSetting3}"
                                  Background="Transparent"
