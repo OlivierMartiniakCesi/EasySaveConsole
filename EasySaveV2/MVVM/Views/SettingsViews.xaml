@@ -110,7 +110,8 @@
                                 Margin="0, 2">
 
                         <TextBox Name="ExtensionBackup"
-                                     Margin="9,4,9,4" Style="{DynamicResource TextboxBackup}"
+                                     Margin="9,4,9,4"
+                                     Style="{DynamicResource TextboxBackup}"
                                      Text="Extension"
                                      TextAlignment="Center"
                                      KeyDown="AddExtensionEncrypt" />
@@ -147,7 +148,7 @@
                 </StackPanel>
 
 
-                <!--// Stackpanel de droite //-->
+                <!--// Stackpanel de limite de taille //-->
                 
                 <StackPanel Grid.Column="1"
                                 Height="150"
@@ -167,26 +168,49 @@
 
                     </Border>
 
-                    <!--// Slider 0-500 MB //-->
-                    <Slider x:Name="Slider"
-                                Width="230"
-                                HorizontalAlignment="center"
-                                Background="Transparent"
-                                Margin="0, 15, 0, 0"
-                                Minimum="0"
-                                Maximum="500"
-                                Value="{Binding SliderValue, Mode=TwoWay}"/>
+                    
+                    <!--// StackPanel de la barre glissante //-->
+
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel Width="190"
+                                    HorizontalAlignment="Left">
 
 
-                    <Grid>
-                        <Label Content="0 MB"
-                                   Style="{DynamicResource TextSetting}"
-                                   HorizontalAlignment="left"/>
+                            <!--// Slider 0-500 MB //-->
+                            <Slider x:Name="Slider"
+                                        Width="190"
+                                        HorizontalAlignment="Left"
+                                        Background="Transparent"
+                                        Margin="0, 15, 0, 0"
+                                        Minimum="0"
+                                        Maximum="500"
+                                        Value="{Binding SliderValue, Mode=TwoWay}"/>
 
-                        <Label Content="500 MB"
-                                   Style="{DynamicResource TextSetting}"
-                                   HorizontalAlignment="Right"/>
-                    </Grid>
+
+                            <Grid>
+                                <Label Content="0 MB"
+                                           Style="{DynamicResource TextSetting}"
+                                           HorizontalAlignment="Left"/>
+
+                                <Label Content="500 MB"
+                                           Style="{DynamicResource TextSetting}"
+                                           HorizontalAlignment="Right"/>
+                            </Grid>
+                        </StackPanel>
+                        
+                        <TextBox Text="{Binding ElementName=Slider, Path=Value, UpdateSourceTrigger=PropertyChanged, StringFormat=N0}"
+                                 Style="{DynamicResource TextSetting3}"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 TextAlignment="Right"
+                                 Width="25"
+                                 Margin="5, -10, 0, 0"
+                                 VerticalAlignment="Center" />
+                        
+                    </StackPanel>
+
+
+
                 </StackPanel>
 
             </DockPanel>
