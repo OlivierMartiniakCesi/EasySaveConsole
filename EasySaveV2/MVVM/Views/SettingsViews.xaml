@@ -24,14 +24,36 @@
                 </StackPanel>
             </DockPanel>
         </Grid>
+
+
         <Grid>
-            <DockPanel VerticalAlignment="Bottom" HorizontalAlignment="Center" Width="500">
-                <StackPanel Height="150">
-                    <Border Style="{StaticResource BorderedTextBlock}" Width="300" Margin="2">
-                        <TextBox Name="ExtensionBackup" Margin="9,4,9,4" Style="{DynamicResource TextboxBackup}" Text="Extension" TextAlignment="Center" KeyDown="AddExtensionEncrypt"/>
+            <DockPanel VerticalAlignment="Bottom"
+                       HorizontalAlignment="Center"
+                       Width="500">
+
+                <StackPanel Grid.Column="0"
+                                Height="150"
+                                DockPanel.Dock="Left">
+
+                    <Border Style="{StaticResource BorderedTextBlock}"
+                                Width="230"
+                                Margin="0, 2">
+
+                        <TextBox Name="ExtensionBackup"
+                                     Margin="9,4,9,4" Style="{DynamicResource TextboxBackup}"
+                                     Text="Extension"
+                                     TextAlignment="Center"
+                                     KeyDown="AddExtensionEncrypt" />
+
                     </Border>
-                    <ScrollViewer Height="100" Width="300" VerticalScrollBarVisibility="Hidden">
-                        <ListView ItemsSource="{Binding ExtensionCryptoSoft}" >
+
+                    <ScrollViewer Height="100"
+                                      Width="230"
+                                      VerticalScrollBarVisibility="Hidden"
+                                      HorizontalAlignment="Left">
+
+                        <ListView ItemsSource="{Binding ExtensionCryptoSoft}">
+
                             <ListView.Template>
                                 <ControlTemplate>
                                     <Border Style="{DynamicResource BorderedTextBlock}">
@@ -39,19 +61,69 @@
                                     </Border>
                                 </ControlTemplate>
                             </ListView.Template>
+
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Style="{DynamicResource Texttest}" Width="280" Text="{Binding}"/>
+                                    <TextBlock Style="{DynamicResource Texttest}"
+                                                   Width="280"
+                                                   Text="{Binding}"/>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
+
                         </ListView>
+
                     </ScrollViewer>
+
                 </StackPanel>
+
+
+                <StackPanel Grid.Column="1"
+                                Height="150"
+                                HorizontalAlignment="Right">
+
+                    <Border Style="{StaticResource BorderedTextBlock}"
+                                Width="230"
+                                Margin="0, 2">
+
+                        <TextBox Name="SizeLimit"
+                                     Margin="9,4,9,4"
+                                     Style="{DynamicResource TextboxBackup}"
+                                     Text="SizeLimit"
+                                     TextAlignment="Center"
+                                     KeyDown="AddExtensionEncrypt" />
+
+                    </Border>
+
+                    <!--// Slider 0-500 MB //-->
+                    <Slider x:Name="Slider"
+                                Width="230"
+                                HorizontalAlignment="center"
+                                Background="Transparent"
+                                Margin="0, 15, 0, 0"
+                                Minimum="0"
+                                Maximum="500"
+                                Value="{Binding SliderValue, Mode=TwoWay}"/>
+
+
+                    <Grid>
+                        <Label Content="0 MB"
+                                   Style="{DynamicResource TextSetting}"
+                                   HorizontalAlignment="left"/>
+
+                        <Label Content="500 MB"
+                                   Style="{DynamicResource TextSetting}"
+                                   HorizontalAlignment="Right"/>
+                    </Grid>
+                </StackPanel>
+
             </DockPanel>
         </Grid>
+
         <Label Content="EN" FontSize="18" Style="{DynamicResource TextSetting}" Margin="378,130,195,184"/>
         <Label Content="FR" FontSize="18" Style="{DynamicResource TextSetting}" Margin="502,130,71,184"/>
         <Label Content="JSON" FontSize="18" Style="{DynamicResource TextSetting}" Margin="53,130,502,184"/>
         <Label Content="XML" FontSize="18" Style="{DynamicResource TextSetting}" Margin="204,130,352,184"/>
+
     </Grid>
+
 </UserControl>
