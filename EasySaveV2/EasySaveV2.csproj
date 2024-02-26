@@ -14,6 +14,7 @@
     <None Remove="Pictures\edit.png" />
     <None Remove="Pictures\french.png" />
     <None Remove="Pictures\Logo.png" />
+    <None Remove="Pictures\Nathan.png" />
     <None Remove="Pictures\play.png" />
     <None Remove="Pictures\Rond.png" />
     <None Remove="Pictures\Settings.png" />
@@ -28,6 +29,7 @@
     <Resource Include="Pictures\edit.png" />
     <Resource Include="Pictures\french.png" />
     <Resource Include="Pictures\Logo.png" />
+    <Resource Include="Pictures\Nathan.png" />
     <Resource Include="Pictures\play.png" />
     <Resource Include="Pictures\Rond.png" />
     <Resource Include="Pictures\Settings.png" />

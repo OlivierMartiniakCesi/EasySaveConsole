@@ -44,7 +44,7 @@ namespace EasySaveV2.MVVM.Models
         {
             byte[] data = new byte[1024];
 
-            data = Encoding.UTF8.GetBytes(name + "," + source + "," + destination + "," + type);
+            data = Encoding.UTF8.GetBytes(name + "," + source + "," + destination + "," + type + ",");
             client.Send(data, data.Length, SocketFlags.None);
 
         }
