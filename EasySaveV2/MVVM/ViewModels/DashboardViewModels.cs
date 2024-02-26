@@ -66,13 +66,13 @@ namespace EasySaveV2.MVVM.ViewModels
                         }
                         if (backup.getType().Equals("Full", StringComparison.OrdinalIgnoreCase) || backup.getType().Equals("Complet", StringComparison.OrdinalIgnoreCase))
                         {
-                            TypeComplet(backup.getName(), backup.getSourceDirectory(), backup.getTargetDirectory(), backup.getState(), backup.getStopped());
+                            TypeComplet(backup);
                             backup.setState("Off");
 
                         }
                         else
                         {
-                            TypeDifferential(backup.getName(), backup.getSourceDirectory(), backup.getTargetDirectory(), backup.getState(), backup.getStopped());
+                            TypeDifferential(backup);
                             backup.setState("Off");
                         }
                     });
@@ -119,9 +119,37 @@ namespace EasySaveV2.MVVM.ViewModels
         {
                 backup.setState("Off");
         }
-
-        public static void TypeComplet(string Name, string PathSource, string PathTarget, string State, string Stopped)
+        private static long CalculateTotalBytes(string directory)
         {
+            long totalBytes = 0;
+            foreach (string file in Directory.EnumerateFiles(directory, "*", SearchOption.AllDirectories))
+            {
+                totalBytes += new FileInfo(file).Length;
+            }
+            return totalBytes;
+        }
+
+        private static void ReportProgress(Backup backup, long copiedBytes, long totalBytes)
+        {
+            double progressPercentage = (double)copiedBytes / totalBytes * 100;
+            backup.Progress = (int)progressPercentage;
+            if (backup.Progress % 1 == 0) // Mettre à jour toutes les 1%
+            {
+                Console.WriteLine($"Backup {backup.getName()} Progress: {progressPercentage:F2}%");
+            }
+        }
+
+        public static void TypeComplet(Backup backup)
+            {
+                long totalBytes = CalculateTotalBytes(backup.getSourceDirectory());
+                long copiedBytes = 0;
+                string Name = backup.getName();
+                string PathSource = backup.getSourceDirectory();
+                string PathTarget = backup.getTargetDirectory();
+                string State = backup.getState();
+                string Stopped = backup.getStopped();
+            //long totalBytes = CalculateTotalBytes(PathSource);
+            //long copiedBytes = 0;
             // Create all directories concurrently
             Parallel.ForEach(Directory.GetDirectories(PathSource, "*", SearchOption.AllDirectories),
                 new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
@@ -129,7 +157,7 @@ namespace EasySaveV2.MVVM.ViewModels
                 {
                     while(!canBeExecuted || (State == "Off"))
                     {
-                                Thread.Sleep(1000);
+                        Thread.Sleep(1000);
                         dailylogs.selectedLogger.Information("Backup " + Name + " execution paused");
                     }
                     if(Stopped == "True")
@@ -139,8 +167,14 @@ namespace EasySaveV2.MVVM.ViewModels
                     }
                     try
                         {
-                            Directory.CreateDirectory(directory.Replace(PathSource, PathTarget));
-                            dailylogs.selectedLogger.Information("Created directory " + directory.Replace(PathSource, PathTarget));
+                        Directory.CreateDirectory(directory.Replace(PathSource, PathTarget));
+                        Interlocked.Add(ref copiedBytes, Directory.GetFiles(directory).Length);
+                        if (copiedBytes % 1 == 0) // Mettre à jour toutes les 100 fichiers copiés (par exemple)
+                        {
+                            ReportProgress(backup, copiedBytes, totalBytes);
+                        }
+                        ReportProgress(backup, copiedBytes, totalBytes);
+                        dailylogs.selectedLogger.Information("Created directory " + directory.Replace(PathSource, PathTarget));
                         }
                     finally
                         {
@@ -166,76 +200,147 @@ namespace EasySaveV2.MVVM.ViewModels
                     {
                         string targetFilePath = Path.Combine(PathTarget, filePath.Substring(PathSource.Length + 1));
                         File.Copy(filePath, filePath.Replace(PathSource, PathTarget), true);
+                        // Mettre à jour les compteurs de progression
+                        Interlocked.Add(ref copiedBytes, new FileInfo(filePath).Length);
+                        double progressPercentage = (double)copiedBytes / totalBytes * 100;
+
+                        // Mettre à jour la barre de progression de la sauvegarde correspondante
+                        Backup backup = BackupList.FirstOrDefault(b => b.getName() == Name);
+                        if (backup != null)
+                        {
+                            backup.Progress = (int)progressPercentage;
+                        }
+                        dailylogs.selectedLogger.Information("Copied file " + filePath.Replace(PathSource, PathTarget));
+                        long fileSize = new FileInfo(filePath).Length;
+                        Interlocked.Add(ref copiedBytes, fileSize);
+                        ReportProgress(backup, copiedBytes, totalBytes);
+
+                    }
+                    finally
+                    {
+                    }
+                });
+            // Supprimer les fichiers de la destination qui n'existent plus dans la source
+            string[] targetFiles = Directory.GetFiles(PathTarget, "*.*", SearchOption.AllDirectories);
+            foreach (string targetFile in targetFiles)
+            {
+                string sourceFile = Path.Combine(PathSource, targetFile.Substring(PathTarget.Length + 1));
+                if (!File.Exists(sourceFile))
+                {
+                    File.Delete(targetFile);
+                    dailylogs.selectedLogger.Information("Deleted file " + targetFile + " from destination as it no longer exists in source.");
+                }
+            }
+        }
+
+        public static void TypeDifferential(Backup backup)
+        {
+            long totalBytes = CalculateTotalBytes(backup.getSourceDirectory());
+            long copiedBytes = 0;
+            string Name = backup.getName();
+            string PathSource = backup.getSourceDirectory();
+            string PathTarget = backup.getTargetDirectory();
+            string State = backup.getState();
+            string Stopped = backup.getStopped(); // Variable pour stocker le pourcentage de progression
+
+            // Créer tous les répertoires en parallèle
+            Parallel.ForEach(Directory.GetDirectories(PathSource, "*", SearchOption.AllDirectories),
+                new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
+                (directory) =>
+                {
+                    while (!canBeExecuted)
+                    {
+                        Thread.Sleep(1000);
+                        dailylogs.selectedLogger.Information("Backup execution paused due to the CalculatorApp process running.");
+                    }
+                    try
+                    {
+                        Directory.CreateDirectory(directory.Replace(PathSource, PathTarget));
+                        Interlocked.Add(ref copiedBytes, Directory.GetFiles(directory).Length);
+                        if (copiedBytes % 1 == 0) // Mettre à jour toutes les 100 fichiers copiés (par exemple)
+                        {
+                            ReportProgress(backup, copiedBytes, totalBytes);
+                        }
+                        ReportProgress(backup, copiedBytes, totalBytes); // Rapporter la progression
+                        dailylogs.selectedLogger.Information("Created directory " + directory.Replace(PathSource, PathTarget));
+                    }
+                    finally
+                    {
+                    }
+
+                });
+
+            // Copier les fichiers modifiés ou nouveaux
+            Parallel.ForEach(Directory.GetFiles(PathSource, "*.*", SearchOption.AllDirectories),
+                new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
+                (filePath) =>
+                {
+                    while (!canBeExecuted)
+                    {
+                        Thread.Sleep(1000);
+                        dailylogs.selectedLogger.Information("Backup execution paused due to the CalculatorApp process running.");
+                    }
+                    try
+                    {
+                        string targetFilePath = Path.Combine(PathTarget, filePath.Substring(PathSource.Length + 1));
+
+                        if (File.GetLastWriteTimeUtc(filePath) > File.GetLastWriteTimeUtc(targetFilePath))
+                        {
+                            File.Copy(filePath, filePath.Replace(PathSource, PathTarget), true);
+                            // Mettre à jour les compteurs de progression
+                            Interlocked.Add(ref copiedBytes, new FileInfo(filePath).Length);
+                            double progressPercentage = (double)copiedBytes / totalBytes * 100;
+
+                            // Mettre à jour la barre de progression de la sauvegarde correspondante
+                            Backup backup = BackupList.FirstOrDefault(b => b.getName() == Name);
+                            if (backup != null)
+                            {
+                                backup.Progress = (int)progressPercentage;
+                            }
+                            dailylogs.selectedLogger.Information("Copied file " + filePath.Replace(PathSource, PathTarget));
+                            long fileSize = new FileInfo(filePath).Length;
+                            Interlocked.Add(ref copiedBytes, fileSize);
+                           // ReportProgress(progressPercentage); // Rapporter la progression
+                }
+                        else
+                        {
+                            dailylogs.selectedLogger.Information("Skipped copying file " + filePath.Replace(PathSource, PathTarget) + ". Source file is not newer.");
+                        }
+                    }
+                    catch (FileNotFoundException)
+                    {
+                        string targetFilePath = Path.Combine(PathTarget, filePath.Substring(PathSource.Length + 1));
+                        File.Copy(filePath, targetFilePath, true);
+                        // Mettre à jour les compteurs de progression
+                        Interlocked.Add(ref copiedBytes, new FileInfo(filePath).Length);
+                        double progressPercentage = (double)copiedBytes / totalBytes * 100;
+
+                        // Mettre à jour la barre de progression de la sauvegarde correspondante
+                        Backup backup = BackupList.FirstOrDefault(b => b.getName() == Name);
+                        if (backup != null)
+                        {
+                            backup.Progress = (int)progressPercentage;
+                        }
                         dailylogs.selectedLogger.Information("Copied file " + filePath.Replace(PathSource, PathTarget));
                     }
                     finally
                     {
                     }
                 });
-        }
-        public static void TypeDifferential(string Name, string PathSource, string PathTarget, string State, string Stopped)
-        {
-            // Get the list of files in the source folder
-            string[] files = Directory.GetFiles(PathSource);
-
-            //Console.WriteLine("Copy progress: ");
-
-            // Parallelize the loop for concurrent file operations
-            Parallel.ForEach(files, file =>
+            // Supprimer les fichiers de la destination qui n'existent plus dans la source
+            string[] targetFiles = Directory.GetFiles(PathTarget, "*.*", SearchOption.AllDirectories);
+            foreach (string targetFile in targetFiles)
             {
-                try
+                string sourceFile = Path.Combine(PathSource, targetFile.Substring(PathTarget.Length + 1));
+                if (!File.Exists(sourceFile))
                 {
-                    // Get the file name
-                    string fileName = Path.GetFileName(file);
-
-                    // Path to the file in the destination folder
-                    string destinationFilePath = Path.Combine(PathTarget, fileName);
-
-                    // Check if the file exists in the target folder
-                    if (File.Exists(destinationFilePath))
-                    {
-                        // Get the last modification date of both files
-                        DateTime lastModifiedSource = File.GetLastWriteTime(file);
-                        DateTime lastModifiedTarget = File.GetLastWriteTime(destinationFilePath);
-
-                        // Compare the dates
-                        if (lastModifiedSource > lastModifiedTarget)
-                        {
-                            while (!canBeExecuted || (State == "Off"))
-                            {
-                                Thread.Sleep(1000);
-                                dailylogs.selectedLogger.Information("Backup " + Name + " execution paused");
-                            }
-                            if (Stopped == "True")
-                            {
-                                dailylogs.selectedLogger.Information("Backup " + Name + " execution stopped");
-                                return;
-                            }
-                            // Copy the file from the source location to the target location with progress
-                            CopyFileWithProgress(file, destinationFilePath);
-                            dailylogs.selectedLogger.Information($"File '{fileName}' in {PathSource} has been copied to {PathTarget} as it was modified more recently.");
-                        }
-                        else if (lastModifiedSource < lastModifiedTarget)
-                        {
-                            dailylogs.selectedLogger.Information($"File '{fileName}' in {PathTarget} was modified after the file in {PathSource}.");
-                        }
-                        else
-                        {
-                            dailylogs.selectedLogger.Information($"Files '{fileName}' were modified on the same date.");
-                        }
-                    }
-                    else
-                    {
-                        // Copy the file from the source location to the target location with progress
-                        CopyFileWithProgress(file, destinationFilePath);
-                        dailylogs.selectedLogger.Information($"File '{fileName}' has been copied from {PathSource} to {PathTarget} as it didn't exist in {PathTarget}.");
-                    }
+                    File.Delete(targetFile);
+                    dailylogs.selectedLogger.Information("Deleted file " + targetFile + " from destination as it no longer exists in source.");
                 }
-                finally
-                {
-                }
-            });
+            }
+
         }
+
 
         public static void DeleteBackupSetting(Backup backupSettings)
         {
