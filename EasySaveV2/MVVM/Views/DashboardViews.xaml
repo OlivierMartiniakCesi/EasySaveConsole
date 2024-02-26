@@ -20,7 +20,8 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="253,0,0,0">
-            <Button Content="" FontSize="16" Style="{DynamicResource btnPlay}" Click="BtnLauch_Click" Cursor="Hand"/>
+            <Button Content="Lauch" FontSize="16" Style="{DynamicResource btn}" Click="BtnLauch_Click" Cursor="Hand"/>
+            <Button Content="" FontSize="16" Style="{DynamicResource btnPlay}" Click="BtnContinue_Click" Cursor="Hand"/>
             <Button Content="" FontSize="16" Style="{DynamicResource btnStop}" Click="BtnStop_Click" Cursor="Hand"/>
             <Button FontSize="16" Style="{DynamicResource btnPause}" Click="BtnPause_Click" Cursor="Hand">
                 <Rectangle  HorizontalAlignment="Left" Height="70" Width="20"   Stroke="Black" />

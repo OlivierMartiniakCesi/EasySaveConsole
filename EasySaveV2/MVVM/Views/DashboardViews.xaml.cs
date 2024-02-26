@@ -59,6 +59,20 @@ namespace EasySaveV2.MVVM.Views
             win.GoToDashboard(sender, e);
         }
 
+        private void BtnContinue_Click(object sender, RoutedEventArgs e)
+        {
+            List<Backup> selectedBackups = new List<Backup>();
+            foreach (var selectedItem in ListBackupAff.SelectedItems)
+            {
+                if (selectedItem is Backup backup)
+                {
+                    DashboardViewModels.ContinueLauch(backup);
+                }
+            }
+            MainWindow win = (MainWindow)Window.GetWindow(this);
+            win.GoToDashboard(sender, e);
+        }
+
         private void BtnPause_Click(object sender, RoutedEventArgs e)
         {
             List<Backup> selectedBackups = new List<Backup>();
