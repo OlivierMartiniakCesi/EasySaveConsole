@@ -14,6 +14,12 @@
             </Border>
         </Grid>
         <Grid>
+            <DockPanel VerticalAlignment="Bottom" HorizontalAlignment="Center" Width="300">
+                <StackPanel>
+                    <Image  x:Name="NathanPicture"  Source="/Pictures/Nathan.png" Height="132" Width="262" HorizontalAlignment="Right" RenderTransformOrigin="0,0.5" />
+                    <Button Content="{DynamicResource Create}" FontSize="16" Style="{DynamicResource save}" Margin="100,0,100,40" VerticalAlignment="Bottom" Click="BackupCreator"/>
+                </StackPanel>
+            </DockPanel>
             <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Width="300">
                 <StackPanel Height="100">
                     <Label Content="{DynamicResource Source}"  FontSize ="30" Style="{DynamicResource TextBackup}" HorizontalAlignment="Center" Grid.Row="1"/>
@@ -37,10 +43,8 @@
                     <RadioButton GroupName="BackupType" FontSize ="15" Style="{DynamicResource backuptype}" Content="{DynamicResource Differential}" HorizontalAlignment="Right" Margin="0,95,150,0"/>
                 </StackPanel>
             </DockPanel>
-            <DockPanel>
-                <Image x:Name="NathanPicture" Source="/Pictures/Nathan.png"  Margin="237,159,208,55"/>
-            </DockPanel>
-            <Button Content="{DynamicResource Create}" FontSize="16" Style="{DynamicResource save}" Margin="100,0,100,40" VerticalAlignment="Bottom" Click="BackupCreator" Cursor="Hand"/>
+           
+
         </Grid>
     </Grid>
 </UserControl>

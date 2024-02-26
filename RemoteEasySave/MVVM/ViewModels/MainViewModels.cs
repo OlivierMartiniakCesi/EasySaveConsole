@@ -24,33 +24,9 @@ namespace RemoteEasySave.MVVM.ViewModels
             
         }
 
-        public void receiveBackupInfo()
+        public async Task receiveBackupInfo()
         {
-            int currentPosition = 0;
-
-
-            while (true)
-            {
-                BackupList = client.DialoguerReseau(socket);
-
-                bool backupListFull = false;
-
-                if (currentPosition == BackupList.Count)
-                {
-                    backupListFull = true;
-                    if (backupListFull == true)
-                    {
-                        break;
-                    }
-                }
-                else
-                {
-                    currentPosition += BackupList.Count;
-                    backupListFull = false;
-                }
-              
-            }
-
+            BackupList = await client.DialoguerReseau(socket);
         }
 
         public void exit()

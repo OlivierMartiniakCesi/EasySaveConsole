@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Threading.Tasks;
+using System.Windows;
 using RemoteEasySave.MVVM.ViewModels;
 
 namespace RemoteEasySave.MVVM.Views
@@ -14,7 +15,8 @@ namespace RemoteEasySave.MVVM.Views
         {
             InitializeComponent();
             main.start();
-            main.receiveBackupInfo();
+            Task task = Task.Run(async () => await main.receiveBackupInfo());
+            _ = task;
 
         }
 
