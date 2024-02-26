@@ -55,7 +55,7 @@
 
             <Grid Name="BackupGrid" Margin="32,82,30,24">
                 <ScrollViewer Height="{Binding ElementName=BackupGrid, Path=ActualHeight}" VerticalScrollBarVisibility="Auto">
-                    <ListBox Name="BackupListe" ItemsSource="{Binding BackupList}" SelectionMode="Extended" Style="{DynamicResource list}">
+                    <ListBox ItemsSource="{Binding BackupList}" SelectionMode="Extended" Style="{DynamicResource list}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Border Style="{DynamicResource BordureDashboard}" Margin="30,0,15,20" Width="670">

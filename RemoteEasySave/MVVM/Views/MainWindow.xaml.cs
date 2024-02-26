@@ -9,14 +9,17 @@ namespace RemoteEasySave.MVVM.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-
         MainViewModels main = new MainViewModels();
+
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = main;
             main.start();
-            Task task = Task.Run(async () => await main.receiveBackupInfo());
-            _ = task;
+            Task.Run(async () => await main.ReceiveDataFromServer());
+            
+            
+
 
         }
 
