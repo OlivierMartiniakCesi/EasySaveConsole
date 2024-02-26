@@ -155,13 +155,14 @@
 
                     <Border Style="{StaticResource BorderedTextBlock}"
                                 Width="230"
+                                Height="32"
                                 Margin="0, 2">
 
 
-                        <Label Content="SizeLimit"
-                                     Margin="9,4,9,4"
+                        <Label Content="{DynamicResource SizeLimit}"
                                      Style="{DynamicResource TextSetting2}"
-                                     HorizontalAlignment="Center" />
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"/>
                         
 
                     </Border>
