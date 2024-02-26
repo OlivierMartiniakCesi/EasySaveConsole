@@ -35,7 +35,7 @@ namespace EasySaveV2.MVVM.ViewModels
             {
                 serverViewModels.receiveBackupInfo(backup.getName(), backup.getSourceDirectory(), backup.getTargetDirectory(), backup.getType());
             }
-           
+
         }
 
         public static void LaunchSlotBackup(List<Backup> backupList)
@@ -71,7 +71,7 @@ namespace EasySaveV2.MVVM.ViewModels
                                     {
                                     }
                                 });
-                        } 
+                        }
 
                         if (backup.getType().Equals("Full", StringComparison.OrdinalIgnoreCase) || backup.getType().Equals("Complet", StringComparison.OrdinalIgnoreCase))
                         {
@@ -86,7 +86,7 @@ namespace EasySaveV2.MVVM.ViewModels
                         }
                     });
                     backupThread.Start();
-                    
+
                 }
             });
             foreach (var backupSetting in BackupViewModels.BackupListInfo)
