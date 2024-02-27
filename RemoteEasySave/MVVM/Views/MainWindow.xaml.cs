@@ -17,10 +17,6 @@ namespace RemoteEasySave.MVVM.Views
             DataContext = main;
             main.start();
             Task.Run(async () => await main.ReceiveDataFromServer());
-            
-            
-
-
         }
 
         private void CloseApplication(object sender, RoutedEventArgs e)

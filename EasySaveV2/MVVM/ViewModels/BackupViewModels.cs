@@ -15,6 +15,7 @@ namespace EasySaveV2.MVVM.ViewModels
 {
     class BackupViewModels
     {
+        private static ServerViewModels serverViewModels = new ServerViewModels();
         private static XmlDocument doc;
         private static Backup _backup = new Backup();
         static string directoryPath = @"C:\JSON";
@@ -23,13 +24,14 @@ namespace EasySaveV2.MVVM.ViewModels
         private static List<StateLog> stateLogList = new List<StateLog>();
         //private static int totalFilesDone = 0;
 
-        public static ObservableCollection<Backup> getBackupList()
+        public  ObservableCollection<Backup> getBackupList()
         {
             return BackupListInfo;
         }
 
         public static void CreateSlotBackup(string name, string sourcePath, string destinationPath, string type)
         {
+            serverViewModels.receiveBackupInfo( name,  sourcePath,  destinationPath,  type);
             if (!Directory.Exists(directoryPath))
             {
                 Directory.CreateDirectory(directoryPath);
