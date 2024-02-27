@@ -229,34 +229,29 @@ namespace EasySaveV2.MVVM.ViewModels
 
                 try
                 {
-                    List<string> sortedFiles = Priority(PathSource);
-                    foreach (string path in sortedFiles)
+                    // Vérifie si le fichier a une extension qui nécessite un cryptage
+                    if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
                     {
-                        // Vérifie si le fichier a une extension qui nécessite un cryptage
-                        string fileExtension = Path.GetExtension(path);
-                        if (SettingsViewModels.ExtensionCryptoSoft.Contains(fileExtension))
+                        //Lance le processus de cryptage sur les fichiers avec l'extension
+                        Process cryptProcess = new Process();
+                        string args = $"\"{file.FullName}\" \"{targetFilePath}\"";
+                        cryptProcess.StartInfo.FileName = cryptSoftExecutablePath;
+                        cryptProcess.StartInfo.Arguments = args;
+                        cryptProcess.Start();
+                        cryptProcess.WaitForExit();
+                    }
+                    else
+                    {
                         {
-                            //Lance le processus de cryptage sur les fichiers avec l'extension
-                            Process cryptProcess = new Process();
-                            string args = $"\"{backup.getSourceDirectory()}\" \"{backup.getTargetDirectory()}\"";
-                            cryptProcess.StartInfo.FileName = cryptSoftExecutablePath;
-                            cryptProcess.StartInfo.Arguments = args;
-                            cryptProcess.Start();
-                            cryptProcess.WaitForExit();
-                        }
-                        else
-                        {
-                            // Obtenez les chemins de fichier source et de destination basés sur le chemin actuel de la boucle foreach
-                            string sourceFilePath = path;
-                            string destinationFilePath = Path.Combine(backup.getTargetDirectory(), Path.GetFileName(path));
-
                             // Lecture et écriture du fichier
-                            using (FileStream sourceStream = File.Open(sourceFilePath, FileMode.Open))
+                            using (FileStream sourceStream = File.Open(filePath, FileMode.Open))
                             {
-                                using (FileStream destinationStream = File.Create(destinationFilePath))
+                                using (FileStream destinationStream = File.Create(targetFilePath))
                                 {
                                     byte[] buffer = new byte[1024];
                                     int bytesRead;
+
+
                                     while ((bytesRead = sourceStream.Read(buffer, 0, buffer.Length)) > 0)
                                     {
                                         destinationStream.Write(buffer, 0, bytesRead);
@@ -268,8 +263,21 @@ namespace EasySaveV2.MVVM.ViewModels
                                 }
                             }
 
-                            dailylogs.selectedLogger.Information("Copied file " + sourceFilePath + " to " + destinationFilePath);
+                            dailylogs.selectedLogger.Information("Copied file " + filePath + " to " + targetFilePath);
                         }
+                        /*// Sinon, copie simplement le fichier vers la destination
+                        File.Copy(filePath, filePath.Replace(PathSource, PathTarget), true);
+                        // Mettre à jour les compteurs de progression
+                        Interlocked.Add(ref copiedBytes, new FileInfo(filePath).Length);
+                        double progressPercentage = (double)copiedBytes / totalBytes * 100;
+                        dailylogs.selectedLogger.Information("Copied file " + filePath + " to " + targetFilePath);
+                        long fileSize = new FileInfo(filePath).Length;
+                        if (copiedBytes % 1 == 0)
+                        {
+                            ReportProgress(backup, copiedBytes, totalBytes);
+                        }
+                        Interlocked.Add(ref copiedBytes, fileSize);
+                        ReportProgress(backup, copiedBytes, totalBytes);*/
                     }
                 }
                 finally
