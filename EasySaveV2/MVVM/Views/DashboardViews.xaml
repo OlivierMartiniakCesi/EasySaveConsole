@@ -117,6 +117,7 @@
                                             </Style>
                                         </ProgressBar.Style>
                                     </ProgressBar>
+                                    <TextBlock Text="{Binding ElementName=progressBar, Path=Value, StringFormat={}{0}%}" HorizontalAlignment="Left" Margin="17,41,0,0" VerticalAlignment="Top" FontSize="12" FontWeight="Bold" FontFamily="Montserrat"/>
                                 </Grid>
                             </Border>
                         </DataTemplate>

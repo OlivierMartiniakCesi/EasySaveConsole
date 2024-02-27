@@ -146,9 +146,33 @@ namespace EasySaveV2.MVVM.ViewModels
                 dailylogs.selectedLogger.Information($"Backup {backup.getName()} arrêté");
             }
         }
-
+        private static long CalculateTotalBytes(string directory)
+        {
+            long totalBytes = 0;
+            foreach (string file in Directory.EnumerateFiles(directory, "*", SearchOption.AllDirectories))
+            {
+                totalBytes += new FileInfo(file).Length;
+            }
+            return totalBytes;
+        }
+        private static void ReportProgress(Backup backup, long copiedBytes, long totalBytes)
+        {
+            double progressPercentage = (double)copiedBytes / totalBytes * 100;
+            backup.Progress = (int)progressPercentage;
+            if (backup.Progress % 1 == 0) // Mettre à jour toutes les 1%
+            {
+                Console.WriteLine($"Backup {backup.getName()} Progress: {progressPercentage:F2}%");
+            }
+        }
         public static void TypeComplet(Backup backup)
         {
+            long totalBytes = CalculateTotalBytes(backup.getSourceDirectory());
+            long copiedBytes = 0;
+            string Name = backup.getName();
+            string PathSource = backup.getSourceDirectory();
+            string PathTarget = backup.getTargetDirectory();
+            string State = backup.getState();
+            string Stopped = backup.getStopped();
             // Create all directories sequentially
             foreach (var directory in Directory.GetDirectories(backup.getSourceDirectory(), "*", SearchOption.AllDirectories))
             {
@@ -168,6 +192,12 @@ namespace EasySaveV2.MVVM.ViewModels
                 try
                 {
                     Directory.CreateDirectory(directory.Replace(backup.getSourceDirectory(), backup.getTargetDirectory()));
+                    Interlocked.Add(ref copiedBytes, Directory.GetFiles(directory).Length);
+                    ReportProgress(backup, copiedBytes, totalBytes);
+                    if (copiedBytes % 1 == 0)
+                    {
+                        ReportProgress(backup, copiedBytes, totalBytes);
+                    }
                     dailylogs.selectedLogger.Information("Created directory " + directory.Replace(backup.getSourceDirectory(), backup.getTargetDirectory()));
                 }
                 finally
@@ -209,9 +239,42 @@ namespace EasySaveV2.MVVM.ViewModels
                     }
                     else
                     {
-                        // Sinon, copie simplement le fichier vers la destination
-                        File.Copy(filePath, targetFilePath, true);
+                        {
+                            // Lecture et écriture du fichier
+                            using (FileStream sourceStream = File.Open(filePath, FileMode.Open))
+                            {
+                                using (FileStream destinationStream = File.Create(targetFilePath))
+                                {
+                                    byte[] buffer = new byte[1024];
+                                    int bytesRead;
+                                    
+
+                                    while ((bytesRead = sourceStream.Read(buffer, 0, buffer.Length)) > 0)
+                                    {
+                                        destinationStream.Write(buffer, 0, bytesRead);
+                                        copiedBytes += bytesRead;
+
+                                        // Calculer et rapporter la progression
+                                        ReportProgress(backup, copiedBytes, totalBytes);
+                                    }
+                                }
+                            }
+
+                            dailylogs.selectedLogger.Information("Copied file " + filePath + " to " + targetFilePath);
+                        }
+                        /*// Sinon, copie simplement le fichier vers la destination
+                        File.Copy(filePath, filePath.Replace(PathSource, PathTarget), true);
+                        // Mettre à jour les compteurs de progression
+                        Interlocked.Add(ref copiedBytes, new FileInfo(filePath).Length);
+                        double progressPercentage = (double)copiedBytes / totalBytes * 100;
                         dailylogs.selectedLogger.Information("Copied file " + filePath + " to " + targetFilePath);
+                        long fileSize = new FileInfo(filePath).Length;
+                        if (copiedBytes % 1 == 0)
+                        {
+                            ReportProgress(backup, copiedBytes, totalBytes);
+                        }
+                        Interlocked.Add(ref copiedBytes, fileSize);
+                        ReportProgress(backup, copiedBytes, totalBytes);*/
                     }
                 }
                 finally
@@ -234,6 +297,13 @@ namespace EasySaveV2.MVVM.ViewModels
 
         public static void TypeDifferential(Backup backup)
         {
+            long totalBytes = CalculateTotalBytes(backup.getSourceDirectory());
+            long copiedBytes = 0;
+            string Name = backup.getName();
+            string PathSource = backup.getSourceDirectory();
+            string PathTarget = backup.getTargetDirectory();
+            string State = backup.getState();
+            string Stopped = backup.getStopped();
             // Create all directories sequentially
             foreach (var directory in Directory.GetDirectories(backup.getSourceDirectory(), "*", SearchOption.AllDirectories))
             {
@@ -253,6 +323,12 @@ namespace EasySaveV2.MVVM.ViewModels
                 try
                 {
                     Directory.CreateDirectory(directory.Replace(backup.getSourceDirectory(), backup.getTargetDirectory()));
+                    Interlocked.Add(ref copiedBytes, Directory.GetFiles(directory).Length);
+                    ReportProgress(backup, copiedBytes, totalBytes); // Rapporter la progression
+                    if (copiedBytes % 1 == 0) 
+                    {
+                        ReportProgress(backup, copiedBytes, totalBytes);
+                    }
                     dailylogs.selectedLogger.Information("Created directory " + directory.Replace(backup.getSourceDirectory(), backup.getTargetDirectory()));
                 }
                 finally
@@ -300,8 +376,25 @@ namespace EasySaveV2.MVVM.ViewModels
                             else
                             {
                                 // Sinon, copie simplement le fichier vers la destination
-                                File.Copy(filePath, targetFilePath, true);
-                                dailylogs.selectedLogger.Information("Copied file " + filePath + " to " + targetFilePath);
+                                // Lecture et écriture du fichier
+                                using (FileStream sourceStream = File.Open(filePath, FileMode.Open))
+                                {
+                                    using (FileStream destinationStream = File.Create(targetFilePath))
+                                    {
+                                        byte[] buffer = new byte[1024];
+                                        int bytesRead;
+
+
+                                        while ((bytesRead = sourceStream.Read(buffer, 0, buffer.Length)) > 0)
+                                        {
+                                            destinationStream.Write(buffer, 0, bytesRead);
+                                            copiedBytes += bytesRead;
+
+                                            // Calculer et rapporter la progression
+                                            ReportProgress(backup, copiedBytes, totalBytes);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -310,7 +403,6 @@ namespace EasySaveV2.MVVM.ViewModels
                         // Si le fichier n'existe pas dans la cible, le copie
                         if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
                         {
-                            //Lance le processus de cryptage sur les fichiers avec l'extension
                             //Lance le processus de cryptage sur les fichiers avec l'extension
                             Process cryptProcess = new Process();
                             string args = $"\"{backup.getSourceDirectory()}\" \"{backup.getTargetDirectory()}\"";
@@ -322,8 +414,25 @@ namespace EasySaveV2.MVVM.ViewModels
                         else
                         {
                             // Sinon, copie simplement le fichier vers la destination
-                            File.Copy(filePath, targetFilePath, true);
-                            dailylogs.selectedLogger.Information("Copied file " + filePath + " to " + targetFilePath);
+                            // Lecture et écriture du fichier
+                            using (FileStream sourceStream = File.Open(filePath, FileMode.Open))
+                            {
+                                using (FileStream destinationStream = File.Create(targetFilePath))
+                                {
+                                    byte[] buffer = new byte[1024];
+                                    int bytesRead;
+
+
+                                    while ((bytesRead = sourceStream.Read(buffer, 0, buffer.Length)) > 0)
+                                    {
+                                        destinationStream.Write(buffer, 0, bytesRead);
+                                        copiedBytes += bytesRead;
+
+                                        // Calculer et rapporter la progression
+                                        ReportProgress(backup, copiedBytes, totalBytes);
+                                    }
+                                }
+                            }
                         }
                     }
                 }

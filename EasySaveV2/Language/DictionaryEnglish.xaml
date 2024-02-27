@@ -16,4 +16,6 @@
     <system:String x:Key="Modify">Language</system:String>
     <system:String x:Key="Lauch">Language</system:String>
     <system:String x:Key="SizeLimit">Size Limit</system:String>
+    <system:String x:Key="ImportExt">Import</system:String>
+    <system:String x:Key="ExportExt">Export</system:String>
 </ResourceDictionary>
