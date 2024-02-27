@@ -359,7 +359,7 @@ namespace EasySaveV2.MVVM.ViewModels
                 }
                 FileInfo file = new FileInfo(filePath);
                 string targetFilePath = Path.Combine(backup.getTargetDirectory(), filePath.Substring(backup.getSourceDirectory().Length + 1));
-                string cryptSoftExecutablePath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + @"\CryptSoft\bin\Debug\net5.0\CryptSoft.exe";
+                string cryptSoftExecutablePath = @"C:\Users\olivi\source\repos\EasySaveConsole\CryptSoft\bin\Debug\net5.0\CryptSoft.exe";
                 try
                 {
                     // Vérifie si le fichier existe dans la cible et s'il est plus ancien que celui de la source
