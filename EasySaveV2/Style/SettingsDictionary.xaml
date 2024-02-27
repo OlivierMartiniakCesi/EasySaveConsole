@@ -20,7 +20,7 @@
         <Setter Property="Foreground" Value="Black"/>
         <Setter Property="FontFamily" Value="/Font/#MontSerrat"/>
         <Setter Property="FontWeight" Value="UltraBold"/>
-        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontSize" Value="12"/>
     </Style>
 
 
