@@ -229,19 +229,8 @@ namespace EasySaveV2.MVVM.ViewModels
 
                 try
                 {
-                    // Vérifie si le fichier a une extension qui nécessite un cryptage
-                    if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
-                    {
-                        //Lance le processus de cryptage sur les fichiers avec l'extension
-                        Process cryptProcess = new Process();
-                        string args = $"\"{file.FullName}\" \"{targetFilePath}\"";
-                        cryptProcess.StartInfo.FileName = cryptSoftExecutablePath;
-                        cryptProcess.StartInfo.Arguments = args;
-                        cryptProcess.Start();
-                        cryptProcess.WaitForExit();
-                    }
                     
-                        
+                   
                     // Lecture et écriture du fichier
                     using (FileStream sourceStream = File.Open(filePath, FileMode.Open))
                     {
@@ -261,6 +250,19 @@ namespace EasySaveV2.MVVM.ViewModels
                             }
                         }
                     }
+
+                    // Vérifie si le fichier a une extension qui nécessite un cryptage
+                    if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
+                    {
+                        //Lance le processus de cryptage sur les fichiers avec l'extension
+
+
+                        ProcessStartInfo cryptosoft = new ProcessStartInfo(cryptSoftExecutablePath);
+                        cryptosoft.Arguments = "source " + file.FullName + " destination " + targetFilePath;
+                        var proc = Process.Start(cryptosoft);
+                        proc.WaitForExit();
+                    }
+
 
                     dailylogs.selectedLogger.Information("Copied file " + filePath + " to " + targetFilePath);
                         
@@ -364,58 +366,6 @@ namespace EasySaveV2.MVVM.ViewModels
                         FileInfo targetFile = new FileInfo(targetFilePath);
                         if (targetFile.LastWriteTime < file.LastWriteTime)
                         {
-                            // Copie le fichier seulement s'il est plus récent
-                            if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
-                            {
-                                //Lance le processus de cryptage sur les fichiers avec l'extension
-                                Process cryptProcess = new Process();
-                                string args = $"\"{backup.getSourceDirectory()}\" \"{backup.getTargetDirectory()}\"";
-                                cryptProcess.StartInfo.FileName = cryptSoftExecutablePath;
-                                cryptProcess.StartInfo.Arguments = args;
-                                cryptProcess.Start();
-                                cryptProcess.WaitForExit();
-                            }
-                            else
-                            {
-                                // Sinon, copie simplement le fichier vers la destination
-                                // Lecture et écriture du fichier
-                                using (FileStream sourceStream = File.Open(filePath, FileMode.Open))
-                                {
-                                    using (FileStream destinationStream = File.Create(targetFilePath))
-                                    {
-                                        byte[] buffer = new byte[1024];
-                                        int bytesRead;
-
-
-                                        while ((bytesRead = sourceStream.Read(buffer, 0, buffer.Length)) > 0)
-                                        {
-                                            destinationStream.Write(buffer, 0, bytesRead);
-                                            copiedBytes += bytesRead;
-
-                                            // Calculer et rapporter la progression
-                                            ReportProgress(backup, copiedBytes, totalBytes);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // Si le fichier n'existe pas dans la cible, le copie
-                        if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
-                        {
-                            //Lance le processus de cryptage sur les fichiers avec l'extension
-                            Process cryptProcess = new Process();
-                            string args = $"\"{backup.getSourceDirectory()}\" \"{backup.getTargetDirectory()}\"";
-                            cryptProcess.StartInfo.FileName = cryptSoftExecutablePath;
-                            cryptProcess.StartInfo.Arguments = args;
-                            cryptProcess.Start();
-                            cryptProcess.WaitForExit();
-                        }
-                        else
-                        {
-                            // Sinon, copie simplement le fichier vers la destination
                             // Lecture et écriture du fichier
                             using (FileStream sourceStream = File.Open(filePath, FileMode.Open))
                             {
@@ -435,6 +385,49 @@ namespace EasySaveV2.MVVM.ViewModels
                                     }
                                 }
                             }
+                            // Vérifie si le fichier a une extension qui nécessite un cryptage
+                            if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
+                            {
+                                //Lance le processus de cryptage sur les fichiers avec l'extension
+                                ProcessStartInfo cryptosoft = new ProcessStartInfo(cryptSoftExecutablePath);
+                                cryptosoft.Arguments = "source " + file.FullName + " destination " + targetFilePath;
+                                var proc = Process.Start(cryptosoft);
+                                proc.WaitForExit();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        
+                        // Lecture et écriture du fichier
+                        using (FileStream sourceStream = File.Open(filePath, FileMode.Open))
+                        {
+                            using (FileStream destinationStream = File.Create(targetFilePath))
+                            {
+                                byte[] buffer = new byte[1024];
+                                int bytesRead;
+
+
+                                while ((bytesRead = sourceStream.Read(buffer, 0, buffer.Length)) > 0)
+                                {
+                                    destinationStream.Write(buffer, 0, bytesRead);
+                                    copiedBytes += bytesRead;
+
+                                    // Calculer et rapporter la progression
+                                    ReportProgress(backup, copiedBytes, totalBytes);
+                                }
+                            }
+                        }
+                        // Vérifie si le fichier a une extension qui nécessite un cryptage
+                        if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
+                        {
+                            //Lance le processus de cryptage sur les fichiers avec l'extension
+
+
+                            ProcessStartInfo cryptosoft = new ProcessStartInfo(cryptSoftExecutablePath);
+                            cryptosoft.Arguments = "source " + file.FullName + " destination " + targetFilePath;
+                            var proc = Process.Start(cryptosoft);
+                            proc.WaitForExit();
                         }
                     }
                 }
