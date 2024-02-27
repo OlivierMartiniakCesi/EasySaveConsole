@@ -49,6 +49,7 @@ namespace EasySaveV2.MVVM.ViewModels
                     {
                         backup.setState("On");
                         backup.setStopped("False");
+                        backup.States = "NoPaused";
                         // Check if the backup is paused
                         if (!canBeExecuted)
                         {
@@ -126,6 +127,7 @@ namespace EasySaveV2.MVVM.ViewModels
         public static void ContinueLauch(Backup backup)
         {
             backup.setState("On");
+            backup.States = "NoPaused";
             dailylogs.selectedLogger.Information($"Backup {backup.getName()} reprend son exécution");
         }
 
@@ -134,6 +136,7 @@ namespace EasySaveV2.MVVM.ViewModels
             if (backup.getState() == "On")
             {
                 backup.setState("Off");
+                backup.States = "Paused";
                 dailylogs.selectedLogger.Information($"Backup {backup.getName()} en pause");
             }
         }
@@ -143,7 +146,9 @@ namespace EasySaveV2.MVVM.ViewModels
             if (backup.getState() == "On")
             {
                 backup.setStopped("True");
+                backup.States = "Stop";
                 dailylogs.selectedLogger.Information($"Backup {backup.getName()} arrêté");
+                backup.Progress = 0;
             }
         }
         private static long CalculateTotalBytes(string directory)
@@ -220,55 +225,62 @@ namespace EasySaveV2.MVVM.ViewModels
                     dailylogs.selectedLogger.Information("Backup " + backup.getName() + " execution stopped");
                     return;
                 }
-                string cryptSoftExecutablePath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + @"\CryptSoft\bin\Debug\net5.0\CryptSoft.exe";
+                string cryptSoftExecutablePath = @"C:\Users\olivi\source\repos\EasySaveConsole\CryptSoft\bin\Debug\net5.0\CryptSoft.exe";
                 FileInfo file = new FileInfo(filePath);
                 string targetFilePath = Path.Combine(backup.getTargetDirectory(), filePath.Substring(backup.getSourceDirectory().Length + 1));
 
                 try
                 {
-                    List<string> sortedFiles = Priority(PathSource);
-                    foreach (string path in sortedFiles)
+                    // Vérifie si le fichier a une extension qui nécessite un cryptage
+                    if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
                     {
-                        // Vérifie si le fichier a une extension qui nécessite un cryptage
-                        string fileExtension = Path.GetExtension(path);
-                        if (SettingsViewModels.ExtensionCryptoSoft.Contains(fileExtension))
+                        //Lance le processus de cryptage sur les fichiers avec l'extension
+                        Process cryptProcess = new Process();
+                        string args = $"\"{file.FullName}\" \"{targetFilePath}\"";
+                        cryptProcess.StartInfo.FileName = cryptSoftExecutablePath;
+                        cryptProcess.StartInfo.Arguments = args;
+                        cryptProcess.Start();
+                        cryptProcess.WaitForExit();
+                    }
+                    
+                        
+                    // Lecture et écriture du fichier
+                    using (FileStream sourceStream = File.Open(filePath, FileMode.Open))
+                    {
+                        using (FileStream destinationStream = File.Create(targetFilePath))
                         {
-                            //Lance le processus de cryptage sur les fichiers avec l'extension
-                            Process cryptProcess = new Process();
-                            string args = $"\"{backup.getSourceDirectory()}\" \"{backup.getTargetDirectory()}\"";
-                            cryptProcess.StartInfo.FileName = cryptSoftExecutablePath;
-                            cryptProcess.StartInfo.Arguments = args;
-                            cryptProcess.Start();
-                            cryptProcess.WaitForExit();
-                        }
-                        else
-                        {
-                            // Obtenez les chemins de fichier source et de destination basés sur le chemin actuel de la boucle foreach
-                            string sourceFilePath = path;
-                            string destinationFilePath = Path.Combine(backup.getTargetDirectory(), Path.GetFileName(path));
+                            byte[] buffer = new byte[1024];
+                            int bytesRead;
 
-                            // Lecture et écriture du fichier
-                            using (FileStream sourceStream = File.Open(sourceFilePath, FileMode.Open))
+
+                            while ((bytesRead = sourceStream.Read(buffer, 0, buffer.Length)) > 0)
                             {
-                                using (FileStream destinationStream = File.Create(destinationFilePath))
-                                {
-                                    byte[] buffer = new byte[1024];
-                                    int bytesRead;
-                                    while ((bytesRead = sourceStream.Read(buffer, 0, buffer.Length)) > 0)
-                                    {
-                                        destinationStream.Write(buffer, 0, bytesRead);
-                                        copiedBytes += bytesRead;
+                                destinationStream.Write(buffer, 0, bytesRead);
+                                copiedBytes += bytesRead;
 
-                                        // Calculer et rapporter la progression
-                                        ReportProgress(backup, copiedBytes, totalBytes);
-                                    }
-                                }
+                                // Calculer et rapporter la progression
+                                ReportProgress(backup, copiedBytes, totalBytes);
                             }
-
-                            dailylogs.selectedLogger.Information("Copied file " + sourceFilePath + " to " + destinationFilePath);
                         }
                     }
+
+                    dailylogs.selectedLogger.Information("Copied file " + filePath + " to " + targetFilePath);
+                        
+                        /*// Sinon, copie simplement le fichier vers la destination
+                        File.Copy(filePath, filePath.Replace(PathSource, PathTarget), true);
+                        // Mettre à jour les compteurs de progression
+                        Interlocked.Add(ref copiedBytes, new FileInfo(filePath).Length);
+                        double progressPercentage = (double)copiedBytes / totalBytes * 100;
+                        dailylogs.selectedLogger.Information("Copied file " + filePath + " to " + targetFilePath);
+                        long fileSize = new FileInfo(filePath).Length;
+                        if (copiedBytes % 1 == 0)
+                        {
+                            ReportProgress(backup, copiedBytes, totalBytes);
+                        }
+                        Interlocked.Add(ref copiedBytes, fileSize);
+                        ReportProgress(backup, copiedBytes, totalBytes);*/
                 }
+
                 finally
                 {
                 }

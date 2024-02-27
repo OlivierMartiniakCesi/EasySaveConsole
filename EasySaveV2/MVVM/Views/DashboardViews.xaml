@@ -20,7 +20,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="253,0,0,0">
-            <Button Content="Lauch" FontSize="16" Style="{DynamicResource btn}" Click="BtnLauch_Click" Cursor="Hand"/>
+            <Button Content="Launch" FontSize="16" Style="{DynamicResource btn}" Click="BtnLauch_Click" Cursor="Hand"/>
             <Button FontSize="16" Style="{DynamicResource btnPlay}" Click="BtnContinue_Click" Cursor="Hand">
                 <Image Source="/Pictures/playBtn.png"></Image>
             </Button>
@@ -100,6 +100,18 @@
                                     <ProgressBar x:Name="progressBar" Height="10" HorizontalAlignment="Left" Margin="50,43,0,0" VerticalAlignment="Top" Width="475" Visibility="Visible" Value="{Binding Progress}">
                                         <ProgressBar.Style>
                                             <Style TargetType="ProgressBar">
+                                                <Style.Triggers>
+                                                    <!-- Déclencheur pour changer la couleur de la ProgressBar lorsque la sauvegarde est en pause -->
+                                                    <DataTrigger Binding="{Binding States}" Value="NoPaused">
+                                                        <Setter Property="Foreground" Value="Green" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding States}" Value="Stop">
+                                                        <Setter Property="Foreground" Value="Red" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding States}" Value="Paused">
+                                                        <Setter Property="Foreground" Value="Orange" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
                                                 <Setter Property="Foreground" Value="Green"/>
                                                 <!-- Change la couleur de la barre de progression -->
                                                 <Setter Property="Background" Value="LightGray"/>

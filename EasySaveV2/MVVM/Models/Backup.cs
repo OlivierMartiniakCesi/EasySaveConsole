@@ -51,6 +51,19 @@ namespace EasySaveV2.MVVM.Models
                 }
             }
         }
+        private string _state;
+        public string States
+        {
+            get { return _state; }
+            set
+            {
+                if (_state != value)
+                {
+                    _state = value;
+                    OnPropertyChanged(nameof(States)); // Modifier State en States
+                }
+            }
+        }
         ~Backup()
         {
             System.Diagnostics.Trace.WriteLine("finalizer is called.");
