@@ -11,7 +11,6 @@ using System.Net;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.ComponentModel;
-using System.Threading.Tasks;
 
 namespace RemoteEasySave.MVVM.ViewModels
 {
@@ -51,31 +50,39 @@ namespace RemoteEasySave.MVVM.ViewModels
         }
         public async Task ReceiveDataFromServer()
         {
-            byte[] data = new byte[1024];
-
             while (true)
             {
-                int recv = await Task.Run(() => socket.Receive(data));
+                byte[] data = new byte[1024];
+                
+                int recv = await socket.ReceiveAsync(new ArraySegment<byte>(data), SocketFlags.None);
+
 
                 if (recv == 0)
                 {
                     break;
                 }
 
-
                 string stringData = Encoding.UTF8.GetString(data, 0, recv);
-                string[] dataList = stringData.Split(',');
+                string[] dataList = stringData.Split('|');
 
-                string name = dataList[0];
-                string source = dataList[1];
-                string destination = dataList[2];
-                string type = dataList[3];
+                foreach (string item in dataList)
+                {
+                    string[] elements = item.Split(',');
+                    if (elements.Length >= 4)
+                    {
+                        string name = elements[0];
+                        string source = elements[1];
+                        string destination = elements[2];
+                        string type = elements[3];
 
-                Backup newBackup = new Backup(name, source, destination, type);
+                        Backup newBackup = new Backup(name, source, destination, type);
 
-                BackupList.Add(newBackup);
+                        BackupList.Add(newBackup);
+                    }
+                }
             }
         }
+
 
 
         public void exit()

@@ -216,5 +216,6 @@ namespace EasySaveV2.MVVM.ViewModels
             Application.Current.Resources.MergedDictionaries[0].Source = new Uri("Language/DictionaryFrench.xaml", UriKind.RelativeOrAbsolute);
         }
 
+
     }
 }

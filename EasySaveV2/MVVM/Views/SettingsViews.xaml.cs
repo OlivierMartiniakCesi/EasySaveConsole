@@ -26,13 +26,13 @@ namespace EasySaveV2.MVVM.Views
     /// </summary>
     public partial class SettingsViews : UserControl
     {
-
-
         SettingsViewModels Settings = new SettingsViewModels();
         public SettingsViews()
         {
             InitializeComponent();
             ButtonLanguage.IsChecked = Settings.ToggleButtonState;
+                        myListBox.PreviewMouseLeftButtonDown += ListBox_PreviewMouseLeftButtonDown;
+            myListBox.PreviewMouseMove += ListBox_PreviewMouseMove;
         }
 
 
@@ -97,46 +97,91 @@ namespace EasySaveV2.MVVM.Views
             }
         }
 
+        private void ListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ListBox listBox = (ListBox)sender;
+            if (listBox.SelectedItem != null)
+            {
+                DragDrop.DoDragDrop(listBox, listBox.SelectedItem, DragDropEffects.Move);
+            }
+        }
+
+        private void ListBox_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                ListBox listBox = (ListBox)sender;
+
+                object draggedItem = listBox.SelectedItem;
+
+                if (draggedItem != null)
+                {
+                    DataObject dragData = new DataObject("myListBoxItem", draggedItem);
+                    DragDrop.DoDragDrop(listBox, dragData, DragDropEffects.Move);
+                }
+            }
+        }
+
+        private void ListBox_Drop(object sender, DragEventArgs e)
+        {
+            ListBox listBox = (ListBox)sender;
+
+            if (e.Data.GetDataPresent("myListBoxItem"))
+            {
+                var droppedItem = e.Data.GetData("myListBoxItem");
+
+                if (droppedItem != null)
+                {
+                    int index = -1;
+
+                    for (int i = 0; i < listBox.Items.Count; i++)
+                    {
+                        ListBoxItem item = (ListBoxItem)listBox.ItemContainerGenerator.ContainerFromIndex(i);
+
+                        if (item != null)
+                        {
+                            Point position = e.GetPosition(item);
+
+                            if (position.Y < item.ActualHeight / 2)
+                            {
+                                index = i;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (index == -1)
+                    {
+                        index = listBox.Items.Count - 1;
+                    }
+
+                    if (droppedItem is string extension && SettingsViewModels.ExtensionCryptoSoft.Contains(extension))
+                    {
+                        SettingsViewModels.ExtensionCryptoSoft.Remove(extension);
+                        SettingsViewModels.ExtensionCryptoSoft.Insert(index, extension);
+                    }
+                }
+            }
+        }
+
+
+
+
+
+
+
+
 
 
         // Méthode permettant d'importer un fichier ".txt" contenant les noms d'extensions
         private void ImportButton(object sender, RoutedEventArgs e)
         {
-            //
         }
 
 
-
+        // Méthode permettant d'exporter un fichier ".txt" contenant les noms d'extensions
         private void ExportButton(object sender, RoutedEventArgs e)
         {
-            /*try
-            {
-                string extension = ExtensionBackupTextBox.Text.Trim();
-
-                if (!string.IsNullOrEmpty(extension))
-                {
-                    SaveFileDialog saveFileDialog = new SaveFileDialog();
-                    saveFileDialog.Filter = "Fichiers texte (*.txt)|*.txt";
-                    saveFileDialog.Title = "Exporter les extensions";
-                    saveFileDialog.FileName = "extensions";
-
-                    if (saveFileDialog.ShowDialog() == true)
-                    {
-                        // Ajouter la nouvelle extension au fichier existant ou créer le fichier s'il n'existe pas
-                        File.AppendAllText(saveFileDialog.FileName, extension + Environment.NewLine);
-
-                        MessageBox.Show("Extension ajoutée avec succès dans " + saveFileDialog.FileName, "Export réussi", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Le contenu est vide. Veuillez saisir des extensions avant d'exporter.", "Attention", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erreur lors de l'exportation des extensions : " + ex.Message, "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-            }*/
         }
     }
 }

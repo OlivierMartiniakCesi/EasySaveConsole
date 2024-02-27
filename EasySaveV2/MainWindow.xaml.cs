@@ -27,6 +27,7 @@ namespace EasySaveV2
     public partial class MainWindow : Window
     {
         ServerViewModels serverViewModels = new ServerViewModels();
+        BackupViewModels backupViewModels = new BackupViewModels();
         public MainWindow()
         {
             InitializeComponent();
