@@ -5,8 +5,8 @@ namespace CryptSoft
 {
     public class Program
     {
-        private const string SourceDirectoryArg = "SourceDirectory";
-        private const string TargetDirectoryArg = "TargetDirectory";
+        private const string SourceDirectoryArg = "file.FullName";
+        private const string TargetDirectoryArg = "targetFilePath";
         private const int KeyLength = 8;
 
         static int Main(string[] args)
