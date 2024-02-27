@@ -102,10 +102,15 @@
                                             <Style TargetType="ProgressBar">
                                                 <Style.Triggers>
                                                     <!-- Déclencheur pour changer la couleur de la ProgressBar lorsque la sauvegarde est en pause -->
+                                                    <DataTrigger Binding="{Binding States}" Value="NoPaused">
+                                                        <Setter Property="Foreground" Value="Green" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding States}" Value="Stop">
+                                                        <Setter Property="Foreground" Value="Red" />
+                                                    </DataTrigger>
                                                     <DataTrigger Binding="{Binding States}" Value="Paused">
                                                         <Setter Property="Foreground" Value="Orange" />
                                                     </DataTrigger>
-                                                    <!-- Autres déclencheurs si nécessaire -->
                                                 </Style.Triggers>
                                                 <Setter Property="Foreground" Value="Green"/>
                                                 <!-- Change la couleur de la barre de progression -->
