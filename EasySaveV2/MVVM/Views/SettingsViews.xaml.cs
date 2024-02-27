@@ -17,6 +17,8 @@ using EasySaveV2.MVVM.ViewModels;
 using System.Windows.Resources;
 using System.IO;
 using System.Configuration;
+using Microsoft.Win32;
+
 namespace EasySaveV2.MVVM.Views
 {
     /// <summary>
@@ -56,7 +58,7 @@ namespace EasySaveV2.MVVM.Views
                 bool? isChecked = toggleButton.IsChecked;
                 if (isChecked.HasValue)
                 {
-                    SettingsViewModels.Formatlog((bool) isChecked);
+                    SettingsViewModels.Formatlog((bool)isChecked);
                 }
                 else
                 {
@@ -69,12 +71,72 @@ namespace EasySaveV2.MVVM.Views
         {
             if (e.Key == Key.Enter)
             {
-                string extension = ExtensionBackup.Text.Trim(); 
+                string extension = ExtensionBackupTextBox.Text.Trim();
                 if (!string.IsNullOrEmpty(extension) && extension[0] == '.')
                 {
                     Settings.AddList(extension);
                 }
             }
+        }
+
+        private void ExtensionBackupTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            if (textBox.Text == "Extension")
+            {
+                textBox.Text = "";
+            }
+        }
+
+        private void ExtensionBackupTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            if (string.IsNullOrWhiteSpace(textBox.Text))
+            {
+                textBox.Text = "Extension";
+            }
+        }
+
+
+
+        // Méthode permettant d'importer un fichier ".txt" contenant les noms d'extensions
+        private void ImportButton(object sender, RoutedEventArgs e)
+        {
+            //
+        }
+
+
+
+        private void ExportButton(object sender, RoutedEventArgs e)
+        {
+            /*try
+            {
+                string extension = ExtensionBackupTextBox.Text.Trim();
+
+                if (!string.IsNullOrEmpty(extension))
+                {
+                    SaveFileDialog saveFileDialog = new SaveFileDialog();
+                    saveFileDialog.Filter = "Fichiers texte (*.txt)|*.txt";
+                    saveFileDialog.Title = "Exporter les extensions";
+                    saveFileDialog.FileName = "extensions";
+
+                    if (saveFileDialog.ShowDialog() == true)
+                    {
+                        // Ajouter la nouvelle extension au fichier existant ou créer le fichier s'il n'existe pas
+                        File.AppendAllText(saveFileDialog.FileName, extension + Environment.NewLine);
+
+                        MessageBox.Show("Extension ajoutée avec succès dans " + saveFileDialog.FileName, "Export réussi", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Le contenu est vide. Veuillez saisir des extensions avant d'exporter.", "Attention", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erreur lors de l'exportation des extensions : " + ex.Message, "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }*/
         }
     }
 }
