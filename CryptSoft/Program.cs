@@ -4,12 +4,16 @@ using System.IO;
 
 namespace CryptSoft
 {
+    using System;
+    using System.IO;
+
     public class Program
     {
-        private const int KeyLength = 8;
-
         static int Main(string[] args)
         {
+            // Key for XOR encryption
+            byte[] encryptionKey = { 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF, 0x11, 0x22 };
+
             int argsSize = args.Length;
             string src = "";
             string dst = "";
@@ -39,37 +43,27 @@ namespace CryptSoft
                 return -1;
             }
 
-
             try
             {
                 DateTime startTimeFile = DateTime.Now;
 
-                byte[] byteToEncrypt = File.ReadAllBytes(src);
-                BitArray bitToEncrypt = new BitArray(byteToEncrypt);
+                byte[] bytesToEncrypt = File.ReadAllBytes(src);
 
-                byte[] byteKey = new byte[8] { 12, 255, 102, 147, 8, 52, 157, 235 };
-                BitArray bitKey = new BitArray(byteKey);
-
-                byte[] byteCrypted = new byte[byteToEncrypt.Length];
-                BitArray bitCrypted = new BitArray(bitToEncrypt.Length);
-
-                int j = 0;
-
-                for (int i = 0; i < bitToEncrypt.Length; i++)
+                // XOR encryption
+                byte[] encryptedBytes = new byte[bytesToEncrypt.Length];
+                for (int i = 0; i < bytesToEncrypt.Length; i++)
                 {
-                    j = i % byteKey.Length;
-                    bitCrypted[i] = bitToEncrypt[i] ^ bitKey[j];
+                    encryptedBytes[i] = (byte)(bytesToEncrypt[i] ^ encryptionKey[i % encryptionKey.Length]);
                 }
 
-                bitCrypted.CopyTo(byteCrypted, 0);
+                File.WriteAllBytes(dst, encryptedBytes);
 
-                File.WriteAllBytes(dst, byteCrypted);
                 TimeSpan cryptTime = DateTime.Now - startTimeFile;
                 return (int)cryptTime.TotalMilliseconds;
             }
-            catch
+            catch (Exception ex)
             {
-                Console.WriteLine("Cannot crypt this file.");
+                Console.WriteLine($"Cannot crypt this file: {ex.Message}");
                 return -1;
             }
         }
