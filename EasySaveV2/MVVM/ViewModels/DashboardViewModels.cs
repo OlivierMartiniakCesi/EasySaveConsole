@@ -247,32 +247,30 @@ namespace EasySaveV2.MVVM.ViewModels
                                 destinationStream.Write(buffer, 0, bytesRead);
                                 copiedBytes += bytesRead;
 
+                                // Vérifie si le fichier a une extension qui nécessite un cryptage
+                                if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
+                                {
+                                    // Enregistrer l'heure de début
+                                    DateTime start = DateTime.Now;
+
+                                    // Lance le processus de cryptage sur les fichiers avec l'extension
+                                    ProcessStartInfo cryptosoft = new ProcessStartInfo(cryptSoftExecutablePath);
+                                    cryptosoft.Arguments = "source " + file.FullName + " destination " + targetFilePath;
+                                    var proc = Process.Start(cryptosoft);
+                                    proc.WaitForExit();
+
+                                    // Enregistrer l'heure de fin
+                                    DateTime end = DateTime.Now;
+
+                                    // Calculer la durée de cryptage
+                                    TimeSpan duration = end - start;
+                                }
+
                                 // Calculer et rapporter la progression
                                 ReportProgress(backup, copiedBytes, totalBytes);
                             }
                         }
                     }
-
-                    // Vérifie si le fichier a une extension qui nécessite un cryptage
-                    if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
-                    {
-                        // Enregistrer l'heure de début
-                        DateTime start = DateTime.Now;
-
-                        // Lance le processus de cryptage sur les fichiers avec l'extension
-                        ProcessStartInfo cryptosoft = new ProcessStartInfo(cryptSoftExecutablePath);
-                        cryptosoft.Arguments = "source " + file.FullName + " destination " + targetFilePath;
-                        var proc = Process.Start(cryptosoft);
-                        proc.WaitForExit();
-
-                        // Enregistrer l'heure de fin
-                        DateTime end = DateTime.Now;
-
-                        // Calculer la durée de cryptage
-                        TimeSpan duration = end - start;
-                    }
-
-
                     dailylogs.selectedLogger.Information("Copied file " + filePath + " to " + targetFilePath);
                         
                         /*// Sinon, copie simplement le fichier vers la destination
@@ -389,28 +387,29 @@ namespace EasySaveV2.MVVM.ViewModels
                                         destinationStream.Write(buffer, 0, bytesRead);
                                         copiedBytes += bytesRead;
 
+                                        // Vérifie si le fichier a une extension qui nécessite un cryptage
+                                        if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
+                                        {
+                                            // Enregistrer l'heure de début
+                                            DateTime start = DateTime.Now;
+
+                                            // Lance le processus de cryptage sur les fichiers avec l'extension
+                                            ProcessStartInfo cryptosoft = new ProcessStartInfo(cryptSoftExecutablePath);
+                                            cryptosoft.Arguments = "source " + file.FullName + " destination " + targetFilePath;
+                                            var proc = Process.Start(cryptosoft);
+                                            proc.WaitForExit();
+
+                                            // Enregistrer l'heure de fin
+                                            DateTime end = DateTime.Now;
+
+                                            // Calculer la durée de cryptage
+                                            TimeSpan duration = end - start;
+                                        }
+
                                         // Calculer et rapporter la progression
                                         ReportProgress(backup, copiedBytes, totalBytes);
                                     }
                                 }
-                            }
-                            // Vérifie si le fichier a une extension qui nécessite un cryptage
-                            if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
-                            {
-                                // Enregistrer l'heure de début
-                                DateTime start = DateTime.Now;
-
-                                // Lance le processus de cryptage sur les fichiers avec l'extension
-                                ProcessStartInfo cryptosoft = new ProcessStartInfo(cryptSoftExecutablePath);
-                                cryptosoft.Arguments = "source " + file.FullName + " destination " + targetFilePath;
-                                var proc = Process.Start(cryptosoft);
-                                proc.WaitForExit();
-
-                                // Enregistrer l'heure de fin
-                                DateTime end = DateTime.Now;
-
-                                // Calculer la durée de cryptage
-                                TimeSpan duration = end - start;
                             }
                         }
                     }
@@ -431,28 +430,29 @@ namespace EasySaveV2.MVVM.ViewModels
                                     destinationStream.Write(buffer, 0, bytesRead);
                                     copiedBytes += bytesRead;
 
+                                    // Vérifie si le fichier a une extension qui nécessite un cryptage
+                                    if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
+                                    {
+                                        // Enregistrer l'heure de début
+                                        DateTime start = DateTime.Now;
+
+                                        // Lance le processus de cryptage sur les fichiers avec l'extension
+                                        ProcessStartInfo cryptosoft = new ProcessStartInfo(cryptSoftExecutablePath);
+                                        cryptosoft.Arguments = "source " + file.FullName + " destination " + targetFilePath;
+                                        var proc = Process.Start(cryptosoft);
+                                        proc.WaitForExit();
+
+                                        // Enregistrer l'heure de fin
+                                        DateTime end = DateTime.Now;
+
+                                        // Calculer la durée de cryptage
+                                        TimeSpan duration = end - start;
+                                    }
+
                                     // Calculer et rapporter la progression
                                     ReportProgress(backup, copiedBytes, totalBytes);
                                 }
                             }
-                        }
-                        // Vérifie si le fichier a une extension qui nécessite un cryptage
-                        if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
-                        {
-                            // Enregistrer l'heure de début
-                            DateTime start = DateTime.Now;
-
-                            // Lance le processus de cryptage sur les fichiers avec l'extension
-                            ProcessStartInfo cryptosoft = new ProcessStartInfo(cryptSoftExecutablePath);
-                            cryptosoft.Arguments = "source " + file.FullName + " destination " + targetFilePath;
-                            var proc = Process.Start(cryptosoft);
-                            proc.WaitForExit();
-
-                            // Enregistrer l'heure de fin
-                            DateTime end = DateTime.Now;
-
-                            // Calculer la durée de cryptage
-                            TimeSpan duration = end - start;
                         }
                     }
                 }
