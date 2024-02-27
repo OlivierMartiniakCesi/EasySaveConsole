@@ -33,7 +33,7 @@ namespace EasySaveV2.MVVM.ViewModels
         {
             foreach (Backup backup in BackupList)
             {
-                serverViewModels.receiveBackupInfo(backup.getName(), backup.getSourceDirectory(), backup.getTargetDirectory(), backup.getType());
+               serverViewModels.receiveBackupInfo(backup.getName(), backup.getSourceDirectory(), backup.getTargetDirectory(), backup.getType());
             }
 
         }
@@ -73,7 +73,7 @@ namespace EasySaveV2.MVVM.ViewModels
                                     }
                                 });
                         }
-
+                        serverViewModels.receiveBackupInfo(backup.getName(), backup.getSourceDirectory(), backup.getTargetDirectory(), backup.getType());
                         if (backup.getType().Equals("Full", StringComparison.OrdinalIgnoreCase) || backup.getType().Equals("Complet", StringComparison.OrdinalIgnoreCase))
                         {
                             TypeComplet(backup);
@@ -226,29 +226,34 @@ namespace EasySaveV2.MVVM.ViewModels
 
                 try
                 {
-                    // Vérifie si le fichier a une extension qui nécessite un cryptage
-                    if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
+                    List<string> sortedFiles = Prioprity(PathSource);
+                    foreach (string path in sortedFiles)
                     {
-                        //Lance le processus de cryptage sur les fichiers avec l'extension
-                        Process cryptProcess = new Process();
-                        string args = $"\"{backup.getSourceDirectory()}\" \"{backup.getTargetDirectory()}\"";
-                        cryptProcess.StartInfo.FileName = cryptSoftExecutablePath;
-                        cryptProcess.StartInfo.Arguments = args;
-                        cryptProcess.Start();
-                        cryptProcess.WaitForExit();
-                    }
-                    else
-                    {
+                        // Vérifie si le fichier a une extension qui nécessite un cryptage
+                        string fileExtension = Path.GetExtension(path);
+                        if (SettingsViewModels.ExtensionCryptoSoft.Contains(fileExtension))
                         {
+                            //Lance le processus de cryptage sur les fichiers avec l'extension
+                            Process cryptProcess = new Process();
+                            string args = $"\"{backup.getSourceDirectory()}\" \"{backup.getTargetDirectory()}\"";
+                            cryptProcess.StartInfo.FileName = cryptSoftExecutablePath;
+                            cryptProcess.StartInfo.Arguments = args;
+                            cryptProcess.Start();
+                            cryptProcess.WaitForExit();
+                        }
+                        else
+                        {
+                            // Obtenez les chemins de fichier source et de destination basés sur le chemin actuel de la boucle foreach
+                            string sourceFilePath = path;
+                            string destinationFilePath = Path.Combine(backup.getTargetDirectory(), Path.GetFileName(path));
+
                             // Lecture et écriture du fichier
-                            using (FileStream sourceStream = File.Open(filePath, FileMode.Open))
+                            using (FileStream sourceStream = File.Open(sourceFilePath, FileMode.Open))
                             {
-                                using (FileStream destinationStream = File.Create(targetFilePath))
+                                using (FileStream destinationStream = File.Create(destinationFilePath))
                                 {
                                     byte[] buffer = new byte[1024];
                                     int bytesRead;
-                                    
-
                                     while ((bytesRead = sourceStream.Read(buffer, 0, buffer.Length)) > 0)
                                     {
                                         destinationStream.Write(buffer, 0, bytesRead);
@@ -260,21 +265,8 @@ namespace EasySaveV2.MVVM.ViewModels
                                 }
                             }
 
-                            dailylogs.selectedLogger.Information("Copied file " + filePath + " to " + targetFilePath);
+                            dailylogs.selectedLogger.Information("Copied file " + sourceFilePath + " to " + destinationFilePath);
                         }
-                        /*// Sinon, copie simplement le fichier vers la destination
-                        File.Copy(filePath, filePath.Replace(PathSource, PathTarget), true);
-                        // Mettre à jour les compteurs de progression
-                        Interlocked.Add(ref copiedBytes, new FileInfo(filePath).Length);
-                        double progressPercentage = (double)copiedBytes / totalBytes * 100;
-                        dailylogs.selectedLogger.Information("Copied file " + filePath + " to " + targetFilePath);
-                        long fileSize = new FileInfo(filePath).Length;
-                        if (copiedBytes % 1 == 0)
-                        {
-                            ReportProgress(backup, copiedBytes, totalBytes);
-                        }
-                        Interlocked.Add(ref copiedBytes, fileSize);
-                        ReportProgress(backup, copiedBytes, totalBytes);*/
                     }
                 }
                 finally
@@ -293,6 +285,45 @@ namespace EasySaveV2.MVVM.ViewModels
                     dailylogs.selectedLogger.Information("Deleted file " + targetFile + " from destination as it no longer exists in source.");
                 }
             }
+        }
+
+        public static List<string> Prioprity(string source)
+        {
+            DirectoryInfo dir = new DirectoryInfo(source);
+            List<FileInfo> listToSort = GetFiles(source);
+
+            List<string> prioprity = new List<string>();
+
+            foreach (FileInfo file in listToSort)
+            {
+                if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
+                {
+                    prioprity.Add(file.FullName.Substring(dir.FullName.Length + 1));
+                }
+            }
+
+            return prioprity;
+        }
+
+        public static List<FileInfo> GetFiles(string src)
+        {
+            List<FileInfo> Files = new List<FileInfo>();
+            DirectoryInfo directory = new DirectoryInfo(src);
+
+            // Ajouter les fichiers du répertoire actuel
+            foreach (FileInfo file in directory.GetFiles())
+            {
+                Files.Add(file);
+            }
+
+            // Parcourir les sous-répertoires récursivement
+            DirectoryInfo[] subDirectories = directory.GetDirectories();
+            foreach (DirectoryInfo subDir in subDirectories)
+            {
+                Files.AddRange(GetFiles(subDir.FullName));
+            }
+
+            return Files;
         }
 
         public static void TypeDifferential(Backup backup)
