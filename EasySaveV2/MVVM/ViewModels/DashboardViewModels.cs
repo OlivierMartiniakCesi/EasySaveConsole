@@ -49,6 +49,7 @@ namespace EasySaveV2.MVVM.ViewModels
                     {
                         backup.setState("On");
                         backup.setStopped("False");
+                        backup.States = "NoPaused";
                         // Check if the backup is paused
                         if (!canBeExecuted)
                         {
@@ -147,6 +148,7 @@ namespace EasySaveV2.MVVM.ViewModels
                 backup.setStopped("True");
                 backup.States = "Stop";
                 dailylogs.selectedLogger.Information($"Backup {backup.getName()} arrêté");
+                backup.Progress = 0;
             }
         }
         private static long CalculateTotalBytes(string directory)
