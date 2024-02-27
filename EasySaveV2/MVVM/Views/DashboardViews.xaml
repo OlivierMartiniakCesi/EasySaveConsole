@@ -100,6 +100,13 @@
                                     <ProgressBar x:Name="progressBar" Height="10" HorizontalAlignment="Left" Margin="50,43,0,0" VerticalAlignment="Top" Width="475" Visibility="Visible" Value="{Binding Progress}">
                                         <ProgressBar.Style>
                                             <Style TargetType="ProgressBar">
+                                                <Style.Triggers>
+                                                    <!-- Déclencheur pour changer la couleur de la ProgressBar lorsque la sauvegarde est en pause -->
+                                                    <DataTrigger Binding="{Binding States}" Value="Paused">
+                                                        <Setter Property="Foreground" Value="Orange" />
+                                                    </DataTrigger>
+                                                    <!-- Autres déclencheurs si nécessaire -->
+                                                </Style.Triggers>
                                                 <Setter Property="Foreground" Value="Green"/>
                                                 <!-- Change la couleur de la barre de progression -->
                                                 <Setter Property="Background" Value="LightGray"/>

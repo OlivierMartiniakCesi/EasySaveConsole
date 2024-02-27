@@ -126,6 +126,7 @@ namespace EasySaveV2.MVVM.ViewModels
         public static void ContinueLauch(Backup backup)
         {
             backup.setState("On");
+            backup.States = "NoPaused";
             dailylogs.selectedLogger.Information($"Backup {backup.getName()} reprend son exécution");
         }
 
@@ -134,6 +135,7 @@ namespace EasySaveV2.MVVM.ViewModels
             if (backup.getState() == "On")
             {
                 backup.setState("Off");
+                backup.States = "Paused";
                 dailylogs.selectedLogger.Information($"Backup {backup.getName()} en pause");
             }
         }
@@ -143,6 +145,7 @@ namespace EasySaveV2.MVVM.ViewModels
             if (backup.getState() == "On")
             {
                 backup.setStopped("True");
+                backup.States = "Stop";
                 dailylogs.selectedLogger.Information($"Backup {backup.getName()} arrêté");
             }
         }
