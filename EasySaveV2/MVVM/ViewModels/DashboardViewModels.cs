@@ -223,7 +223,7 @@ namespace EasySaveV2.MVVM.ViewModels
                     dailylogs.selectedLogger.Information("Backup " + backup.getName() + " execution stopped");
                     return;
                 }
-                string cryptSoftExecutablePath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + @"\CryptSoft\bin\Debug\net5.0\CryptSoft.exe";
+                string cryptSoftExecutablePath = @"C:\Users\olivi\source\repos\EasySaveConsole\CryptSoft\bin\Debug\net5.0\CryptSoft.exe";
                 FileInfo file = new FileInfo(filePath);
                 string targetFilePath = Path.Combine(backup.getTargetDirectory(), filePath.Substring(backup.getSourceDirectory().Length + 1));
 
@@ -240,31 +240,30 @@ namespace EasySaveV2.MVVM.ViewModels
                         cryptProcess.Start();
                         cryptProcess.WaitForExit();
                     }
-                    else
+                    
+                        
+                    // Lecture et écriture du fichier
+                    using (FileStream sourceStream = File.Open(filePath, FileMode.Open))
                     {
+                        using (FileStream destinationStream = File.Create(targetFilePath))
                         {
-                            // Lecture et écriture du fichier
-                            using (FileStream sourceStream = File.Open(filePath, FileMode.Open))
+                            byte[] buffer = new byte[1024];
+                            int bytesRead;
+
+
+                            while ((bytesRead = sourceStream.Read(buffer, 0, buffer.Length)) > 0)
                             {
-                                using (FileStream destinationStream = File.Create(targetFilePath))
-                                {
-                                    byte[] buffer = new byte[1024];
-                                    int bytesRead;
+                                destinationStream.Write(buffer, 0, bytesRead);
+                                copiedBytes += bytesRead;
 
-
-                                    while ((bytesRead = sourceStream.Read(buffer, 0, buffer.Length)) > 0)
-                                    {
-                                        destinationStream.Write(buffer, 0, bytesRead);
-                                        copiedBytes += bytesRead;
-
-                                        // Calculer et rapporter la progression
-                                        ReportProgress(backup, copiedBytes, totalBytes);
-                                    }
-                                }
+                                // Calculer et rapporter la progression
+                                ReportProgress(backup, copiedBytes, totalBytes);
                             }
-
-                            dailylogs.selectedLogger.Information("Copied file " + filePath + " to " + targetFilePath);
                         }
+                    }
+
+                    dailylogs.selectedLogger.Information("Copied file " + filePath + " to " + targetFilePath);
+                        
                         /*// Sinon, copie simplement le fichier vers la destination
                         File.Copy(filePath, filePath.Replace(PathSource, PathTarget), true);
                         // Mettre à jour les compteurs de progression
@@ -278,8 +277,8 @@ namespace EasySaveV2.MVVM.ViewModels
                         }
                         Interlocked.Add(ref copiedBytes, fileSize);
                         ReportProgress(backup, copiedBytes, totalBytes);*/
-                    }
                 }
+
                 finally
                 {
                 }
