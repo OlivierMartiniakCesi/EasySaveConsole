@@ -1,92 +1,77 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
 
 namespace CryptSoft
 {
     public class Program
     {
-        private const string SourceDirectoryArg = "file.FullName";
-        private const string TargetDirectoryArg = "targetFilePath";
         private const int KeyLength = 8;
 
         static int Main(string[] args)
         {
-            if (args.Length % 2 != 0)
+            int argsSize = args.Length;
+            string src = "";
+            string dst = "";
+
+            for (int i = 0; i < argsSize; i++)
             {
-                Console.WriteLine("Invalid number of arguments");
-                return -1;
-            }
-
-            string source = "";
-            string destination = "";
-
-            for (int i = 0; i < args.Length; i += 2)
-            {
-                string argName = args[i];
-                string argValue = args[i + 1];
-
-                switch (argName)
+                if (args[i] == "source" && i + 1 < argsSize)
                 {
-                    case SourceDirectoryArg:
-                        source = argValue;
-                        break;
-                    case TargetDirectoryArg:
-                        destination = argValue;
-                        break;
-                    default:
-                        Console.WriteLine($"Unknown argument: {argName}");
-                        return -1;
+                    src = args[i + 1];
+                    i++;
+                }
+                else if (args[i] == "destination" && i + 1 < argsSize)
+                {
+                    dst = args[i + 1];
+                    i++;
                 }
             }
 
-            if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(destination))
+            if (src.Length == 0 || dst.Length == 0)
             {
                 Console.WriteLine("Missing arguments");
                 return -1;
             }
-
-            if (!File.Exists(source))
+            else if (!File.Exists(src))
             {
                 Console.WriteLine("Source file doesn't exist.");
                 return -1;
             }
 
+
             try
             {
                 DateTime startTimeFile = DateTime.Now;
 
-                byte[] byteToEncrypt = File.ReadAllBytes(source);
-                byte[] byteCrypted = Encrypt(byteToEncrypt);
+                byte[] byteToEncrypt = File.ReadAllBytes(src);
+                BitArray bitToEncrypt = new BitArray(byteToEncrypt);
 
-                File.WriteAllBytes(destination, byteCrypted);
+                byte[] byteKey = new byte[8] { 12, 255, 102, 147, 8, 52, 157, 235 };
+                BitArray bitKey = new BitArray(byteKey);
 
+                byte[] byteCrypted = new byte[byteToEncrypt.Length];
+                BitArray bitCrypted = new BitArray(bitToEncrypt.Length);
+
+                int j = 0;
+
+                for (int i = 0; i < bitToEncrypt.Length; i++)
+                {
+                    j = i % byteKey.Length;
+                    bitCrypted[i] = bitToEncrypt[i] ^ bitKey[j];
+                }
+
+                bitCrypted.CopyTo(byteCrypted, 0);
+
+                File.WriteAllBytes(dst, byteCrypted);
                 TimeSpan cryptTime = DateTime.Now - startTimeFile;
-                Console.WriteLine($"Encryption successful. Time taken: {cryptTime.TotalMilliseconds} ms");
-                return 0;
+                return (int)cryptTime.TotalMilliseconds;
             }
-            catch (IOException ex)
+            catch
             {
-                Console.WriteLine($"Error accessing file: {ex.Message}");
+                Console.WriteLine("Cannot crypt this file.");
+                return -1;
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"An error occurred: {ex.Message}");
-            }
-
-            return -1;
-        }
-
-        private static byte[] Encrypt(byte[] data)
-        {
-            byte[] byteKey = new byte[KeyLength] { 12, 200, 100, 100, 5, 20, 100, 100 };
-            byte[] byteCrypted = new byte[data.Length];
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                byteCrypted[i] = (byte)(data[i] ^ byteKey[i % KeyLength]);
-            }
-
-            return byteCrypted;
         }
     }
 }
