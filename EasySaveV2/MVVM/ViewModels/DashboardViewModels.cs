@@ -226,7 +226,7 @@ namespace EasySaveV2.MVVM.ViewModels
 
                 try
                 {
-                    List<string> sortedFiles = Prioprity(PathSource);
+                    List<string> sortedFiles = Priority(PathSource);
                     foreach (string path in sortedFiles)
                     {
                         // Vérifie si le fichier a une extension qui nécessite un cryptage
@@ -285,45 +285,6 @@ namespace EasySaveV2.MVVM.ViewModels
                     dailylogs.selectedLogger.Information("Deleted file " + targetFile + " from destination as it no longer exists in source.");
                 }
             }
-        }
-
-        public static List<string> Prioprity(string source)
-        {
-            DirectoryInfo dir = new DirectoryInfo(source);
-            List<FileInfo> listToSort = GetFiles(source);
-
-            List<string> prioprity = new List<string>();
-
-            foreach (FileInfo file in listToSort)
-            {
-                if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
-                {
-                    prioprity.Add(file.FullName.Substring(dir.FullName.Length + 1));
-                }
-            }
-
-            return prioprity;
-        }
-
-        public static List<FileInfo> GetFiles(string src)
-        {
-            List<FileInfo> Files = new List<FileInfo>();
-            DirectoryInfo directory = new DirectoryInfo(src);
-
-            // Ajouter les fichiers du répertoire actuel
-            foreach (FileInfo file in directory.GetFiles())
-            {
-                Files.Add(file);
-            }
-
-            // Parcourir les sous-répertoires récursivement
-            DirectoryInfo[] subDirectories = directory.GetDirectories();
-            foreach (DirectoryInfo subDir in subDirectories)
-            {
-                Files.AddRange(GetFiles(subDir.FullName));
-            }
-
-            return Files;
         }
 
         public static void TypeDifferential(Backup backup)
