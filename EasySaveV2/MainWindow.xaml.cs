@@ -18,6 +18,7 @@ using EasySaveV2.MVVM.Models;
 using System.Collections.ObjectModel;
 using Serilog;
 using System.Windows.Threading;
+using System.Threading;
 
 namespace EasySaveV2
 {
@@ -26,13 +27,22 @@ namespace EasySaveV2
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static Mutex mutex = new Mutex(true, "{123456789 - ABCD - EFEG - XXXX}");
         ServerViewModels serverViewModels = new ServerViewModels();
         BackupViewModels backupViewModels = new BackupViewModels();
         public MainWindow()
         {
             InitializeComponent();
-            serverViewModels.start();
-            serverViewModels.AcceptSocket();
+            if (!mutex.WaitOne(TimeSpan.Zero, true))
+            {
+                MessageBox.Show("Une autre instance de l'application est déjà en cours d'exécution.");
+                Close();
+            }
+            else
+            {
+                serverViewModels.start();
+                serverViewModels.AcceptSocket();
+            }
             DispatcherTimer dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler((sender, e) => DashboardViewModels.MonitorProcess((ObservableCollection<Backup>) DashboardViewModels.BackupList));
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
