@@ -527,5 +527,44 @@ namespace EasySaveV2.MVVM.ViewModels
             }
 
         }
+
+        public static List<string> Priority(string source)
+        {
+            DirectoryInfo dir = new DirectoryInfo(source);
+            List<FileInfo> listToSort = GettingFiles(source);
+
+            List<string> prioprity = new List<string>();
+
+            foreach (FileInfo file in listToSort)
+            {
+                if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
+                {
+                    prioprity.Add(file.FullName.Substring(dir.FullName.Length + 1));
+                }
+            }
+
+            return prioprity;
+        }
+
+        public static List<FileInfo> GettingFiles(string src)
+        {
+            List<FileInfo> Files = new List<FileInfo>();
+            DirectoryInfo directory = new DirectoryInfo(src);
+
+            // Ajouter les fichiers du répertoire actuel
+            foreach (FileInfo file in directory.GetFiles())
+            {
+                Files.Add(file);
+            }
+
+            // Parcourir les sous-répertoires récursivement
+            DirectoryInfo[] subDirectories = directory.GetDirectories();
+            foreach (DirectoryInfo subDir in subDirectories)
+            {
+                Files.AddRange(GettingFiles(subDir.FullName));
+            }
+
+            return Files;
+        }
     }
 }

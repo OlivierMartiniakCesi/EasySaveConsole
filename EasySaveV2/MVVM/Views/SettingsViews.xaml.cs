@@ -128,12 +128,10 @@ namespace EasySaveV2.MVVM.Views
 
             if (e.Data.GetDataPresent("myListBoxItem"))
             {
-                // Get the dropped item
                 var droppedItem = e.Data.GetData("myListBoxItem");
 
                 if (droppedItem != null)
                 {
-                    // Determine the index to insert the dropped item
                     int index = -1;
 
                     for (int i = 0; i < listBox.Items.Count; i++)
@@ -157,7 +155,6 @@ namespace EasySaveV2.MVVM.Views
                         index = listBox.Items.Count - 1;
                     }
 
-                    // Update the ViewModel's data source instead of modifying ListBox.Items directly
                     if (droppedItem is string extension && SettingsViewModels.ExtensionCryptoSoft.Contains(extension))
                     {
                         SettingsViewModels.ExtensionCryptoSoft.Remove(extension);
