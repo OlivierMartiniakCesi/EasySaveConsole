@@ -31,7 +31,7 @@ namespace EasySaveV2.MVVM.Views
         {
             InitializeComponent();
             ButtonLanguage.IsChecked = Settings.ToggleButtonState;
-                        myListBox.PreviewMouseLeftButtonDown += ListBox_PreviewMouseLeftButtonDown;
+            myListBox.PreviewMouseLeftButtonDown += ListBox_PreviewMouseLeftButtonDown;
             myListBox.PreviewMouseMove += ListBox_PreviewMouseMove;
         }
 
@@ -71,7 +71,7 @@ namespace EasySaveV2.MVVM.Views
         {
             if (e.Key == Key.Enter)
             {
-                string extension = ExtensionBackupTextBox.Text.Trim();
+                string extension = ExtensionTextBox.Text.Trim();
                 if (!string.IsNullOrEmpty(extension) && extension[0] == '.')
                 {
                     Settings.AddList(extension);
@@ -79,23 +79,30 @@ namespace EasySaveV2.MVVM.Views
             }
         }
 
-        private void ExtensionBackupTextBox_GotFocus(object sender, RoutedEventArgs e)
+
+
+        private string originalText;
+        private void ExtensionTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             TextBox textBox = (TextBox)sender;
-            if (textBox.Text == "Extension")
+            originalText = textBox.Text;
+
+            if (originalText.Contains("Extension"))
             {
                 textBox.Text = "";
             }
         }
 
-        private void ExtensionBackupTextBox_LostFocus(object sender, RoutedEventArgs e)
+        private void ExtensionTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             TextBox textBox = (TextBox)sender;
+
             if (string.IsNullOrWhiteSpace(textBox.Text))
             {
-                textBox.Text = "Extension";
+                textBox.Text = originalText;
             }
         }
+
 
         private void ListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
