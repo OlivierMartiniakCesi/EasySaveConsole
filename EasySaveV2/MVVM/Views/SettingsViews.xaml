@@ -132,25 +132,30 @@
                                           VerticalScrollBarVisibility="Hidden"
                                           HorizontalAlignment="Left">
 
-                            <ListView ItemsSource="{Binding ExtensionCryptoSoft}">
+                            <ListBox x:Name="myListBox"
+                                     AllowDrop="True"
+                                     Drop="ListBox_Drop"
+                                     ItemsSource="{Binding ExtensionCryptoSoft}"
+                                     PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown"
+                                     PreviewMouseMove="ListBox_PreviewMouseMove">
 
-                                <ListView.Template>
+                                <ListBox.Template>
                                     <ControlTemplate>
                                         <Border Style="{DynamicResource BorderedTextBlock}">
                                             <ItemsPresenter/>
                                         </Border>
                                     </ControlTemplate>
-                                </ListView.Template>
+                                </ListBox.Template>
 
-                                <ListView.ItemTemplate>
+                                <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Style="{DynamicResource TextExtension}"
                                                        Width="280"
                                                        Text="{Binding}"/>
                                     </DataTemplate>
-                                </ListView.ItemTemplate>
+                                </ListBox.ItemTemplate>
 
-                            </ListView>
+                            </ListBox>
 
                         </ScrollViewer>
 
