@@ -374,6 +374,7 @@ namespace EasySaveV2.MVVM.ViewModels
                         if (targetFile.LastWriteTime < file.LastWriteTime)
                         {
                             // Lecture et écriture du fichier
+                            // Using pour libérer automatiquement les ressources
                             using (FileStream sourceStream = File.Open(filePath, FileMode.Open))
                             {
                                 using (FileStream destinationStream = File.Create(targetFilePath))
