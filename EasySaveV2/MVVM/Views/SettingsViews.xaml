@@ -279,10 +279,13 @@
             </StackPanel>
 
 
+            
+            
+            
 
             <!--// Stackpanel de droite - Priorité Sauvegarde //-->
 
-            <!--<StackPanel Height="140"
+            <StackPanel Height="140"
                         HorizontalAlignment="Right">
 
                 <Border Style="{StaticResource BorderedTextBlock}"
@@ -297,7 +300,7 @@
                                 TextAlignment="Center"
                                 GotFocus="ExtensionTextBox_GotFocus"
                                 LostFocus="ExtensionTextBox_LostFocus"
-                                KeyDown="AddExtensionEncrypt"/>
+                                KeyDown="AddExtensionPriority"/>
 
                 </Border>
 
@@ -306,7 +309,7 @@
                 <StackPanel Orientation="Horizontal"
                             Width="230">
 
-                    --><!--// Barre de défilemement (scrollbar) //--><!--
+                    <!--// Barre de défilemement (scrollbar) //-->
 
                     <ScrollViewer Height="100"
                                         Width="190"
@@ -316,7 +319,7 @@
                         <ListBox x:Name="myListBox2"
                                      AllowDrop="True"
                                      Drop="ListBox_Drop"
-                                     ItemsSource="{Binding ExtensionCryptoSoft}"
+                                     ItemsSource="{Binding ExtensionPriority}"
                                      PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown"
                                      PreviewMouseMove="ListBox_PreviewMouseMove">
 
@@ -339,12 +342,12 @@
                         </ListBox>
 
                     </ScrollViewer>
-                    
-                    
+
+
 
                     <StackPanel>
 
-                        --><!--// Bouton d'importation du fichier contenant les extensions //--><!--
+                        <!--// Bouton d'importation du fichier contenant les extensions //-->
                         <Button Content="{DynamicResource ImportExt}"
                                 Style="{DynamicResource save}"
                                 FontSize="9"
@@ -354,7 +357,7 @@
                                 Click="ExportButton" />
 
 
-                        --><!--// Bouton d'exportation du fichier contenant les extensions //--><!--
+                        <!--// Bouton d'exportation du fichier contenant les extensions //-->
                         <Button Content="{DynamicResource ExportExt}"
                                 Style="{DynamicResource save}"
                                 FontSize="9"
@@ -367,7 +370,7 @@
 
                 </StackPanel>
 
-            </StackPanel>-->
+            </StackPanel>
 
         </DockPanel>
 

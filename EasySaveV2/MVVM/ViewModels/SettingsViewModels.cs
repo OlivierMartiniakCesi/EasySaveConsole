@@ -21,6 +21,7 @@ namespace EasySaveV2.MVVM.ViewModels
     class SettingsViewModels
     {
         public static ObservableCollection<string> ExtensionCryptoSoft { get; set; } = new ObservableCollection<string>();
+        public static ObservableCollection<string> ExtensionPriority { get; set; } = new ObservableCollection<string>();
         private static dailylogs logs = new dailylogs();
         static bool type;
 
@@ -33,6 +34,11 @@ namespace EasySaveV2.MVVM.ViewModels
         public void AddList(string ext)
         {
             ExtensionCryptoSoft.Add(ext);
+        }
+
+        public void AddListPriority(string ext)
+        {
+            ExtensionPriority.Add(ext);
         }
         public static void typelog()
         {

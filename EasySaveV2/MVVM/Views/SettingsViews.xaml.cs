@@ -79,6 +79,18 @@ namespace EasySaveV2.MVVM.Views
             }
         }
 
+        private void AddExtensionPriority(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                string extension = ExtensionTextBox2.Text.Trim();
+                if (!string.IsNullOrEmpty(extension) && extension[0] == '.')
+                {
+                    Settings.AddListPriority(extension);
+                }
+            }
+        }
+
 
 
         private string originalText;
