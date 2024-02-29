@@ -527,7 +527,7 @@ namespace EasySaveV2.MVVM.ViewModels
 
             foreach (FileInfo file in listToSort)
             {
-                if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
+                if (SettingsViewModels.ExtensionPriority.Contains(file.Extension))
                 {
                     prioprity.Add(file.FullName.Substring(dir.FullName.Length + 1));
                 }

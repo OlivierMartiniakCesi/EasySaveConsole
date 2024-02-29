@@ -202,5 +202,10 @@ namespace EasySaveV2.MVVM.Views
         private void ExportButton(object sender, RoutedEventArgs e)
         {
         }
+
+        private void myListBox2_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }
