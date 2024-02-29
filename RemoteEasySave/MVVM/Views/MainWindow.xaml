@@ -78,6 +78,36 @@
                                                 <TextBlock Text="{Binding Path=DashboardType}" Style="{DynamicResource TextDashBoard}" FontSize="14"/>
                                             </StackPanel>
                                         </StackPanel>
+                                        <ProgressBar x:Name="progressBar" Height="10" HorizontalAlignment="Left" Margin="50,43,0,0" VerticalAlignment="Top" Width="475" Visibility="Visible" Value="{Binding Progress}">
+                                            <ProgressBar.Style>
+                                                <Style TargetType="ProgressBar">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding States}" Value="NoPaused">
+                                                            <Setter Property="Foreground" Value="Green" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding States}" Value="Stop">
+                                                            <Setter Property="Foreground" Value="Red" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding States}" Value="Paused">
+                                                            <Setter Property="Foreground" Value="Orange" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                    <Setter Property="Foreground" Value="Green"/>
+                                                    <Setter Property="Background" Value="LightGray"/>
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="ProgressBar">
+                                                                <Grid x:Name="TemplateRoot" Background="{TemplateBinding Background}">
+                                                                    <Rectangle x:Name="PART_Track" Fill="{TemplateBinding Background}" />
+                                                                    <Rectangle x:Name="PART_Indicator" HorizontalAlignment="Left" Fill="{TemplateBinding Foreground}" />
+                                                                </Grid>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </ProgressBar.Style>
+                                        </ProgressBar>
+                                        <TextBlock Text="{Binding ElementName=progressBar, Path=Value, StringFormat={}{0}%}" HorizontalAlignment="Left" Margin="17,41,0,0" VerticalAlignment="Top" FontSize="12" FontWeight="Bold" FontFamily="Montserrat"/>
                                     </Grid>
                                 </Border>
                             </DataTemplate>
