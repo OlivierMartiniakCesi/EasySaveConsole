@@ -15,16 +15,27 @@ namespace EasySaveV2.MVVM.ViewModels
 {
     class BackupViewModels
     {
+        /**************************************/
+        /* Déclaration des attributs en privé */
+        /**************************************/
         private static ServerViewModels serverViewModels = new ServerViewModels();
         private static XmlDocument doc;
         private static Backup _backup = new Backup();
-        static string directoryPath = @"C:\JSON";
-        static string filePath = @"C:\JSON\confbackup.json";
-        public static ObservableCollection<Backup> BackupListInfo = new ObservableCollection<Backup>();
+        private static string directoryPath = @"C:\JSON";
+        private static string filePath = @"C:\JSON\confbackup.json";
         private static List<StateLog> stateLogList = new List<StateLog>();
-        //private static int totalFilesDone = 0;
 
-        public  ObservableCollection<Backup> getBackupList()
+        /*****************************************/
+        /* Déclaration des attributs en publique */
+        /*****************************************/
+        public static ObservableCollection<Backup> BackupListInfo = new ObservableCollection<Backup>();
+
+        /****************************************/
+        /* Déclaration des méthodes en publique */
+        /****************************************/
+
+        // Méthode pour récupérer tout les sauvegardes
+        public ObservableCollection<Backup> getBackupList()
         {
             return BackupListInfo;
         }
@@ -106,7 +117,7 @@ namespace EasySaveV2.MVVM.ViewModels
                         }
                         else
                         {
-                            //dailylogs.selectedLogger.Information($"Élément de données invalide trouvé.");
+                            dailylogs.selectedLogger.Information($"Élément de données invalide trouvé.");
                         }
                     }
                 }
