@@ -173,11 +173,7 @@ namespace EasySaveV2.MVVM.ViewModels
         {
             long totalBytes = CalculateTotalBytes(backup.getSourceDirectory());
             long copiedBytes = 0;
-            string Name = backup.getName();
-            string PathSource = backup.getSourceDirectory();
-            string PathTarget = backup.getTargetDirectory();
-            string State = backup.getState();
-            string Stopped = backup.getStopped();
+            List<string> entryFiles = Priority(backup.getSourceDirectory());
             // Create all directories sequentially
             foreach (var directory in Directory.GetDirectories(backup.getSourceDirectory(), "*", SearchOption.AllDirectories))
             {
@@ -209,9 +205,9 @@ namespace EasySaveV2.MVVM.ViewModels
                 {
                 }
             }
-
-            foreach (var filePath in Directory.GetFiles(backup.getSourceDirectory(), "*.*", SearchOption.AllDirectories))
+            foreach (var fileName in entryFiles)
             {
+                string filePath = Path.Combine(backup.getSourceDirectory(), fileName);
                 if (!canBeExecuted || (backup.getState() == "Off"))
                 {
                     dailylogs.selectedLogger.Information("Backup " + backup.getName() + " execution paused");
@@ -231,8 +227,6 @@ namespace EasySaveV2.MVVM.ViewModels
 
                 try
                 {
-                    
-                   
                     // Lecture et écriture du fichier
                     using (FileStream sourceStream = File.Open(filePath, FileMode.Open))
                     {
@@ -293,9 +287,10 @@ namespace EasySaveV2.MVVM.ViewModels
                 }
             }
 
+            
+            List<string> sortedFiles = Priority(backup.getTargetDirectory());
             // Supprimer les fichiers de la destination qui n'existent plus dans la source
-            string[] targetFiles = Directory.GetFiles(backup.getTargetDirectory(), "*.*", SearchOption.AllDirectories);
-            foreach (string targetFile in targetFiles)
+            foreach (string targetFile in Directory.GetFiles(backup.getTargetDirectory(), "*.*", SearchOption.AllDirectories))
             {
                 string sourceFile = Path.Combine(backup.getSourceDirectory(), targetFile.Substring(backup.getTargetDirectory().Length + 1));
                 if (!File.Exists(sourceFile))
@@ -524,6 +519,7 @@ namespace EasySaveV2.MVVM.ViewModels
             List<FileInfo> listToSort = GettingFiles(source);
 
             List<string> prioprity = new List<string>();
+            List<string> prioprityniv2 = new List<string>();
 
             foreach (FileInfo file in listToSort)
             {
@@ -531,8 +527,12 @@ namespace EasySaveV2.MVVM.ViewModels
                 {
                     prioprity.Add(file.FullName.Substring(dir.FullName.Length + 1));
                 }
+                else
+                {
+                    prioprityniv2.Add(file.FullName.Substring(dir.FullName.Length + 1));
+                }
             }
-
+            prioprity.AddRange(prioprityniv2);
             return prioprity;
         }
 
