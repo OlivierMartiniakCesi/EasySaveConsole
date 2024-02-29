@@ -19,7 +19,7 @@ namespace EasySaveV2.MVVM.Views
     {
         public BackupViews()
         {
-
+            // Cette méthode est responsable de charger et d'initialiser tous les éléments graphiques
             InitializeComponent();
         }
         private void OpenFileExplorerSource_Click(object sender, RoutedEventArgs e)

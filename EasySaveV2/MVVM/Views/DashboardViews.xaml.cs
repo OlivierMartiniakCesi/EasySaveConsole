@@ -30,6 +30,7 @@ namespace EasySaveV2.MVVM.Views
         private ListBox ListBackupAff;
         public DashboardViews()
         {
+            // Cette méthode est responsable de charger et d'initialiser tous les éléments graphiques
             InitializeComponent();
 
             DataContext = new DashboardViewModels();

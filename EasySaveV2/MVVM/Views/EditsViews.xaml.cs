@@ -29,6 +29,7 @@ namespace EasySaveV2.MVVM.Views
 
         public EditsViews()
         {
+            // Cette méthode est responsable de charger et d'initialiser tous les éléments graphiques
             InitializeComponent();
 
         }

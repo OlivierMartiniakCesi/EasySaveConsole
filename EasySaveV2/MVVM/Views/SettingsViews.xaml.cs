@@ -31,6 +31,7 @@ namespace EasySaveV2.MVVM.Views
         SettingsViewModels Settings = new SettingsViewModels();
         public SettingsViews()
         {
+            // Cette méthode est responsable de charger et d'initialiser tous les éléments graphiques
             InitializeComponent();
             ButtonLanguage.IsChecked = Settings.ToggleButtonState;
             myListBox.PreviewMouseLeftButtonDown += ListBox_PreviewMouseLeftButtonDown;
