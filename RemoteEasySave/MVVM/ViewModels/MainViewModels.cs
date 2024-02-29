@@ -51,6 +51,15 @@ namespace RemoteEasySave.MVVM.ViewModels
         }
         public async Task ReceiveDataFromServer()
         {
+            // Effacer le contenu de BackupList avant de commencer à recevoir des données
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                lock (BackupList)
+                {
+                    BackupList.Clear();
+                }
+            });
+
             while (true)
             {
                 byte[] data = new byte[1024];
@@ -64,15 +73,6 @@ namespace RemoteEasySave.MVVM.ViewModels
                 string stringData = Encoding.UTF8.GetString(data, 0, recv);
                 string[] dataList = stringData.Split('|');
 
-                // Effacer le contenu de BackupList avant d'ajouter de nouveaux éléments
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    lock (BackupList)
-                    {
-                        BackupList.Clear();
-                    }
-                });
-
                 foreach (string item in dataList)
                 {
                     string[] elements = item.Split(',');
@@ -83,18 +83,33 @@ namespace RemoteEasySave.MVVM.ViewModels
                         string destination = elements[2];
                         string type = elements[3];
 
-                        Backup newBackup = new Backup(name, source, destination, type);
+                        // Vérifier si la sauvegarde existe déjà dans BackupList
+                        bool exists = false;
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             lock (BackupList)
                             {
-                                BackupList.Add(newBackup);
+                                exists = BackupList.Any(b => b.getName() == name && b.getSourceDirectory() == source && b.getTargetDirectory() == destination && b.getType() == type);
                             }
                         });
+
+                        // Si la sauvegarde n'existe pas encore, l'ajouter à BackupList
+                        if (!exists)
+                        {
+                            Backup newBackup = new Backup(name, source, destination, type);
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                lock (BackupList)
+                                {
+                                    BackupList.Add(newBackup);
+                                }
+                            });
+                        }
                     }
                 }
             }
         }
+
 
 
 
