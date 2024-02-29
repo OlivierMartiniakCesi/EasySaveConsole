@@ -21,7 +21,9 @@ using EasySaveV2.MVVM.Models;
 namespace EasySaveV2.MVVM.Views
 {
     /// <summary>
-    /// Logique d'interaction pour DashboardViews.xaml
+    /// Logique d'interaction pour DashboardViews.xaml.
+    /// Cette vue représente le tableau de bord de l'application EasySave, où les utilisateurs peuvent voir la liste des sauvegardes, les lancer, les mettre en pause, les arrêter, ou les modifier.
+    /// Les utilisateurs peuvent également sélectionner plusieurs sauvegardes pour effectuer des actions en masse.
     /// </summary>
     public partial class DashboardViews : UserControl
     {

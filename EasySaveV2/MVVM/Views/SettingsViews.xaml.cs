@@ -22,7 +22,9 @@ using Microsoft.Win32;
 namespace EasySaveV2.MVVM.Views
 {
     /// <summary>
-    /// Logique d'interaction pour SettingsViews.xaml
+    /// Vue pour la configuration des paramètres de l'application EasySave.
+    /// Cette vue permet à l'utilisateur de modifier les paramètres tels que la langue, les extensions de fichiers à chiffrer, et les extensions prioritaires.
+    /// Les utilisateurs peuvent également choisir la taille des fichiers à ne pas transfère en simultanée.
     /// </summary>
     public partial class SettingsViews : UserControl
     {

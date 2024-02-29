@@ -20,30 +20,49 @@ namespace EasySaveV2.MVVM.ViewModels
 {
     class SettingsViewModels
     {
+        /*****************************************/
+        /* Déclaration des attributs en publique */
+        /*****************************************/
         public static ObservableCollection<string> ExtensionCryptoSoft { get; set; } = new ObservableCollection<string>();
         public static ObservableCollection<string> ExtensionPriority { get; set; } = new ObservableCollection<string>();
-        private static dailylogs logs = new dailylogs();
-        static bool type;
 
+        /**************************************/
+        /* Déclaration des attributs en privé */
+        /**************************************/
+        private static dailylogs logs = new dailylogs();
+        private static bool type;
+
+        /****************************************/
+        /* Déclaration des méthodes en publique */
+        /****************************************/
+
+        // Méthode pour changer de formation de log
         public static void Formatlog(bool format_logs)
         {
             type = format_logs;
             logs.Logsjson(format_logs);
             dailylogs.selectedLogger.Information("Application started successfully");
         }
+
+        // Méthode pour ajouter une extension dans la liste de cryptage
         public void AddList(string ext)
         {
             ExtensionCryptoSoft.Add(ext);
         }
 
+        // Méthode pour ajouter une extension dans la liste de priorité
         public void AddListPriority(string ext)
         {
             ExtensionPriority.Add(ext);
         }
+
+        // Méthode pour le type de format des logs
         public static void typelog()
         {
             Formatlog(type);
         }
+
+        // Méthode pour changer l'état des states logs
         public static void StateLogs(string name, string fileSource, string fileTarget, long fileSize, string state, int totalFiles, int nbFilesToGet, int crypting)
         {
             StateLog stateLog = new StateLog(name, fileSource, fileTarget, fileSize, state, totalFiles, nbFilesToGet, crypting);
@@ -65,7 +84,7 @@ namespace EasySaveV2.MVVM.ViewModels
 
             List<KeyValuePair<string, StateLog>> stateLogList = new List<KeyValuePair<string, StateLog>>();
 
-            // Check if the file exists and has content
+            // Vérifier si le fichier existe et s'il a un contenu
             if (File.Exists(stateLogListPath))
             {
                 if (!type)
@@ -92,7 +111,7 @@ namespace EasySaveV2.MVVM.ViewModels
                 stateLogList = new List<KeyValuePair<string, StateLog>>();
             }
 
-            // Add or update the entry in the stateLogList
+            // Ajouter ou mettre à jour l'entrée dans la liste des états (stateLogList)
             var existingEntry = stateLogList.FirstOrDefault(entry => entry.Key == name);
 
             if (existingEntry.Equals(default(KeyValuePair<string, StateLog>)))
@@ -104,7 +123,7 @@ namespace EasySaveV2.MVVM.ViewModels
                 stateLogList[stateLogList.IndexOf(existingEntry)] = new KeyValuePair<string, StateLog>(name, stateLog);
             }
 
-            // Write the entire dictionary to the file
+            // Écrire le dictionnaire entier dans le fichier
             if (!type)
             {
                 string jsonToWrite = JsonConvert.SerializeObject(stateLogList, Newtonsoft.Json.Formatting.Indented);
@@ -116,17 +135,17 @@ namespace EasySaveV2.MVVM.ViewModels
 
                 XmlDocument doc = new XmlDocument();
 
-                // Check if the file exists and has content
+                // Vérifier si le fichier existe et s'il a un contenu
                 if (File.Exists(stateLogListPath))
                 {
                     doc.Load(stateLogListPath);
 
-                    // Find existing entry
+                    // Rechercher une entrée existante
                     XmlElement node = (XmlElement)doc.SelectSingleNode($"/ArrayOfKeyValuePairOfStringStateLog/KeyValuePairOfStringStateLog[Name='{name}']");
 
                     if (node != null)
                     {
-                        // Update existing node
+                        // Mise à jour d'un nœud existant
                         node.SelectSingleNode("Name").InnerText = name;
                         node.SelectSingleNode("FileSource").InnerText = fileSource;
                         node.SelectSingleNode("FileTarget").InnerText = fileTarget;
@@ -138,7 +157,7 @@ namespace EasySaveV2.MVVM.ViewModels
                     }
                     else
                     {
-                        // Create new entry
+                        // Créer une nouvelle entrée
                         XmlElement log = doc.CreateElement("KeyValuePairOfStringStateLog");
 
                         XmlElement nameXML = doc.CreateElement("Name");
@@ -175,7 +194,7 @@ namespace EasySaveV2.MVVM.ViewModels
                 }
                 else
                 {
-                    // File doesn't exist, create new XML file
+                    // Le fichier n'existe pas, créer un nouveau fichier XML
                     XmlSerializer serializer = new XmlSerializer(typeof(List<KeyValuePair<string, StateLog>>));
                     using (FileStream fs = new FileStream(stateLogListPath, FileMode.Create))
                     {
@@ -186,20 +205,22 @@ namespace EasySaveV2.MVVM.ViewModels
         }
 
 
-
+        // Méthode pour enregistrer dans les states logs l'état des sauvegardes
         public static void SetSaveStateBackup(string backupName, string src, string dest, int crypting)
         {
             var dir = new DirectoryInfo(src);
-            DirectoryInfo[] dirs = dir.GetDirectories();  // Cache directories before we start copying
+            // Mettre en cache les répertoires avant de commencer à les copier
+            DirectoryInfo[] dirs = dir.GetDirectories();
 
             Directory.CreateDirectory(dest);
 
-            int totalFilesDone = 0;  // Initialize totalFilesDone here
+            // Initialiser ici le totalFilesDone
+            int totalFilesDone = 0;  
 
+            //Récupére chaque information des fichiers pour enregistrer dans les State logs
             foreach (FileInfo file in dir.GetFiles())
             {
                 totalFilesDone++;
-                //file.CopyTo(Path.Combine(dest, file.Name), true);   // Copy the file into the destination directory
                 string fileSrc = Path.Combine(file.DirectoryName, file.Name);
                 string fileDest = Path.Combine(dest, file.Name);
                 int totalFiles = Directory.GetFiles(src, "*", SearchOption.AllDirectories).Length;
@@ -207,16 +228,20 @@ namespace EasySaveV2.MVVM.ViewModels
             }
         }
 
+        // Méthode pour garder la position du button
         public bool ToggleButtonState
         {
             get => bool.Parse(ConfigurationManager.AppSettings["ToggleButtonState"] ?? "false");
             set => ConfigurationManager.AppSettings["ToggleButtonState"] = value.ToString();
         }
 
+        // Méthode pour changer la langue en anglais
         public void TraductorEnglish()
         {
             Application.Current.Resources.MergedDictionaries[0].Source = new Uri("Language/DictionaryEnglish.xaml", UriKind.RelativeOrAbsolute);
         }
+
+        // Méthode pour changer la langue en français
         public void TraductorFrench()
         {
             Application.Current.Resources.MergedDictionaries[0].Source = new Uri("Language/DictionaryFrench.xaml", UriKind.RelativeOrAbsolute);

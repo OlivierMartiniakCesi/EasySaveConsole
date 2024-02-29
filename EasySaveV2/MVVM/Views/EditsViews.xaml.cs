@@ -20,7 +20,9 @@ using Serilog;
 namespace EasySaveV2.MVVM.Views
 {
     /// <summary>
-    /// Logique d'interaction pour EditsViews.xaml
+    /// Logique d'interaction pour EditsViews.xaml.
+    /// Cette vue permet à l'utilisateur de modifier les paramètres d'une sauvegarde existante, tels que le nom de la sauvegarde, le dossier source le dossier de destination et le type.
+    /// Les utilisateurs peuvent sélectionner les dossiers à l'aide de l'explorateur de fichiers intégré et choisir le type de sauvegarde à partir d'une liste de radio boutons et le nom directement par une TextBox.
     /// </summary>
     public partial class EditsViews : UserControl
     {

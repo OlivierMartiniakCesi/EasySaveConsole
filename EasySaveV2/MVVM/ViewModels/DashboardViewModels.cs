@@ -48,25 +48,32 @@ namespace EasySaveV2.MVVM.ViewModels
 
         }
 
+        /***************************************/
+        /* Déclaration des méthode en publique */
+        /***************************************/
+
+        //Méthode pour lancer une ou plusieurs sauvegardes
         public static void LaunchSlotBackup(List<Backup> backupList)
         {
-            // Use Parallel.ForEach to process each backup in a separate thread
+            // Utilisez Parallel.ForEach pour traiter chaque sauvegarde dans un thread séparé.
             Parallel.ForEach(backupList, backup =>
             {
                 {
-                    // Use a separate thread for each backup
+                    // Utiliser un fil de discussion distinct pour chaque sauvegarde
                     Thread backupThread = new Thread(() =>
                     {
                         backup.setState("On");
                         backup.setStopped("False");
                         backup.States = "NoPaused";
-                        // Check if the backup is paused
+                        
+                        // Vérifier si une sauvegarde est en pause
                         if (!canBeExecuted)
                         {
-                            Thread.Sleep(1000); // Wait for 1 second before checking again+promptimpossile
+                            // Attendre 1 seconde avant de vérifier à nouveau+promptimpossile
+                            Thread.Sleep(1000); 
                         }
                         
-                        // Create directory if it doesn't already exist
+                        // Création du répertoire destination
                         if (!Directory.Exists(backup.getTargetDirectory()))
                         {
                             Parallel.ForEach(Directory.GetDirectories(backup.getSourceDirectory(), "*", SearchOption.AllDirectories),
@@ -89,7 +96,11 @@ namespace EasySaveV2.MVVM.ViewModels
                         {
                             // Lancement de la back-up en type complet
                             TypeComplet(backup);
+
+                            // Mise à jour des states logs
                             SettingsViewModels.SetSaveStateBackup(backup.getName(), backup.getSourceDirectory(), backup.getTargetDirectory(), backup.getcrypting());
+
+                            // Sauvegarde en arrêt
                             backup.setState("Off");
 
                         }
@@ -97,7 +108,11 @@ namespace EasySaveV2.MVVM.ViewModels
                         {
                             // Lancement de la back-up en type différentiel
                             TypeDifferential(backup);
+
+                            // Mise à jour des states logs
                             SettingsViewModels.SetSaveStateBackup(backup.getName(), backup.getSourceDirectory(), backup.getTargetDirectory(), backup.getcrypting());
+
+                            // Sauvegarde en arrêt
                             backup.setState("Off");
                         }
                     });
@@ -107,16 +122,17 @@ namespace EasySaveV2.MVVM.ViewModels
             });
 
             Console.WriteLine("All selected backups have been launched.");
-            // Signal that the backup has completed
+            // Signale que la sauvegarde est terminée
             backupCompletedEvent.Set();
         }
 
+        // Méthode pour surveiller l'état de la calculatrice
         public static void MonitorProcess(ObservableCollection<Backup> backupList)
         {
-            // Start the process monitoring thread
+            // Démarrer le fil de surveillance du processus
             Process[] processes = Process.GetProcessesByName("CalculatorApp");
 
-            // check if a software of the list is running
+            // Vérifier si un logiciel de la liste est en cours d'exécution
             if (processes.Length > 0)
             {
                 canBeExecuted = false;
@@ -127,6 +143,7 @@ namespace EasySaveV2.MVVM.ViewModels
             }
         }
 
+        // Méthode pour relancer la sauvegarde
         public static void ContinueLauch(Backup backup)
         {
             backup.setState("On");
@@ -134,6 +151,7 @@ namespace EasySaveV2.MVVM.ViewModels
             dailylogs.selectedLogger.Information($"Backup {backup.getName()} reprend son exécution");
         }
 
+        // Méthode pour mettre en pause la sauvegarde
         public static void PauseLauch(Backup backup)
         {
             if (backup.getState() == "On")
@@ -144,6 +162,7 @@ namespace EasySaveV2.MVVM.ViewModels
             }
         }
 
+        // Méthode pour arrêter la sauvegarde
         public static void StopLauch(Backup backup)
         {
             if (backup.getState() == "On")
@@ -154,6 +173,21 @@ namespace EasySaveV2.MVVM.ViewModels
                 backup.Progress = 0;
             }
         }
+
+        // Méthode pour supprimer une sauvegarde
+        public static void DeleteBackupSetting(Backup backupSettings)
+        {
+            BackupViewModels.BackupListInfo.Remove(backupSettings);
+            backupSettings.Remove();
+            BackupViewModels.SaveBackupSettings();
+            dailylogs.selectedLogger.Information("Backup deleted with success.");
+        }
+
+        /************************************/
+        /* Déclaration des méthode en privé */
+        /************************************/
+
+        // Méthode pour récupérer le nombre de taille d'octet des fichiers
         private static long CalculateTotalBytes(string directory)
         {
             long totalBytes = 0;
@@ -163,6 +197,8 @@ namespace EasySaveV2.MVVM.ViewModels
             }
             return totalBytes;
         }
+
+        // Méthode pour calculer le pourcentage de la progression
         private static void ReportProgress(Backup backup, long copiedBytes, long totalBytes)
         {
             double progressPercentage = (double)copiedBytes / totalBytes * 100;
@@ -172,11 +208,15 @@ namespace EasySaveV2.MVVM.ViewModels
                 Console.WriteLine($"Backup {backup.getName()} Progress: {progressPercentage:F2}%");
             }
         }
-        public static void TypeComplet(Backup backup)
+
+        // Méthode pour le type complet d'une sauvegarde
+        private static void TypeComplet(Backup backup)
         {
+            string cryptSoftExecutablePath = @"C:\Users\olivi\source\repos\EasySaveConsole\CryptSoft\bin\Debug\net5.0\CryptSoft.exe";
             long totalBytes = CalculateTotalBytes(backup.getSourceDirectory());
             long copiedBytes = 0;
             List<string> entryFiles = Priority(backup.getSourceDirectory());
+           
             // Create all directories sequentially
             foreach (var directory in Directory.GetDirectories(backup.getSourceDirectory(), "*", SearchOption.AllDirectories))
             {
@@ -211,6 +251,8 @@ namespace EasySaveV2.MVVM.ViewModels
             foreach (var fileName in entryFiles)
             {
                 string filePath = Path.Combine(backup.getSourceDirectory(), fileName);
+                FileInfo file = new FileInfo(filePath);
+                string targetFilePath = Path.Combine(backup.getTargetDirectory(), filePath.Substring(backup.getSourceDirectory().Length + 1));
                 if (!canBeExecuted || (backup.getState() == "Off"))
                 {
                     dailylogs.selectedLogger.Information("Backup " + backup.getName() + " execution paused");
@@ -224,10 +266,6 @@ namespace EasySaveV2.MVVM.ViewModels
                     dailylogs.selectedLogger.Information("Backup " + backup.getName() + " execution stopped");
                     return;
                 }
-                string cryptSoftExecutablePath = @"C:\Users\olivi\source\repos\EasySaveConsole\CryptSoft\bin\Debug\net5.0\CryptSoft.exe";
-                FileInfo file = new FileInfo(filePath);
-                string targetFilePath = Path.Combine(backup.getTargetDirectory(), filePath.Substring(backup.getSourceDirectory().Length + 1));
-
                 try
                 {
                     // Lecture et écriture du fichier
@@ -300,7 +338,8 @@ namespace EasySaveV2.MVVM.ViewModels
             }
         }
 
-        public static void TypeDifferential(Backup backup)
+        // Méthode pour le type differentiel d'une sauvegarde
+        private static void TypeDifferential(Backup backup)
         {
             long totalBytes = CalculateTotalBytes(backup.getSourceDirectory());
             long copiedBytes = 0;
@@ -492,56 +531,17 @@ namespace EasySaveV2.MVVM.ViewModels
         }
 
 
-        public static void DeleteBackupSetting(Backup backupSettings)
+        //Méthode pour trier les extensions prioritaire
+        private static List<string> Priority(string source)
         {
-            BackupViewModels.BackupListInfo.Remove(backupSettings);
-            backupSettings.Remove();
-            BackupViewModels.SaveBackupSettings();
-            dailylogs.selectedLogger.Information("Backup deleted with success.");
-        }
-
-        private static void CopyFileWithProgress(string sourceFilePath, string destinationFilePath)
-        {
-            using (FileStream sourceStream = File.Open(sourceFilePath, FileMode.Open))
-            {
-                using (FileStream destinationStream = File.Create(destinationFilePath))
-                {
-                    byte[] buffer = new byte[1024];
-                    int bytesRead;
-                    long totalBytes = new FileInfo(sourceFilePath).Length;
-                    long copiedBytes = 0;
-                    int lastProgressPercentage = 0;
-
-                    while ((bytesRead = sourceStream.Read(buffer, 0, buffer.Length)) > 0)
-                    {
-                        destinationStream.Write(buffer, 0, bytesRead);
-                        copiedBytes += bytesRead;
-
-                        // Calculer la progression
-                        int progressPercentage = (int)((double)copiedBytes / totalBytes * 100);
-
-                        /*if (progressPercentage != lastProgressPercentage)
-                        {
-                            // Afficher la progression uniquement si elle a changé
-                            Console.SetCursorPosition(0, Console.CursorTop);
-                            Console.Write($"Copy progress: {progressPercentage}%");
-                            lastProgressPercentage = progressPercentage;
-                        }*/
-                    }
-                    Console.WriteLine(); // Nouvelle ligne après la copie complète
-                }
-            }
-
-        }
-
-        public static List<string> Priority(string source)
-        {
+            //Récupérer les informations des repertoires et des fichiers
             DirectoryInfo dir = new DirectoryInfo(source);
             List<FileInfo> listToSort = GettingFiles(source);
 
             List<string> prioprity = new List<string>();
             List<string> prioprityniv2 = new List<string>();
 
+            // Tri les extensions selon le niveau de priorité
             foreach (FileInfo file in listToSort)
             {
                 if (SettingsViewModels.ExtensionPriority.Contains(file.Extension))
@@ -557,8 +557,10 @@ namespace EasySaveV2.MVVM.ViewModels
             return prioprity;
         }
 
-        public static List<FileInfo> GettingFiles(string src)
+        // Méthode pour récupérer les fichiers
+        private static List<FileInfo> GettingFiles(string src)
         {
+            //Récupérer les informations des fichiers
             List<FileInfo> Files = new List<FileInfo>();
             DirectoryInfo directory = new DirectoryInfo(src);
 

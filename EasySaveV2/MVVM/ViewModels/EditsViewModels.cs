@@ -14,12 +14,25 @@ namespace EasySaveV2.MVVM.ViewModels
 {
     class EditsViewModels
     {
+        /*****************************************/
+        /* Déclaration des attributs en publique */
+        /*****************************************/
         public static Backup EditorBackup { get; set; } = new Backup();
+
+        /*********************************/
+        /* Déclaration des constructeurs */
+        /*********************************/
         public EditsViewModels(Backup SelectBackup)
         {
             EditorBackup = SelectBackup;
         }
 
+
+        /****************************************/
+        /* Déclaration des méthodes en publique */
+        /****************************************/
+
+        // Méthode pour modifier les paramètres du JSON
         public static void SaveBackupSettings(string name, string source, string destination, string type)
         {
             string filePath = @"C:\JSON\confbackup.json";
@@ -29,6 +42,7 @@ namespace EasySaveV2.MVVM.ViewModels
                 int backupIndex = BackupViewModels.BackupListInfo.IndexOf(EditorBackup);
                 string jsonText = "[";
 
+                // Modifie les paramètres
                 BackupViewModels.BackupListInfo[backupIndex].setName(name);
                 BackupViewModels.BackupListInfo[backupIndex].setSourceDirectory(source);
                 BackupViewModels.BackupListInfo[backupIndex].setTargetDirectory(destination);
@@ -38,10 +52,11 @@ namespace EasySaveV2.MVVM.ViewModels
                 {
                     jsonText += item.SaveJson() + ",";
                 }
-
-                jsonText = jsonText.TrimEnd(',') + "]"; // Remove trailing comma and add closing bracket
+                //Supprime la dernière virgule et ferme le JSON
+                jsonText = jsonText.TrimEnd(',') + "]";
                 try
                 {
+                    //Ecrit les paramètres dans le JSON
                     File.WriteAllText(filePath, jsonText);
                 }
                 catch (Exception ex)
