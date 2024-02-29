@@ -40,16 +40,23 @@ namespace EasySaveV2.MVVM.ViewModels
             return BackupListInfo;
         }
 
+        // Méthode pour créér une sauvegarde dans le tableau de bord
         public static void CreateSlotBackup(string name, string sourcePath, string destinationPath, string type)
         {
-            serverViewModels.receiveBackupInfo( name,  sourcePath,  destinationPath,  type);
+            //Vérifie si la direction destination existe
             if (!Directory.Exists(directoryPath))
             {
                 Directory.CreateDirectory(directoryPath);
             }
+
+            // Ajoute dans la liste une sauvegardes avec ses paramètres
             BackupListInfo.Add(_backup.CreateBackup(name, sourcePath, destinationPath, type, "Off", "False", 0));
+            
+            serverViewModels.receiveBackupInfo(name, sourcePath, destinationPath, type);
             SaveBackupSettings();
         }
+
+        // Méthode pour enregistrer les paramètres dans un JSON
         public static void SaveBackupSettings()
         {
             if (BackupListInfo != null && BackupListInfo.Count >= 0)
@@ -61,10 +68,12 @@ namespace EasySaveV2.MVVM.ViewModels
                     jsonText += item.SaveJson() + ",";
                 }
 
-                jsonText = jsonText.TrimEnd(',') + "]"; // Remove trailing comma and add closing bracket
+                // Supprimer la dernière ',' et fermer le JSON
+                jsonText = jsonText.TrimEnd(',') + "]"; 
 
                 try
                 {
+                    // Ecrire dans le fichier JSON
                     File.WriteAllText(filePath, jsonText);
                 }
                 catch (Exception ex)
@@ -77,6 +86,8 @@ namespace EasySaveV2.MVVM.ViewModels
                 //Console.WriteLine(GetTraductor("NoSave"));
             }
         }
+
+        // Méthode pour copier coller les éléments du JSON
         public static void GetJSON()
         {
             if (File.Exists(filePath))

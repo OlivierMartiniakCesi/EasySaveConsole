@@ -23,13 +23,22 @@ namespace EasySaveV2.MVVM.ViewModels
 {
     class DashboardViewModels
     {
-        public static ObservableCollection<Backup> BackupList { get; set; } = BackupViewModels.BackupListInfo;
+        /**************************************/
+        /* Déclaration des attributs en privé */
+        /**************************************/
         private static ServerViewModels serverViewModels = new ServerViewModels();
-
         private static ManualResetEventSlim backupCompletedEvent = new ManualResetEventSlim(false);
         private static bool canBeExecuted = true;
         private static int durationInSeconds;
 
+        /**************************************/
+        /* Déclaration des attributs en public */
+        /**************************************/
+        public static ObservableCollection<Backup> BackupList { get; set; } = BackupViewModels.BackupListInfo;
+
+        /*********************************/
+        /* Déclaration d'un constructeur */
+        /*********************************/
         public DashboardViewModels()
         {
             foreach (Backup backup in BackupList)
