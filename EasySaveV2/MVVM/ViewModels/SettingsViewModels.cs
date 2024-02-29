@@ -187,7 +187,7 @@ namespace EasySaveV2.MVVM.ViewModels
 
 
 
-        public static void SetSaveStateBackup(string backupName, string src, string dest)
+        public static void SetSaveStateBackup(string backupName, string src, string dest, int crypting)
         {
             var dir = new DirectoryInfo(src);
             DirectoryInfo[] dirs = dir.GetDirectories();  // Cache directories before we start copying
@@ -203,7 +203,7 @@ namespace EasySaveV2.MVVM.ViewModels
                 string fileSrc = Path.Combine(file.DirectoryName, file.Name);
                 string fileDest = Path.Combine(dest, file.Name);
                 int totalFiles = Directory.GetFiles(src, "*", SearchOption.AllDirectories).Length;
-                StateLogs(backupName, fileSrc, fileDest, file.Length, "On", totalFiles, totalFilesDone, 0);
+                StateLogs(backupName, fileSrc, fileDest, file.Length, "On", totalFiles, totalFilesDone, crypting);
             }
         }
 

@@ -36,7 +36,7 @@ namespace EasySaveV2.MVVM.ViewModels
             {
                 Directory.CreateDirectory(directoryPath);
             }
-            BackupListInfo.Add(_backup.CreateBackup(name, sourcePath, destinationPath, type, "Off", "False"));
+            BackupListInfo.Add(_backup.CreateBackup(name, sourcePath, destinationPath, type, "Off", "False", 0));
             SaveBackupSettings();
         }
         public static void SaveBackupSettings()
@@ -92,7 +92,8 @@ namespace EasySaveV2.MVVM.ViewModels
                                 item["Target"].ToString(),
                                 item["Type"].ToString(),
                                 item["State"].ToString(),
-                                item["Stopped"].ToString()
+                                item["Stopped"].ToString(),
+                                Convert.ToInt32(item["Crypting"])
                             );
                             try
                             {

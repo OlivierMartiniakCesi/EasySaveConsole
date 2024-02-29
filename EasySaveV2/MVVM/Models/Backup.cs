@@ -17,12 +17,13 @@ namespace EasySaveV2.MVVM.Models
         private string Type { get; set; }
         private string State { get; set; }
         private string Stopped { get; set; }
+        private int? crypting { get; set; }
 
         //Constructor
         public Backup() { }
 
         //Constructor with parameter
-        public Backup(string Name, string PathSource, string PathTarget, string type, string State, string Stopped)
+        public Backup(string Name, string PathSource, string PathTarget, string type, string State, string Stopped, int? crypting)
         {
             this.Name = Name;
             this.SourceDirectory = PathSource;
@@ -30,6 +31,7 @@ namespace EasySaveV2.MVVM.Models
             this.Type = type;
             this.State = State;
             this.Stopped = Stopped;
+            this.crypting = crypting;
         }
         private int progress;
 
@@ -167,15 +169,25 @@ namespace EasySaveV2.MVVM.Models
             this.Stopped = Stopped;
         }
 
+        public int getcrypting()
+        {
+            return (int) crypting;
+        }
+
+        public void setCrypt(int crypting)
+        {
+            this.crypting = crypting;
+        }
+
         public string getAllInfo()
         {
             string Information = "Name : " + Name + "\tSource directory : " + SourceDirectory + "\tTarget directory : " + TargetDirectory + "\tType : " + Type;
             return Information;
         }
 
-        public Backup CreateBackup(string Name, string PathSource, string PathTarget, string type, string State, string Stopped)
+        public Backup CreateBackup(string Name, string PathSource, string PathTarget, string type, string State, string Stopped, int crypting)
         {
-            return new Backup(Name, PathSource, PathTarget, type, State, Stopped);
+            return new Backup(Name, PathSource, PathTarget, type, State, Stopped, crypting);
         }
 
         public string SaveJson()
@@ -187,6 +199,7 @@ namespace EasySaveV2.MVVM.Models
              Environment.NewLine + "\t\"Type\":\"" + Type + "\"," +
              Environment.NewLine + "\t\"State\":\"" + State + "\"," +
              Environment.NewLine + "\t\"Stopped\":\"" + Stopped + "\""+
+             Environment.NewLine + "\t\"Crypting\":\"" + crypting + "\"" +
              Environment.NewLine + "}";
 
             return FileStock.Replace("\\", "\\\\");
@@ -200,6 +213,7 @@ namespace EasySaveV2.MVVM.Models
             this.Type = null;
             this.State = null;
             this.Stopped = null;
+            this.crypting = null;
 
             GC.Collect();
         }

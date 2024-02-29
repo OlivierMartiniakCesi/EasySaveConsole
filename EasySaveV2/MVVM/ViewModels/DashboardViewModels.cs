@@ -28,6 +28,7 @@ namespace EasySaveV2.MVVM.ViewModels
 
         private static ManualResetEventSlim backupCompletedEvent = new ManualResetEventSlim(false);
         private static bool canBeExecuted = true;
+        private static int durationInSeconds;
 
         public DashboardViewModels()
         {
@@ -78,6 +79,7 @@ namespace EasySaveV2.MVVM.ViewModels
                         if (backup.getType().Equals("Full", StringComparison.OrdinalIgnoreCase) || backup.getType().Equals("Complet", StringComparison.OrdinalIgnoreCase))
                         {
                             TypeComplet(backup);
+                            SettingsViewModels.SetSaveStateBackup(backup.getName(), backup.getSourceDirectory(), backup.getTargetDirectory(), backup.getcrypting());
                             backup.setState("Off");
 
                         }
@@ -91,10 +93,6 @@ namespace EasySaveV2.MVVM.ViewModels
 
                 }
             });
-            foreach (var backupSetting in BackupViewModels.BackupListInfo)
-            {
-                SettingsViewModels.SetSaveStateBackup(backupSetting.getName(), backupSetting.getSourceDirectory(), backupSetting.getTargetDirectory());
-            }
 
             Console.WriteLine("All selected backups have been launched.");
             // Signal that the backup has completed
@@ -250,14 +248,25 @@ namespace EasySaveV2.MVVM.ViewModels
                                     // Lance le processus de cryptage sur les fichiers avec l'extension
                                     ProcessStartInfo cryptosoft = new ProcessStartInfo(cryptSoftExecutablePath);
                                     cryptosoft.Arguments = "source " + file.FullName + " destination " + targetFilePath;
-                                    var proc = Process.Start(cryptosoft);
-                                    proc.WaitForExit();
 
-                                    // Enregistrer l'heure de fin
-                                    DateTime end = DateTime.Now;
+                                    try
+                                    {
+                                        var proc = Process.Start(cryptosoft);
+                                        proc.WaitForExit();
 
-                                    // Calculer la durée de cryptage
-                                    TimeSpan duration = end - start;
+                                        // Enregistrer l'heure de fin
+                                        DateTime end = DateTime.Now;
+
+                                        // Calculer la durée de cryptage
+                                        TimeSpan duration = end - start;
+                                        durationInSeconds = (int)duration.TotalSeconds;
+
+                                        backup.setCrypt(durationInSeconds);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        backup.setCrypt(0);
+                                    }
                                 }
 
                                 // Calculer et rapporter la progression
@@ -392,14 +401,25 @@ namespace EasySaveV2.MVVM.ViewModels
                                             // Lance le processus de cryptage sur les fichiers avec l'extension
                                             ProcessStartInfo cryptosoft = new ProcessStartInfo(cryptSoftExecutablePath);
                                             cryptosoft.Arguments = "source " + file.FullName + " destination " + targetFilePath;
-                                            var proc = Process.Start(cryptosoft);
-                                            proc.WaitForExit();
 
-                                            // Enregistrer l'heure de fin
-                                            DateTime end = DateTime.Now;
+                                            try
+                                            {
+                                                var proc = Process.Start(cryptosoft);
+                                                proc.WaitForExit();
 
-                                            // Calculer la durée de cryptage
-                                            TimeSpan duration = end - start;
+                                                // Enregistrer l'heure de fin
+                                                DateTime end = DateTime.Now;
+
+                                                // Calculer la durée de cryptage
+                                                TimeSpan duration = end - start;
+                                                durationInSeconds = (int)duration.TotalSeconds;
+
+                                                backup.setCrypt(durationInSeconds);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                backup.setCrypt(0);
+                                            }
                                         }
 
                                         // Calculer et rapporter la progression
