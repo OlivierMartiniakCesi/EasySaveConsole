@@ -300,6 +300,8 @@ namespace EasySaveV2.MVVM.ViewModels
             string PathTarget = backup.getTargetDirectory();
             string State = backup.getState();
             string Stopped = backup.getStopped();
+            List<string> entryFiles = Priority(backup.getSourceDirectory());
+            List<string> sortedFiles = Priority(backup.getTargetDirectory());
             // Create all directories sequentially
             foreach (var directory in Directory.GetDirectories(backup.getSourceDirectory(), "*", SearchOption.AllDirectories))
             {
@@ -332,8 +334,10 @@ namespace EasySaveV2.MVVM.ViewModels
                 }
             }
 
-            foreach (var filePath in Directory.GetFiles(backup.getSourceDirectory(), "*.*", SearchOption.AllDirectories))
+            foreach (var fileName in entryFiles)
             {
+
+                string filePath = Path.Combine(backup.getSourceDirectory(), fileName);
                 if (!canBeExecuted || (backup.getState() == "Off"))
                 {
                     dailylogs.selectedLogger.Information("Backup " + backup.getName() + " execution paused");

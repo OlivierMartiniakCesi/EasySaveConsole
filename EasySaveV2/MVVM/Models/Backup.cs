@@ -240,7 +240,7 @@ namespace EasySaveV2.MVVM.Models
              Environment.NewLine + "\t\"Target\":\"" + TargetDirectory + "\"," +
              Environment.NewLine + "\t\"Type\":\"" + Type + "\"," +
              Environment.NewLine + "\t\"State\":\"" + State + "\"," +
-             Environment.NewLine + "\t\"Stopped\":\"" + Stopped + "\""+
+             Environment.NewLine + "\t\"Stopped\":\"" + Stopped + "\","+
              Environment.NewLine + "\t\"Crypting\":\"" + crypting + "\"" +
              Environment.NewLine + "}";
 
