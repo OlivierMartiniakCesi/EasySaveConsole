@@ -18,6 +18,4 @@
     <system:String x:Key="SizeLimit">Size Limit</system:String>
     <system:String x:Key="EncryptionExt">Encryption Extension</system:String>
     <system:String x:Key="BackupExt">Back-up Extension</system:String>
-    <system:String x:Key="ImportExt">Import</system:String>
-    <system:String x:Key="ExportExt">Export</system:String>
 </ResourceDictionary>

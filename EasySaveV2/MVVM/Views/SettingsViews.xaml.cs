@@ -184,25 +184,6 @@ namespace EasySaveV2.MVVM.Views
         }
 
 
-
-
-
-
-
-
-
-
-        // Méthode permettant d'importer un fichier ".txt" contenant les noms d'extensions
-        private void ImportButton(object sender, RoutedEventArgs e)
-        {
-        }
-
-
-        // Méthode permettant d'exporter un fichier ".txt" contenant les noms d'extensions
-        private void ExportButton(object sender, RoutedEventArgs e)
-        {
-        }
-
         private void myListBox2_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 

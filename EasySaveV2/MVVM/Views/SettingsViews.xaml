@@ -217,7 +217,7 @@
                     <!--// Barre de défilemement (scrollbar) //-->
 
                     <ScrollViewer Height="100"
-                                  Width="190"
+                                  Width="230"
                                   VerticalScrollBarVisibility="Hidden"
                                   HorizontalAlignment="Left">
 
@@ -247,32 +247,6 @@
                         </ListBox>
 
                     </ScrollViewer>
-
-
-
-                    <StackPanel>
-
-                        <!--// Bouton d'importation du fichier contenant les extensions //-->
-                        <Button Content="{DynamicResource ImportExt}"
-                                Style="{DynamicResource save}"
-                                FontSize="9"
-                                Width="40"
-                                Height="50"
-                                VerticalAlignment="Top"
-                                Click="ExportButton" />
-
-
-                        <!--// Bouton d'exportation du fichier contenant les extensions //-->
-                        <Button Content="{DynamicResource ExportExt}"
-                                Style="{DynamicResource save}"
-                                FontSize="9"
-                                Width="40"
-                                Height="50"
-                                VerticalAlignment="Bottom"
-                                Click="ExportButton" />
-
-                    </StackPanel>
-
 
                 </StackPanel>
 
@@ -312,7 +286,7 @@
                     <!--// Barre de défilemement (scrollbar) //-->
 
                     <ScrollViewer Height="100"
-                                        Width="190"
+                                        Width="230"
                                         VerticalScrollBarVisibility="Hidden"
                                         HorizontalAlignment="Left">
 
@@ -342,31 +316,6 @@
                         </ListBox>
 
                     </ScrollViewer>
-
-
-
-                    <StackPanel>
-
-                        <!--// Bouton d'importation du fichier contenant les extensions //-->
-                        <Button Content="{DynamicResource ImportExt}"
-                                Style="{DynamicResource save}"
-                                FontSize="9"
-                                Width="40"
-                                Height="50"
-                                VerticalAlignment="Top"
-                                Click="ExportButton" />
-
-
-                        <!--// Bouton d'exportation du fichier contenant les extensions //-->
-                        <Button Content="{DynamicResource ExportExt}"
-                                Style="{DynamicResource save}"
-                                FontSize="9"
-                                Width="40"
-                                Height="50"
-                                VerticalAlignment="Bottom"
-                                Click="ExportButton" />
-
-                    </StackPanel>
 
                 </StackPanel>
 
