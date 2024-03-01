@@ -11,9 +11,6 @@ namespace CryptSoft
     {
         static int Main(string[] args)
         {
-            // Key for XOR encryption
-            byte[] encryptionKey = { 69, 111, 100, 200, 1, 50, 125, 235 };
-
             int argsSize = args.Length;
             string src = "";
             string dst = "";
@@ -47,25 +44,35 @@ namespace CryptSoft
             {
                 DateTime startTimeFile = DateTime.Now;
 
-                byte[] bytesToEncrypt = File.ReadAllBytes(src);
+                byte[] byteToEncrypt = File.ReadAllBytes(src);
+                BitArray bitToEncrypt = new BitArray(byteToEncrypt);
 
-                // XOR encryption
-                byte[] encryptedBytes = new byte[bytesToEncrypt.Length];
-                for (int i = 0; i < bytesToEncrypt.Length; i++)
+                byte[] byteKey = new byte[8] { 10, 255, 100, 140, 1, 50, 150, 230 };
+                BitArray bitKey = new BitArray(byteKey);
+
+                byte[] byteCrypted = new byte[byteToEncrypt.Length];
+                BitArray bitCrypted = new BitArray(bitToEncrypt.Length);
+
+                int j = 0;
+
+                for (int i = 0; i < bitToEncrypt.Length; i++)
                 {
-                    encryptedBytes[i] = (byte)(bytesToEncrypt[i] ^ encryptionKey[i % encryptionKey.Length]);
+                    j = i % byteKey.Length;
+                    bitCrypted[i] = bitToEncrypt[i] ^ bitKey[j];
                 }
 
-                File.WriteAllBytes(dst, encryptedBytes);
+                bitCrypted.CopyTo(byteCrypted, 0);
 
+                File.WriteAllBytes(dst, byteCrypted);
                 TimeSpan cryptTime = DateTime.Now - startTimeFile;
                 return (int)cryptTime.TotalMilliseconds;
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine($"Cannot crypt this file: {ex.Message}");
+                Console.WriteLine("Cannot crypt this file.");
                 return -1;
             }
         }
+        
     }
 }
