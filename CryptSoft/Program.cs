@@ -12,7 +12,7 @@ namespace CryptSoft
         static int Main(string[] args)
         {
             // Key for XOR encryption
-            byte[] encryptionKey = { 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF, 0x11, 0x22 };
+            byte[] encryptionKey = { 69, 111, 100, 200, 1, 50, 125, 235 };
 
             int argsSize = args.Length;
             string src = "";
