@@ -282,39 +282,40 @@ namespace EasySaveV2.MVVM.ViewModels
                                 destinationStream.Write(buffer, 0, bytesRead);
                                 copiedBytes += bytesRead;
 
-                                // Vérifie si le fichier a une extension qui nécessite un cryptage
-                                if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
-                                {
-                                    DateTime start = DateTime.Now;
-
-                                    // Lance le processus de cryptage sur les fichiers avec l'extension
-                                    ProcessStartInfo cryptosoft = new ProcessStartInfo(cryptSoftExecutablePath);
-                                    cryptosoft.Arguments = "source " + file.FullName + " destination " + targetFilePath;
-
-                                    try
-                                    {
-                                        var proc = Process.Start(cryptosoft);
-                                        proc.WaitForExit();
-
-                                        DateTime end = DateTime.Now;
-
-                                        // Calculer la durée de cryptage
-                                        TimeSpan duration = end - start;
-                                        durationInSeconds = (int)duration.TotalSeconds;
-
-                                        backup.setCrypt(durationInSeconds);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        backup.setCrypt(-1);
-                                    }
-                                }
-
                                 // Calculer et rapporter la progression
                                 ReportProgress(backup, copiedBytes, totalBytes);
                             }
                         }
                     }
+
+                    // Vérifie si le fichier a une extension qui nécessite un cryptage
+                    if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
+                    {
+                        DateTime start = DateTime.Now;
+
+                        // Lance le processus de cryptage sur les fichiers avec l'extension
+                        ProcessStartInfo cryptosoft = new ProcessStartInfo(cryptSoftExecutablePath);
+                        cryptosoft.Arguments = "source " + file.FullName + " destination " + targetFilePath;
+
+                        try
+                        {
+                            var proc = Process.Start(cryptosoft);
+                            proc.WaitForExit();
+
+                            DateTime end = DateTime.Now;
+
+                            // Calculer la durée de cryptage
+                            TimeSpan duration = end - start;
+                            durationInSeconds = (int)duration.TotalSeconds;
+
+                            backup.setCrypt(durationInSeconds);
+                        }
+                        catch (Exception ex)
+                        {
+                            backup.setCrypt(-1);
+                        }
+                    }
+
                     dailylogs.selectedLogger.Information("Copied file " + filePath + " to " + targetFilePath);
                         
                 }
@@ -425,37 +426,36 @@ namespace EasySaveV2.MVVM.ViewModels
                                         destinationStream.Write(buffer, 0, bytesRead);
                                         copiedBytes += bytesRead;
 
-                                        // Vérifie si le fichier a une extension qui nécessite un cryptage
-                                        if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
-                                        {
-                                            DateTime start = DateTime.Now;
-
-                                            // Lance le processus de cryptage sur les fichiers avec l'extension
-                                            ProcessStartInfo cryptosoft = new ProcessStartInfo(cryptSoftExecutablePath);
-                                            cryptosoft.Arguments = "source " + file.FullName + " destination " + targetFilePath;
-
-                                            try
-                                            {
-                                                var proc = Process.Start(cryptosoft);
-                                                proc.WaitForExit();
-
-                                                DateTime end = DateTime.Now;
-
-                                                // Calculer la durée de cryptage
-                                                TimeSpan duration = end - start;
-                                                durationInSeconds = (int)duration.TotalSeconds;
-
-                                                backup.setCrypt(durationInSeconds);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                backup.setCrypt(-1);
-                                            }
-                                        }
-
                                         // Calculer et rapporter la progression
                                         ReportProgress(backup, copiedBytes, totalBytes);
                                     }
+                                }
+                            }
+                            // Vérifie si le fichier a une extension qui nécessite un cryptage
+                            if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
+                            {
+                                DateTime start = DateTime.Now;
+
+                                // Lance le processus de cryptage sur les fichiers avec l'extension
+                                ProcessStartInfo cryptosoft = new ProcessStartInfo(cryptSoftExecutablePath);
+                                cryptosoft.Arguments = "source " + file.FullName + " destination " + targetFilePath;
+
+                                try
+                                {
+                                    var proc = Process.Start(cryptosoft);
+                                    proc.WaitForExit();
+
+                                    DateTime end = DateTime.Now;
+
+                                    // Calculer la durée de cryptage
+                                    TimeSpan duration = end - start;
+                                    durationInSeconds = (int)duration.TotalSeconds;
+
+                                    backup.setCrypt(durationInSeconds);
+                                }
+                                catch (Exception ex)
+                                {
+                                    backup.setCrypt(-1);
                                 }
                             }
                         }
@@ -477,37 +477,38 @@ namespace EasySaveV2.MVVM.ViewModels
                                     destinationStream.Write(buffer, 0, bytesRead);
                                     copiedBytes += bytesRead;
 
-                                    // Vérifie si le fichier a une extension qui nécessite un cryptage
-                                    if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
-                                    {
-                                        DateTime start = DateTime.Now;
-
-                                        // Lance le processus de cryptage sur les fichiers avec l'extension
-                                        ProcessStartInfo cryptosoft = new ProcessStartInfo(cryptSoftExecutablePath);
-                                        cryptosoft.Arguments = "source " + file.FullName + " destination " + targetFilePath;
-
-                                        try
-                                        {
-                                            var proc = Process.Start(cryptosoft);
-                                            proc.WaitForExit();
-
-                                            DateTime end = DateTime.Now;
-
-                                            // Calculer la durée de cryptage
-                                            TimeSpan duration = end - start;
-                                            durationInSeconds = (int)duration.TotalSeconds;
-
-                                            backup.setCrypt(durationInSeconds);
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            backup.setCrypt(-1);
-                                        }
-                                    }
+    
 
                                     // Calculer et rapporter la progression
                                     ReportProgress(backup, copiedBytes, totalBytes);
                                 }
+                            }
+                        }
+                        // Vérifie si le fichier a une extension qui nécessite un cryptage
+                        if (SettingsViewModels.ExtensionCryptoSoft.Contains(file.Extension))
+                        {
+                            DateTime start = DateTime.Now;
+
+                            // Lance le processus de cryptage sur les fichiers avec l'extension
+                            ProcessStartInfo cryptosoft = new ProcessStartInfo(cryptSoftExecutablePath);
+                            cryptosoft.Arguments = "source " + file.FullName + " destination " + targetFilePath;
+
+                            try
+                            {
+                                var proc = Process.Start(cryptosoft);
+                                proc.WaitForExit();
+
+                                DateTime end = DateTime.Now;
+
+                                // Calculer la durée de cryptage
+                                TimeSpan duration = end - start;
+                                durationInSeconds = (int)duration.TotalSeconds;
+
+                                backup.setCrypt(durationInSeconds);
+                            }
+                            catch (Exception ex)
+                            {
+                                backup.setCrypt(-1);
                             }
                         }
                     }
